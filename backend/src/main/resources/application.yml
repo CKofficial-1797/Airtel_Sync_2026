@@ -34,3 +34,7 @@ app:
       - http://localhost:5173
   pricing:
     mode: MIN                     # MIN = catalogue price_min (digital price); MID = (min+max)/2 rounded half-up
+  ai-service:
+    base-url: ${AI_SERVICE_URL:http://localhost:8000}
+    token: ${INTERNAL_TOKEN:}     # shared secret with ai-service (set in application-local.yml or env)
+    timeout-ms: 45000

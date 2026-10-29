@@ -9,6 +9,7 @@ Living handoff file. Every phase reads this first and updates it at the end (app
 | 1 | 2026-10-29 | Spring Boot backend, Neon connection, Flyway V1 schema, idempotent CSV loader, read-only product + data-summary APIs, parsing unit tests |
 | 2 | 2026-10-29 | GSTIN/Udyam validators (format, mod-36 checksum, state codes), registry-aware OCR correction, `GstinVerificationService`, mock lookup APIs under `/api/mock`, masked logging, `code`/`errors` on error JSON |
 | 3 | 2026-10-30 | Rules engine: profile resolution (city → tier, type → segment, GSTIN status), fixed-point eligibility, YAML-driven recommendation, quote (MIN pricing), reference APIs, mis-selling audit (48/368 = 13.0%) |
+| 4 | 2026-10-30 | AI advisor: stateless Python `ai-service` (FastAPI + Gemini 2.5 Flash, manual tool calling, grounding guard) + Spring advisor sessions/messages (Flyway V2), `/api/advisor/sessions` endpoints, internal-token filter |
 
 ## 2. How to run
 
@@ -23,6 +24,12 @@ Living handoff file. Every phase reads this first and updates it at the end (app
   - `mvn spring-boot:run "-Dspring-boot.run.profiles=local"` (PowerShell) / `mvn spring-boot:run -Dspring-boot.run.profiles=local` (bash)
 - App: `http://localhost:8080`. Startup takes ~50 s on a cold Neon; first data load ~27 s, later starts skip loading.
 - Example requests: `backend/http-examples/` (`mock-registry.http` + JSON bodies). Use `curl --data "@http-examples/<file>.json"` to avoid PowerShell quoting issues.
+- **ai-service (Phase 4)**: Python 3.12.5, venv at `ai-service/.venv` (git-ignored). Secrets in `ai-service/.env` (git-ignored, template `.env.example`): `GEMINI_API_KEY`, `INTERNAL_TOKEN`. Spring needs the SAME token in `application-local.yml` → `app.ai-service.token` (or env `INTERNAL_TOKEN`). Do not put the Gemini key in Spring.
+  - Install: `ai-service/.venv/Scripts/python -m pip install -r ai-service/requirements.txt`
+  - Run (from `ai-service/`): `.venv\Scripts\python -m uvicorn app.main:app --reload --port 8000` (bash: `.venv/bin/python ...`)
+  - Start order: Spring (:8080) first, then ai-service (:8000). The advisor UI talks only to Spring.
+  - Gemini check (1 call): `.venv\Scripts\python scripts\check_gemini.py` → `OK gemini-2.5-flash`
+- Terminals opened before Java/Maven were installed don't have them on PATH: refresh with `$env:JAVA_HOME = [Environment]::GetEnvironmentVariable("JAVA_HOME","User"); $env:Path = [Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [Environment]::GetEnvironmentVariable("Path","User")`.
 
 ## 3. Package structure (`backend/src/main/java/com/udyam`)
 
@@ -43,6 +50,23 @@ rules/eligibility/        Catalogue rules, fixed-point bundle resolution, /api/e
 rules/recommend/          Template-driven recommendation + quantity rules, /api/recommend
 rules/quote/              Pricing + quote, /api/quote
 rules/audit/              Mis-selling audit over activated leads, /api/admin/audit/mis-selling
+advisor/                  Advisor sessions (JDBC store), ai-service RestClient, /api/advisor/sessions, InternalTokenFilter
+```
+
+`ai-service/` (Python, Phase 4):
+```
+app/main.py            FastAPI: GET /health, POST /chat (X-Internal-Token required); create_app() for tests
+app/advisor.py         Advisor.chat(): tool loop (max 6 model calls/turn), guard retry + template fallback, stage logic, language detection
+app/prompts.py         SYSTEM_PROMPT + build_system_prompt() (cities, catalogue names, current state; no prices)
+app/tools.py           TOOL_DECLARATIONS + ToolContext (dispatcher), merge_profile, summaries for the model
+app/guard.py           check() grounding guard, extract_amounts(), render_template() EN/HI fallback, fmt_inr()
+app/llm.py             Llm protocol, GeminiLlm (manual function calling, retries 429/5xx x3), history types
+app/backend_client.py  BackendClient (httpx, 10 s, X-Internal-Token), BackendUnavailable
+app/reference.py       ReferenceProvider: cities + products from Spring (cached), CITY_ALIASES
+app/config.py, models.py   Settings (.env) and the /chat pydantic models (camelCase JSON)
+tests/                 pytest (fake LLM + respx-mocked Spring, no network)
+evals/                 scenarios.json (15) + run_scenarios.py (live, manual) + results/
+scripts/check_gemini.py   one-call connectivity check
 ```
 
 ## 4. Key classes
@@ -115,6 +139,28 @@ rules/audit/              Mis-selling audit over activated leads, /api/admin/aud
 | `audit.MisSellingAuditor` | Pure: `report(List<SoldBundle>)`, `audit(bundles, GstinSemantics)` |
 | `audit.MisSellingAuditService` | Loads activated leads + bundles (JdbcTemplate) → report |
 
+**Phase 4 (Spring, `com.udyam.advisor`)**
+
+| Class | What it does |
+|---|---|
+| `AdvisorService` | `createSession(uiLanguage)` (stores the fixed bilingual `GREETING` as the first assistant message, no LLM), `sendMessage(id, text)` (saves user msg → calls ai-service with full history + profile + state → saves assistant msg + toolTrace + guard → updates session), `getSession(id)`. ai-service failure → `ApiException(503, AI_UNAVAILABLE)` with the user message already saved |
+| `AdvisorController` | `/api/advisor/sessions` endpoints (thin) |
+| `AdvisorStore` / `JdbcAdvisorStore` | Interface + Postgres impl (JdbcTemplate, JSONB via `?::jsonb`); records `Session`, `Message` |
+| `AiServiceClient` | POST `/chat` via the `aiServiceRestClient` bean; any failure/empty body → `AiUnavailableException` |
+| `AiChatContract` | Records `Request{sessionId, messages[{role, content}], profile, uiLanguage, state{stage, recommendation, quote}}`, `Response{reply, detectedLanguage, profile, stage, recommendation, quote, toolTrace, guard}` |
+| `AdvisorConfig` | `aiServiceRestClient` bean: base URL, connect 5 s / read `timeout-ms`, default `X-Internal-Token` header |
+| `InternalTokenFilter` | Sets request attribute `udyam.caller` = `ai-service` (valid token) or `public`; never blocks; logs `API <method> <path> caller=...` with GSTIN-like path segments masked |
+| `AiServiceProperties` | `app.ai-service.*` |
+
+**Phase 4 (Python, `ai-service/app`)**
+
+| Name | What it does |
+|---|---|
+| Tools | `save_profile(fields)` (local; validates/merges; **auto** `lookup_gstin` for a new GSTIN and **auto** `recommend_bundle` once required facts + GSTIN answer are known or changed), `lookup_gstin(gstin)` → `GET /api/mock/gstin/{gstin}`, `recommend_bundle()` → `POST /api/recommend`, `get_quote(add?, remove?, setQuantity?, items?)` → `POST /api/quote` (removed ids sent as `removedProductIds`), `check_eligibility(productIds)` → `POST /api/eligibility`, `mark_off_topic()` (local) |
+| Required facts | `businessType`, `city` (or `cityTier` if the city is unknown), `employees`, `sites`; plus the GSTIN question answered (`gstin` or `gstinDeclared` true/false) |
+| Stage logic (deterministic, `Advisor._stage`) | last bundle event `quote` → CUSTOMISING; `recommend` → RECOMMENDED; bundle exists + acceptance phrase ("yes", "go ahead", "theek hai", "haan", "हाँ", ...) without change words → READY_FOR_CHECKOUT; only `mark_off_topic` called → OUT_OF_SCOPE; Spring failure → previous stage unchanged |
+| Guard (`guard.check`) | Allowed amounts = every `*Inr` number in engine JSON seen in the conversation (+ profile `monthlyTelecomSpendInr`). Amount formats: ₹/Rs/INR/rupees/रुपये, Indian grouping, Devanagari digits. Products (IDs P01–P25 or exact catalogue names) must be in an engine result; ineligible ones only in a sentence with a reason word. Violation → one retry with a corrective system note → else `render_template()` from the latest quote JSON (EN or HI) |
+
 No JPA entity exists for `smb_lead` / `lead_bundle_item` (read via JdbcTemplate only).
 
 ## 5. Endpoints
@@ -135,7 +181,14 @@ No JPA entity exists for `smb_lead` / `lead_bundle_item` (read via JdbcTemplate 
 | POST | `/api/eligibility` | `{profile, bundleProductIds?}` → `{resolvedProfile, bundleProductIds, results[25 EligibilityResult]}` | 400 as above + `UNKNOWN_PRODUCT` |
 | POST | `/api/recommend` | `{profile}` → `{resolvedProfile, segment, included[Line], optionalAddOns[Line], excluded[EligibilityResult], notes[], quote}` | 400 as above |
 | POST | `/api/quote` | `{profile, items[{productId, quantity 1..500}] (non-empty), removedProductIds?}` → `Quote` | 400 as above + `DUPLICATE_PRODUCT` |
+| POST | `/api/advisor/sessions` | body `{"uiLanguage": "en"|"hi"|null}` (optional) → `{sessionId (UUID), greeting}` | 400 |
+| POST | `/api/advisor/sessions/{id}/messages` | `{"text": 1..1000 chars}` → `{sessionId, reply, stage, profile, recommendation (latest /api/recommend JSON or null), quote (latest Quote JSON or null), detectedLanguage}` | 400 `INVALID_REQUEST`, 404, **503 `AI_UNAVAILABLE`** (user message still saved) |
+| GET | `/api/advisor/sessions/{id}` | `{sessionId, createdAt, updatedAt, uiLanguage, detectedLanguage, stage, profile, recommendation, quote, messages[{role, content, createdAt}]}` | 400 (bad UUID), 404 |
 | GET | `/api/admin/audit/mis-selling` | `{hasGstinFlag: Variant, registryActive: Variant}`; Variant = `{gstinSemantics, description, activatedChecked, bundlesWithViolations, misSoldPercent, totalViolations, violationsByProductAndReason[{productId, productName, reason, count}], sampleLeadIds[≤10]}` | - |
+
+**ai-service (internal, called only by Spring)**: `GET /health` → `{status: "OK", model}`; `POST /chat` (header `X-Internal-Token`, else 401 `{detail: {code: UNAUTHORIZED}}`) body `{sessionId, messages[{role: user|assistant, content}], profile, uiLanguage, state{stage, recommendation, quote}}` → `{reply, detectedLanguage, profile, stage, recommendation, quote, toolTrace[{tool, args (GSTIN masked), ok, ms}], guard{passed, retries, fallbackUsed, violations[]}}`; 503 `LLM_UNAVAILABLE` when Gemini fails after retries; 422 on a malformed body.
+
+**Stage values**: `COLLECTING`, `RECOMMENDED`, `CUSTOMISING`, `READY_FOR_CHECKOUT`, `OUT_OF_SCOPE`.
 
 **Phase 3 shapes**
 - `BusinessProfile`: `businessType?, segment?, city?, cityTier? (1|2), employees (1..100000, required), sites (1..500, required), gstin?, gstinDeclared?, currentInternet?, monthlyTelecomSpendInr? (≥0), fibreUnavailable?, needs? [Need], officeUsers?, mobileLines?, cameras?, vehicles?, machines? (1..500)`. Needs city OR cityTier.
@@ -178,11 +231,27 @@ Recommendation templates (as approved):
 | multi | P02 (P04 if no fibre) | - | P08 P09 P19 P23 P10 | P22 P13 P15 P25 |
 | mfg | P05 → P03 → P02 | P06 | P08 P16 P20 | P21 P11 P23 P24 P25 |
 
+Phase 4 added:
+
+| Key | Default | Purpose |
+|---|---|---|
+| `app.ai-service.base-url` | `${AI_SERVICE_URL:http://localhost:8000}` | Python advisor |
+| `app.ai-service.token` | `${INTERNAL_TOKEN:}` | Shared secret (set in `application-local.yml`); empty → ai-service answers 401 → 503 AI_UNAVAILABLE |
+| `app.ai-service.timeout-ms` | 45000 | Read timeout for /chat |
+| ai-service `.env` | `GEMINI_API_KEY`, `GEMINI_MODEL=gemini-2.5-flash`, `BACKEND_BASE_URL=http://localhost:8080`, `INTERNAL_TOKEN`, `BACKEND_TIMEOUT_S=10`, `GEMINI_TIMEOUT_S=30` | Settings in `app/config.py` (also `temperature=0.2`, `max_tool_iterations=6`, `gemini_max_attempts=3`) |
+
 Quantity rules: per-site units = sites; P19 = sites; P16 = officeUsers else prof ceil(0.7×emp), mfg ceil(0.15×emp), others emp; P20 = officeUsers else prof ceil(0.5×emp), mfg ceil(0.1×emp), others 2; P07/P08 = mobileLines else micro 2, prof max(2, ceil(emp/5)), multi max(2, ceil(0.6×sites)), mfg 4; P23 = cameras else micro 2, multi 2×sites, mfg 4, others 2; P24 = machines else 5; P25 = vehicles else 2; P12 = max(2, ceil(emp/5)); everything else 1.
 
 ## 7. Database (Neon PostgreSQL 18.6)
 
-Flyway versions applied: **V1** `V1__init_reference_data.sql` (Phases 2 and 3 added no migrations; Phase 3 templates live in YAML, not the DB).
+Flyway versions applied: **V1** `V1__init_reference_data.sql` (Phases 2 and 3 added no migrations; Phase 3 templates live in YAML, not the DB), **V2** `V2__advisor_sessions.sql` (Phase 4).
+
+| Table (V2) | Key columns / types |
+|---|---|
+| `advisor_session` | `id UUID` PK, `created_at`/`updated_at TIMESTAMPTZ`, `ui_language`, `detected_language`, `stage` (CHECK: the 5 stage values, default COLLECTING), `profile_json JSONB NOT NULL DEFAULT '{}'`, `last_recommendation_json JSONB`, `last_quote_json JSONB`; index on `stage` |
+| `advisor_message` | `id BIGSERIAL` PK, `session_id UUID` FK → advisor_session ON DELETE CASCADE, `role` (CHECK user/assistant), `content TEXT`, `tool_trace_json JSONB`, `guard_json JSONB`, `created_at`; index `(session_id, id)` |
+
+Back-office query for "leads the advisor could not close": `SELECT id, stage, profile_json, updated_at FROM advisor_session WHERE stage <> 'READY_FOR_CHECKOUT' ORDER BY updated_at DESC;`
 
 | Table | Key columns / types |
 |---|---|
@@ -216,11 +285,12 @@ Phase 3 facts (from smb_leads, verified by tests and live API):
 - **Business types (35, one segment each):** micro (10) Bakery, Boutique, Hardware store, Kirana store, Mobile repair shop, Optician, Pharmacy, Salon, Stationery shop, Sweet shop · prof (10) Architecture studio, CA firm, Coaching centre, Dental clinic, Diagnostic lab, Insurance agency, Law office, Physiotherapy clinic, Real estate agency, Travel agency · multi (8) Apparel retail chain, Bakery chain, Budget hotel group, Electronics retail chain, Gym chain, Pharmacy chain, Pre-school chain, Restaurant chain · mfg (7) Auto-parts unit, Food processing unit, Furniture workshop, Packaging unit, Plastic moulding unit, Printing press, Textile unit.
 - **GST-required products (10):** P03, P05, P06, P10, P12, P13, P14, P15, P21, P24. Products with dependencies: P09/P10/P21 (P01|P02|P03|P05|P06), P11 (P01|P02|P03), P12/P23 (P01–P06), P22 (P01–P04).
 - **Mis-selling audit:** (a) has_gstin flag: 48/368 bundles (13.0%), 53 violations: P03 tier 24, P03 employees 7, P03 GSTIN 3, P06 employees 1, P10 GSTIN 1, P11 dependency 9, P12 GSTIN 2, P14 GSTIN 1, P15 GSTIN 5. (b) registry Active: 56/368 (15.2%), 63 violations (adds GSTIN_INACTIVE: P03 3, P05 1, P10 1, P13 1, P15 4). 22 activated leads have Cancelled/Suspended GSTINs.
+- **Phase 4 live evals** (`ai-service/evals/results/`, real Gemini 2.5 Flash): scenario **1 PASS** (EN one-shot kirana, exactly 2 Gemini calls, reply ₹1597 grounded), **2 PASS** (Hindi dental clinic Kochi, GSTIN autofill "Balaji", no P03), **3 PASS** (Hinglish restaurant chain "Bangalore" → Bengaluru, gstinDeclared, P10 conditional). Scenarios **4–15 NOT run**: the free-tier key hit `429 RESOURCE_EXHAUSTED` after ~18 calls (report `run-20261030-013236.json` shows them as 503 failures for that reason, not as advisor failures). Re-run later with `evals/run_scenarios.py --rerun-failed --delay 6`. Accepted by the user on 2026-10-30 to save quota.
 - **Reference scenarios (MIN pricing):** kirana tier 2 no GSTIN → P01 + P07×2 = ₹1,597/mo; dental tier 1 14 emp GSTIN → P02 + P16×10 + P08×3 + P20×7 + P17 = ₹5,738/mo; restaurant chain 8 sites 60 emp GSTIN → ₹46,955/mo + ₹1,00,800 one-time, 24 months, activation 2026-07-29; textile 85 emp GSTIN → P05 primary ₹12,912/mo; factory tier 2 8 emp → P05 (emp) → P03 (tier) → P02.
 
 ## 9. Testing
 
-All tests are pure unit tests (no Spring context, no DB). **Total: 117** (41 after Phase 2, +76 in Phase 3).
+All tests are pure unit tests (no Spring context, no DB). **JUnit total: 126** (41 after Phase 2, +76 in Phase 3, +9 in Phase 4). **pytest (ai-service): 42.**
 
 | Test class | Tests | Covers |
 |---|---|---|
@@ -237,6 +307,11 @@ All tests are pure unit tests (no Spring context, no DB). **Total: 117** (41 aft
 | `rules.quote.QuoteServiceTest` | 10 | 3 hand-calculated totals, MID rounding, removed/cascade, add-ons, comparison, validation |
 | `rules.recommend.AllLeadsRecommendationTest` | 1 | all 5000 leads: no exception, everything included eligible, total > 0 |
 | `rules.audit.MisSellingAuditorTest` | 2 | variant (a) exactly 48/53 + breakdown; variant (b) 56/63 |
+
+| `advisor.AdvisorServiceTest` | 7 | greeting, round trip persists both messages + stage/profile, state sent back next turn, 503 on 5xx/timeout with user msg saved, unknown stage, 404 (MockRestServiceServer + `InMemoryAdvisorStore`) |
+| `advisor.InternalTokenFilterTest` | 2 | caller detection (never blocks), GSTIN masking in logged paths |
+
+pytest (`ai-service/tests`, run `.venv\Scripts\python -m pytest -q`): `test_tools.py` (12: endpoint/JSON per tool, save_profile validation, auto lookup + auto recommend), `test_advisor_loop.py` (10: one-shot = 2 model calls, prompt state, loop limit 6, Spring 500/timeout → friendly reply + stage unchanged, stages, language), `test_guard.py` (13: amount formats incl. ₹1,23,456 and Devanagari, invented ₹499, products/reasons, retry, template fallback), `test_api.py` (7: health, 401 missing/wrong/empty token, camelCase contract, 503, 422). Fixtures in `tests/conftest.py` (`FakeLlm`, `kirana_recommendation()`, respx `spring`).
 
 - Rules tests use `src/test/java/com/udyam/rules/RulesFixture.java`: the whole engine wired by hand from the CSVs (`RulesData.fromCsv`, `CsvGstinRegistryLookup`) and the real `recommendation-templates.yml` (bound with Spring's `Binder`). Constants: `ACTIVE_GSTIN`, `CANCELLED_GSTIN`, `SUSPENDED_GSTIN`; helpers `profile(...)`, `resolved(...)`.
 
@@ -261,6 +336,12 @@ All tests are pure unit tests (no Spring context, no DB). **Total: 117** (41 aft
 - Phase 3: added a P19 quantity rule (= sites; unit is "per counter") found by the restaurant-chain test; matches 100% of activated bundles.
 - Phase 3: the rules engine reads an in-memory snapshot loaded from Neon at `ApplicationReadyEvent` (not at bean creation, so a fresh DB is loaded first); the GST registry is cached in memory for <30 ms responses.
 - Phase 3: `/api/eligibility` also returns `resolvedProfile`; quote also returns `conditional` and `notes` (price note, no discounts/taxes, activation assumption, KYC condition).
+- Phase 4: `lookup_gstin` calls `GET /api/mock/gstin/{gstin}` (not `/api/profile/resolve`, which needs employees/sites first).
+- Phase 4: `/chat` request has an extra `state {stage, recommendation, quote}` (Spring stores it; the service stays stateless) so stage logic, customisation and the guard know the previous engine results.
+- Phase 4: `get_quote` takes `add/remove/setQuantity` (plus `items`) relative to the current bundle instead of only a full list; a 6th local tool `mark_off_topic` sets OUT_OF_SCOPE.
+- Phase 4 (quota): `save_profile` automatically runs `lookup_gstin` for a new GSTIN and `recommend_bundle` when the required facts are complete or changed, in the same step. One-shot messages need 2 Gemini calls instead of 3–4.
+- Phase 4: evals talk to ai-service `/chat` directly (they need `toolTrace` and `guard`, which the Spring reply does not expose); 3/15 run live (see section 8).
+- Phase 4: the Spring advisor reply hides `toolTrace`/`guard` from the frontend; both are stored in `advisor_message`.
 
 ## 11. Known issues / TODOs
 
@@ -275,8 +356,40 @@ All tests are pure unit tests (no Spring context, no DB). **Total: 117** (41 aft
 - Spend comparison is facts only (new − current); it does not know what the current spend covers.
 - `estimatedActivationDate` = reference date + max install days; KYC (Phase 6) / tracker (Phase 8) should shift it from the KYC completion date.
 - No auth on `/api/admin/**`.
+- Phase 4: Gemini free-tier quota is small (this key hit 429 after ~18 generateContent calls in one session). Live evals 4–15 still to be run; demo should avoid long multi-turn rehearsals on the same day. Each turn = 2–4 model calls.
+- Phase 4: Windows PowerShell 5.1 `Get-Content`/`Set-Content` corrupt UTF-8 (Devanagari) files; edit Python/Java files with an editor, not PowerShell text replacement.
+- Phase 4: the guard matches exact catalogue names/IDs; a paraphrased product name ("Business Fibre 300") is not checked (amounts always are).
+- Phase 4: no rate limiting on `/api/advisor/**`; a stuck ai-service holds a Spring thread up to 45 s.
 
-## 12. Notes for the next phase (Phase 4: Python AI advisor with tool calling)
+### Privacy (for the 1-page privacy note)
+- Conversation text (the full history of each advisor session) and the collected profile (business type, city, staff, GSTIN, needs) are sent to the **Google Gemini API** on every turn. Engine JSON returned by tools is also sent back to Gemini.
+- Google's Gemini API terms (to the best of our knowledge; not re-checked live in this session, verify at https://ai.google.dev/gemini-api/terms before submission): on the **free (unpaid) tier**, Google may use prompts and responses to improve its products and human reviewers may read them, so users should not submit sensitive or personal information. On the **paid tier**, prompts and responses are not used to improve products and are only kept for a limited period for abuse monitoring. → For production, use a paid key / Vertex AI and say so in the privacy note.
+- Not logged in plain text: message text, names, full GSTINs (ai-service logs session id prefix, tool names, stage, guard result, latency; Spring logs ids/stages/timings and masks GSTINs in paths and tool traces).
+- Stored in Neon: full conversation text (`advisor_message.content`) and profile JSON. No retention job yet (TODO: define and implement a retention period).
+
+## 12. Notes for the next phase (Phase 5: React frontend - advisor chat + quote/checkout)
+
+The frontend talks ONLY to Spring (`http://localhost:8080`, CORS allows `http://localhost:5173`). Never call the ai-service or Gemini from the browser.
+
+**Chat UI**
+1. On load: `POST /api/advisor/sessions` `{"uiLanguage": "en"|"hi"}` → show `greeting` as the first bot bubble; keep `sessionId` (e.g. localStorage) so a reload can call `GET /api/advisor/sessions/{id}` and re-render `messages[]` (+ `stage`, `recommendation`, `quote`).
+2. Send: `POST /api/advisor/sessions/{id}/messages` `{"text"}` (1..1000 chars) → append `reply` as a bot bubble; replies are plain text with simple line breaks / `*` bullets / `**bold**` (render light markdown or plain text).
+3. Errors: 503 `AI_UNAVAILABLE` → show "Advisor is busy, try again" with a retry button (the user message is already saved; on retry send the text again or just a nudge). 400 `INVALID_REQUEST` → field messages in `errors[]`. Typical latency 3–10 s (Gemini): show a typing indicator.
+
+**Quote panel (render from JSON, never from the bot's text)**
+- Source of truth: `quote` from the latest message reply (or the session). Shape = Phase 3 `Quote`: `lines[{productId, productName, unit, quantity, unitPriceInr, monthlyTotalInr, setupFeeInr, minContractMonths, installDays, conditional}]`, `monthlyTotalInr`, `oneTimeTotalInr`, `contractMonths`, `estimatedActivationDate`, `conditional`, `removed[{productId, productName, quantity, reasons[{code, message}]}]` (grey out with reason), `availableAddOns[{productId, productName, unit, unitPriceInr, defaultQuantity, setupFeePerUnitInr, conditional}]` (toggles), `ineligibleProducts[]`, `comparison{currentSpendInr, newMonthlyInr, differenceInr}|null`, `notes[]` (show verbatim).
+- `recommendation` adds `included[].why`, `included[].role` (PRIMARY/INCLUDED/NEED), `optionalAddOns[]` (UPGRADE has `replaces`), `excluded[]` with reasons, `notes[]` (fallback explanation).
+- Toggles / quantity steppers in the UI: call `POST /api/quote` directly with `{profile: <session profile>, items, removedProductIds}` for instant re-pricing (no LLM), then show the new JSON. (These UI-only changes are not written back to the advisor session yet; if the bot must know, send a chat message such as "remove CCTV".)
+- Format money with Indian grouping (₹1,00,800); integers only; no taxes/discounts.
+- `conditional: true` → badge "Subject to GSTIN verification at KYC".
+
+**Stages** (`stage` on every reply): `COLLECTING` (chat only) → `RECOMMENDED` (show quote panel) → `CUSTOMISING` (quote changed) → `READY_FOR_CHECKOUT` (enable "Review quote & start KYC"; KYC is Phase 6/7) · `OUT_OF_SCOPE` (last message was off-topic; keep chatting).
+
+**Profile** (`profile` on every reply): `businessType, city, cityTier, employees, sites, gstin, gstinDeclared, needs[], ...` → can show a small "Your business" summary; `recommendation.resolvedProfile.gstinAutofill` has legal/trade name for display.
+
+**Running locally for frontend work**: Spring (local profile) + ai-service (`uvicorn app.main:app --port 8000`). Without the ai-service, chat returns 503 but `/api/quote`, `/api/recommend`, reference endpoints still work, so the quote panel can be built against those (and `backend/http-examples/*.json`) without spending Gemini quota.
+
+### Advisor tool contract (Phase 4, implemented)
 
 The advisor NEVER decides eligibility, products or prices itself. It collects facts, calls these backend endpoints as tools, and explains their output. Base URL `http://localhost:8080`, JSON, CORS allows `http://localhost:5173`.
 

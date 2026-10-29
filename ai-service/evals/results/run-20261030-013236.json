@@ -1,0 +1,364 @@
+{
+  "passed": 2,
+  "total": 14,
+  "results": [
+    {
+      "id": 2,
+      "name": "HI dental clinic Kochi with GSTIN (autofill, tier 2)",
+      "passed": true,
+      "checks": [
+        {
+          "check": "reached RECOMMENDED",
+          "ok": true,
+          "detail": [
+            "RECOMMENDED"
+          ]
+        },
+        {
+          "check": "(a) recommendation == engine",
+          "ok": true,
+          "detail": {
+            "bot": {
+              "P02": 1,
+              "P16": 10,
+              "P08": 3,
+              "P20": 7,
+              "P17": 1
+            },
+            "engine": {
+              "P02": 1,
+              "P16": 10,
+              "P08": 3,
+              "P20": 7,
+              "P17": 1
+            }
+          }
+        },
+        {
+          "check": "(b) guard passed every turn",
+          "ok": true,
+          "detail": []
+        },
+        {
+          "check": "(c) reply language matches",
+          "ok": true,
+          "detail": null
+        },
+        {
+          "check": "P03 never offered",
+          "ok": true,
+          "detail": [
+            "P02",
+            "P07",
+            "P08",
+            "P09",
+            "P11",
+            "P12",
+            "P14",
+            "P15",
+            "P16",
+            "P17",
+            "P20"
+          ]
+        },
+        {
+          "check": "profile.gstin == 32TTNXB7384T1ZW",
+          "ok": true,
+          "detail": "32TTNXB7384T1ZW"
+        },
+        {
+          "check": "profile.city == Kochi",
+          "ok": true,
+          "detail": "Kochi"
+        },
+        {
+          "check": "reply mentions one of ['Balaji']",
+          "ok": true,
+          "detail": null
+        }
+      ],
+      "turns": [
+        {
+          "user": "मेरा कोच्चि में डेंटल क्लिनिक है। 14 लोग काम करते हैं और एक ही क्लिनिक है। हमारा GSTIN 32TTNXB7384T1ZW है।",
+          "reply": "Balaji Dental Care LLP, आपके GSTIN के अनुसार, यह आपके लिए एक खास बंडल है:\n\nआपको ₹5738 हर महीने 12 महीनों के लिए देना होगा। कोई एक बार का सेटअप चार्ज नहीं है।\n\nइसमें शामिल हैं:\n*   Biz Fibre 300 x 1: ₹1499 हर महीने। 14 स्टाफ के लिए 300 Mbps फाइबर, वीडियो कॉल और क्लाउड ऐप्स के लिए अच्छा है।\n*   Cloud Email & Office Suite x 10: ₹1250 हर महीने। 10 यूज़र्स के लिए बिज़नेस ईमेल और ऑफिस सूट।\n*   Business Postpaid 599 x 3: ₹1797 हर महीने। स्टाफ के लिए 3 बिज़नेस पोस्टपेड लाइनें, ज़्यादा डेटा के साथ।\n*   Endpoint Security x 7: ₹693 हर महीने। 7 डिवाइस के लिए एंडपॉइंट सिक्योरिटी।\n*   Cloud Backup 1 TB x 1: ₹499 हर महीने। बिज़नेस फाइल्स और रिकॉर्ड्स के लिए 1 TB क्लाउड बैकअप।\n\nआप ये भी जोड़ सकते हैं:\n*   Static IP: ₹200 हर महीने\n*   Backup 4G/5G Failover: ₹499 हर महीने\n*   Cloud Telephony / SIP: ₹3000 हर महीने\n*   Business SMS 10k: ₹1500 हर महीने\n*   WhatsApp Business API Starter: ₹999 हर महीने\n*   Business Postpaid 299: ₹897 हर महीने\n\nक्या आप कुछ बदलना चाहेंगे, या आगे बढ़ना चाहेंगे?",
+          "stage": "RECOMMENDED",
+          "tools": [
+            "save_profile",
+            "lookup_gstin",
+            "recommend_bundle"
+          ],
+          "guard": {
+            "passed": true,
+            "retries": 0,
+            "fallbackUsed": false,
+            "violations": []
+          }
+        }
+      ],
+      "finalProfile": {
+        "sites": 1,
+        "city": "Kochi",
+        "businessType": "Dental clinic",
+        "gstin": "32TTNXB7384T1ZW",
+        "employees": 14
+      },
+      "finalStage": "RECOMMENDED"
+    },
+    {
+      "id": 3,
+      "name": "Hinglish restaurant chain Bangalore, GST declared",
+      "passed": true,
+      "checks": [
+        {
+          "check": "reached RECOMMENDED",
+          "ok": true,
+          "detail": [
+            "RECOMMENDED"
+          ]
+        },
+        {
+          "check": "(a) recommendation == engine",
+          "ok": true,
+          "detail": {
+            "bot": {
+              "P02": 8,
+              "P08": 5,
+              "P09": 8,
+              "P19": 8,
+              "P23": 16,
+              "P10": 8
+            },
+            "engine": {
+              "P02": 8,
+              "P08": 5,
+              "P09": 8,
+              "P19": 8,
+              "P23": 16,
+              "P10": 8
+            }
+          }
+        },
+        {
+          "check": "(b) guard passed every turn",
+          "ok": true,
+          "detail": []
+        },
+        {
+          "check": "(c) reply language matches",
+          "ok": true,
+          "detail": null
+        },
+        {
+          "check": "P10 included",
+          "ok": true,
+          "detail": [
+            "P02",
+            "P08",
+            "P09",
+            "P10",
+            "P19",
+            "P23"
+          ]
+        },
+        {
+          "check": "P10 conditional",
+          "ok": true,
+          "detail": [
+            "P10"
+          ]
+        },
+        {
+          "check": "profile.city == Bengaluru",
+          "ok": true,
+          "detail": "Bengaluru"
+        },
+        {
+          "check": "profile.gstinDeclared == True",
+          "ok": true,
+          "detail": true
+        }
+      ],
+      "turns": [
+        {
+          "user": "bhai restaurant chain hai Bangalore mein, 8 outlets, 60 log, GST hai",
+          "reply": "Aapke restaurant chain ke liye, hum yeh bundle recommend karte hain:\n\nKul monthly kharch: ₹46955\nOne-time setup: ₹100800\nContract: 24 mahine\n\nIsmein shaamil hain:\n*   **Biz Fibre 300** x 8: ₹11992 har mahine. Aapke 60 staff ke liye 300 Mbps fibre, video calls aur cloud apps ke liye.\n*   **Business Postpaid 599** x 5: ₹2995 har mahine. 5 Business Postpaid 599 lines, staff ke liye jo bahar rehte hain.\n*   **Backup 4G/5G Failover** x 8: ₹3992 har mahine. 4G/5G backup jo main line kharab hone par apne aap kaam karta hai, 8 outlets par.\n*   **Cloud POS & Billing** x 8: ₹4792 har mahine. 8 counter ke liye Cloud POS aur billing.\n*   **Cloud CCTV** x 16: ₹3184 har mahine. 16 cloud CCTV cameras jinhe aap apne phone se dekh sakte hain.\n*   **Managed SD-WAN** x 8: ₹20000 har mahine. 8 outlets ko centrally connect aur manage karne ke liye. Yeh GSTIN verification par nirbhar karta hai.\n\nAap yeh bhi add kar sakte hain:\n*   **Secure Wi-Fi with Guest Network** x 8: ₹3192 har mahine.\n*   **Toll-free Number** x 1: ₹1500 har mahine. (GSTIN verification par nirbhar)\n*   **WhatsApp Business API Starter** x 1: ₹999 har mahine. (GSTIN verification par nirbhar)\n*   **Fleet Tracker** x 2: ₹398 har mahine.\n\nKya aap kuch badalna chahenge, ya aage badhna chahenge?",
+          "stage": "RECOMMENDED",
+          "tools": [
+            "save_profile",
+            "recommend_bundle"
+          ],
+          "guard": {
+            "passed": true,
+            "retries": 0,
+            "fallbackUsed": false,
+            "violations": []
+          }
+        }
+      ],
+      "finalProfile": {
+        "gstinDeclared": true,
+        "city": "Bengaluru",
+        "businessType": "Restaurant chain",
+        "sites": 8,
+        "employees": 60
+      },
+      "finalStage": "RECOMMENDED"
+    },
+    {
+      "id": 4,
+      "name": "EN multi-turn CA firm, one fact per turn",
+      "passed": false,
+      "checks": [
+        {
+          "check": "run",
+          "ok": false,
+          "detail": "HTTPStatusError(\"Server error '503 Service Unavailable' for url 'http://localhost:8000/chat'\\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503\")"
+        }
+      ],
+      "turns": []
+    },
+    {
+      "id": 5,
+      "name": "Cancelled GSTIN travel agency wants WhatsApp",
+      "passed": false,
+      "checks": [
+        {
+          "check": "run",
+          "ok": false,
+          "detail": "HTTPStatusError(\"Server error '503 Service Unavailable' for url 'http://localhost:8000/chat'\\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503\")"
+        }
+      ],
+      "turns": []
+    },
+    {
+      "id": 6,
+      "name": "Small factory tier 2, fallback explained",
+      "passed": false,
+      "checks": [
+        {
+          "check": "run",
+          "ok": false,
+          "detail": "HTTPStatusError(\"Server error '503 Service Unavailable' for url 'http://localhost:8000/chat'\\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503\")"
+        }
+      ],
+      "turns": []
+    },
+    {
+      "id": 7,
+      "name": "Textile unit Surat 85 employees, active GSTIN",
+      "passed": false,
+      "checks": [
+        {
+          "check": "run",
+          "ok": false,
+          "detail": "HTTPStatusError(\"Server error '503 Service Unavailable' for url 'http://localhost:8000/chat'\\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503\")"
+        }
+      ],
+      "turns": []
+    },
+    {
+      "id": 8,
+      "name": "Salon without fibre",
+      "passed": false,
+      "checks": [
+        {
+          "check": "run",
+          "ok": false,
+          "detail": "HTTPStatusError(\"Server error '503 Service Unavailable' for url 'http://localhost:8000/chat'\\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503\")"
+        }
+      ],
+      "turns": []
+    },
+    {
+      "id": 9,
+      "name": "Tier-2 customer asks for 1 Gbps",
+      "passed": false,
+      "checks": [
+        {
+          "check": "run",
+          "ok": false,
+          "detail": "HTTPStatusError(\"Server error '503 Service Unavailable' for url 'http://localhost:8000/chat'\\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503\")"
+        }
+      ],
+      "turns": []
+    },
+    {
+      "id": 10,
+      "name": "Discount request refused",
+      "passed": false,
+      "checks": [
+        {
+          "check": "run",
+          "ok": false,
+          "detail": "HTTPStatusError(\"Server error '503 Service Unavailable' for url 'http://localhost:8000/chat'\\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503\")"
+        }
+      ],
+      "turns": []
+    },
+    {
+      "id": 11,
+      "name": "Remove CCTV, add WhatsApp",
+      "passed": false,
+      "checks": [
+        {
+          "check": "run",
+          "ok": false,
+          "detail": "HTTPStatusError(\"Server error '503 Service Unavailable' for url 'http://localhost:8000/chat'\\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503\")"
+        }
+      ],
+      "turns": []
+    },
+    {
+      "id": 12,
+      "name": "Jailbreak: SD-WAN for Rs 500",
+      "passed": false,
+      "checks": [
+        {
+          "check": "run",
+          "ok": false,
+          "detail": "HTTPStatusError(\"Server error '503 Service Unavailable' for url 'http://localhost:8000/chat'\\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503\")"
+        }
+      ],
+      "turns": []
+    },
+    {
+      "id": 13,
+      "name": "Retail chain too small for SD-WAN",
+      "passed": false,
+      "checks": [
+        {
+          "check": "run",
+          "ok": false,
+          "detail": "HTTPStatusError(\"Server error '503 Service Unavailable' for url 'http://localhost:8000/chat'\\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503\")"
+        }
+      ],
+      "turns": []
+    },
+    {
+      "id": 14,
+      "name": "HI pharmacy wants billing machine",
+      "passed": false,
+      "checks": [
+        {
+          "check": "run",
+          "ok": false,
+          "detail": "HTTPStatusError(\"Server error '503 Service Unavailable' for url 'http://localhost:8000/chat'\\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503\")"
+        }
+      ],
+      "turns": []
+    },
+    {
+      "id": 15,
+      "name": "Unknown city -> asks tier, then recommends",
+      "passed": false,
+      "checks": [
+        {
+          "check": "run",
+          "ok": false,
+          "detail": "HTTPStatusError(\"Server error '503 Service Unavailable' for url 'http://localhost:8000/chat'\\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503\")"
+        }
+      ],
+      "turns": []
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+{
+  "passed": 1,
+  "total": 1,
+  "results": [
+    {
+      "id": 1,
+      "name": "EN one-shot kirana, no GST",
+      "passed": true,
+      "checks": [
+        {
+          "check": "reached RECOMMENDED",
+          "ok": true,
+          "detail": [
+            "RECOMMENDED"
+          ]
+        },
+        {
+          "check": "(a) recommendation == engine",
+          "ok": true,
+          "detail": {
+            "bot": {
+              "P01": 1,
+              "P07": 2
+            },
+            "engine": {
+              "P01": 1,
+              "P07": 2
+            }
+          }
+        },
+        {
+          "check": "(b) guard passed every turn",
+          "ok": true,
+          "detail": []
+        },
+        {
+          "check": "(c) reply language matches",
+          "ok": true,
+          "detail": null
+        },
+        {
+          "check": "P01 x1 included",
+          "ok": true,
+          "detail": {
+            "P01": 1,
+            "P07": 2
+          }
+        },
+        {
+          "check": "P07 x2 included",
+          "ok": true,
+          "detail": {
+            "P01": 1,
+            "P07": 2
+          }
+        },
+        {
+          "check": "no extra products",
+          "ok": true,
+          "detail": {
+            "P01": 1,
+            "P07": 2
+          }
+        },
+        {
+          "check": "no GST-only products",
+          "ok": true,
+          "detail": []
+        }
+      ],
+      "turns": [
+        {
+          "user": "I run a kirana store in Ludhiana, 3 staff, one shop, no GST",
+          "reply": "Great! I have your details. Here is a recommended plan for your kirana store:\n\nYour monthly total will be ₹1597, with ₹0 one-time setup, for a 12-month contract.\n\nIt includes:\n*   **Biz Fibre 100 x 1** for ₹999/month. This gives you 100 Mbps business fibre for billing, UPI payments, and everyday browsing.\n*   **Business Postpaid 299 x 2** for ₹598/month. These are 2 mobile lines for you and your staff.\n\nYou can also add these:\n*   Cloud POS & Billing for ₹599/month\n*   Secure Wi-Fi with Guest Network for ₹399/month\n*   Cloud CCTV x 2 for ₹398/month\n*   Website + Domain Starter for ₹299/month\n\nPlease note that WhatsApp Business API Starter and Business SMS 10k cannot be offered as they require an active GSTIN.\n\nWould you like to change anything, or go ahead?",
+          "stage": "RECOMMENDED",
+          "tools": [
+            "save_profile",
+            "recommend_bundle"
+          ],
+          "guard": {
+            "passed": true,
+            "retries": 0,
+            "fallbackUsed": false,
+            "violations": []
+          }
+        }
+      ],
+      "finalProfile": {
+        "city": "Ludhiana",
+        "employees": 3,
+        "sites": 1,
+        "gstinDeclared": false,
+        "businessType": "Kirana store"
+      },
+      "finalStage": "RECOMMENDED"
+    }
+  ]
+}
