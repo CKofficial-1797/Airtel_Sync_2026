@@ -1,0 +1,43 @@
+### Phase 2 mock registry examples (IntelliJ / VS Code REST Client). Run the app first.
+
+### Active GSTIN -> 200, active=true
+GET http://localhost:8080/api/mock/gstin/32TTNXB7384T1ZW
+
+### Cancelled -> 200, active=false
+GET http://localhost:8080/api/mock/gstin/37IHKXV5167L1ZS
+
+### Suspended -> 200, active=false
+GET http://localhost:8080/api/mock/gstin/23QYBXS1811Q1ZD
+
+### Lowercase -> 200 (normalized)
+GET http://localhost:8080/api/mock/gstin/32ttnxb7384t1zw
+
+### Bad checksum (tampered) -> 400 INVALID_CHECKSUM
+GET http://localhost:8080/api/mock/gstin/08YKZXS8189L1Z0
+
+### Bad format -> 400 INVALID_FORMAT
+GET http://localhost:8080/api/mock/gstin/ABC123
+
+### Valid checksum, not in registry -> 404 NOT_FOUND
+GET http://localhost:8080/api/mock/gstin/27AAAXA0000A1ZR
+
+### Udyam found -> 200
+GET http://localhost:8080/api/mock/udyam/UDYAM-KL-00-3078801
+
+### Udyam with OCR space -> 200 (normalized)
+GET http://localhost:8080/api/mock/udyam/UDYAM-MH-%2000-6131836
+
+### Udyam not found -> 404
+GET http://localhost:8080/api/mock/udyam/UDYAM-MH-00-0000000
+
+### Verify with OCR correction -> corrected to 19EOGXH4115Y1ZL
+POST http://localhost:8080/api/mock/gstin/verify
+Content-Type: application/json
+
+< ./verify-ocr-correction.json
+
+### Verify tampered -> no correction, checksumValid=false
+POST http://localhost:8080/api/mock/gstin/verify
+Content-Type: application/json
+
+< ./verify-tampered.json
