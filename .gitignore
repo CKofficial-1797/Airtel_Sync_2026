@@ -1,0 +1,14 @@
+# Build output / IDE
+target/
+*.iml
+.idea/
+.vscode/
+
+# Secrets - never commit
+application-local.yml
+.env
+
+# Future phases
+node_modules/
+__pycache__/
+.venv/

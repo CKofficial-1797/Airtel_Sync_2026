@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: udyam-backend
+  # Credentials come from env vars (DB_URL / DB_USERNAME / DB_PASSWORD)
+  # or from the git-ignored application-local.yml (profile "local").
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 5
+      connection-timeout: 30000   # Neon free tier sleeps when idle; first connect can be slow
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate          # Flyway owns the schema
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+app:
+  data-dir: ../data               # resolved relative to the working directory (backend/)
+  reference-date: 2026-07-15      # treat as "today" for all date checks (data/README.md)
+  cors:
+    allowed-origins:
+      - http://localhost:5173

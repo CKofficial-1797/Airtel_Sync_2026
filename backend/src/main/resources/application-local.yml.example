@@ -1,0 +1,8 @@
+# Copy this file to application-local.yml (same folder) and fill in your Neon values.
+# application-local.yml is git-ignored. Never commit real credentials.
+# Use the DIRECT connection host from Neon (no "-pooler" in the host name).
+spring:
+  datasource:
+    url: jdbc:postgresql://<your-neon-host>/neondb?sslmode=require&reWriteBatchedInserts=true
+    username: <your-neon-username>
+    password: <your-neon-password>
