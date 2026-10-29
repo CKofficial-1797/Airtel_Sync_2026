@@ -1,0 +1,3 @@
+{"profile": {"businessType": "CA firm", "cityTier": 1, "employees": 5, "sites": 1},
+ "items": [{"productId": "P11", "quantity": 1}, {"productId": "P09", "quantity": 1}],
+ "removedProductIds": ["P02"]}

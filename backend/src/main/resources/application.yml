@@ -1,6 +1,8 @@
 spring:
   application:
     name: udyam-backend
+  config:
+    import: classpath:recommendation-templates.yml   # Phase 3 recommendation templates + quantity rules
   # Credentials come from env vars (DB_URL / DB_USERNAME / DB_PASSWORD)
   # or from the git-ignored application-local.yml (profile "local").
   datasource:
@@ -30,3 +32,5 @@ app:
   cors:
     allowed-origins:
       - http://localhost:5173
+  pricing:
+    mode: MIN                     # MIN = catalogue price_min (digital price); MID = (min+max)/2 rounded half-up

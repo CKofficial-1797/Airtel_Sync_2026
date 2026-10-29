@@ -1,0 +1,133 @@
+# Recommendation templates (Phase 3). Imported by application.yml (spring.config.import).
+# Derived from the 368 activated bundles in smb_leads: included = sold in ~40%+ of a segment's bundles.
+# Product ids must exist in the catalogue (checked by RecommendationTemplatesTest).
+recommendation:
+  # Primary connectivity fallback order when the template's choice is not eligible.
+  fallback-chain: [P05, P03, P02, P01, P04]
+  # Skipped (with a note) when the profile says fibreUnavailable.
+  fibre-products: [P01, P02, P03]
+
+  segments:
+    micro:
+      primary: P01
+      primary-if-no-fibre: P04
+      upgrades: []
+      included: [P07]
+      optional: [P19, P22, P23, P15, P18, P14]
+    prof:
+      primary: P02
+      upgrades: [P03]
+      included: [P16, P08, P20, P17]
+      optional: [P11, P09, P12, P14, P15, P07]
+    multi:
+      primary: P02
+      primary-if-no-fibre: P04
+      upgrades: []
+      included: [P08, P09, P19, P23, P10]
+      optional: [P22, P13, P15, P25]
+    mfg:
+      primary: P05
+      upgrades: [P06]
+      included: [P08, P16, P20]
+      optional: [P21, P11, P23, P24, P25]
+
+  # A stated need promotes these products to INCLUDED (if eligible).
+  needs:
+    - { need: WHATSAPP, products: [P15] }
+    - { need: CCTV, products: [P23] }
+    - { need: POS_BILLING, products: [P19] }
+    - { need: CLOUD_EMAIL, products: [P16] }
+    - { need: BACKUP, products: [P17] }
+    - { need: SECURITY, products: [P20, P21] }
+    - { need: TELEPHONY, products: [P12] }
+    - { need: TOLL_FREE, products: [P13] }
+    - { need: SMS, products: [P14] }
+    - { need: WEBSITE, products: [P18] }
+    - { need: FLEET, products: [P25] }
+    - { need: MACHINE_IOT, products: [P24] }
+    - { need: FAILOVER, products: [P09] }
+    - { need: GUEST_WIFI, products: [P22] }
+    - { need: STATIC_IP, products: [P11] }
+    - { need: MULTI_SITE_MGMT, products: [P10] }
+
+  # Default quantities. Order: explicit profile field > segment rule > product fallback > unit rule > default.
+  # Rule: from SITES | EMPLOYEES (quantity = max(min, ceil(factor x base))) or FIXED (quantity = value).
+  quantities:
+    default-rule: { from: FIXED, value: 1 }
+    unit-rules:
+      - { unit: per site, rule: { from: SITES } }
+    products:
+      - product-id: P16
+        profile-field: OFFICE_USERS
+        segments:
+          prof: { from: EMPLOYEES, factor: "0.7" }
+          mfg: { from: EMPLOYEES, factor: "0.15" }
+        fallback: { from: EMPLOYEES }
+      - product-id: P20
+        profile-field: OFFICE_USERS
+        segments:
+          prof: { from: EMPLOYEES, factor: "0.5" }
+          mfg: { from: EMPLOYEES, factor: "0.1" }
+        fallback: { from: FIXED, value: 2 }
+      - product-id: P07
+        profile-field: MOBILE_LINES
+        segments:
+          micro: { from: FIXED, value: 2 }
+          prof: { from: EMPLOYEES, factor: "0.2", min: 2 }
+          multi: { from: SITES, factor: "0.6", min: 2 }
+          mfg: { from: FIXED, value: 4 }
+        fallback: { from: FIXED, value: 2 }
+      - product-id: P08
+        profile-field: MOBILE_LINES
+        segments:
+          micro: { from: FIXED, value: 2 }
+          prof: { from: EMPLOYEES, factor: "0.2", min: 2 }
+          multi: { from: SITES, factor: "0.6", min: 2 }
+          mfg: { from: FIXED, value: 4 }
+        fallback: { from: FIXED, value: 2 }
+      - product-id: P23
+        profile-field: CAMERAS
+        segments:
+          micro: { from: FIXED, value: 2 }
+          multi: { from: SITES, factor: "2" }
+          mfg: { from: FIXED, value: 4 }
+        fallback: { from: FIXED, value: 2 }
+      - product-id: P19   # unit is "per counter"; data: quantity = sites in 100% of activated bundles
+        fallback: { from: SITES }
+      - product-id: P24
+        profile-field: MACHINES
+        fallback: { from: FIXED, value: 5 }
+      - product-id: P25
+        profile-field: VEHICLES
+        fallback: { from: FIXED, value: 2 }
+      - product-id: P12
+        fallback: { from: EMPLOYEES, factor: "0.2", min: 2 }
+
+  # Factual one-liners per product. Placeholders: {quantity} {employees} {sites} {productName}.
+  # The AI advisor rephrases/translates these; keep them factual (no prices, no claims).
+  why:
+    - { product-id: P01, text: "100 Mbps business fibre for {sites} site(s): billing, UPI payments and everyday browsing" }
+    - { product-id: P02, text: "300 Mbps fibre for {employees} staff: smooth video calls and cloud apps" }
+    - { product-id: P03, text: "1 Gbps fibre for heavy uploads, large files and many users at once" }
+    - { product-id: P04, text: "100 Mbps 5G AirFiber: wireless setup in about 2 days where fibre is not available" }
+    - { product-id: P05, text: "20 Mbps dedicated leased line with guaranteed bandwidth for {employees} staff and production systems" }
+    - { product-id: P06, text: "100 Mbps dedicated leased line for high, guaranteed bandwidth across the plant" }
+    - { product-id: P07, text: "{quantity} Business Postpaid 299 line(s) for the owner and staff" }
+    - { product-id: P08, text: "{quantity} Business Postpaid 599 line(s) with more data for staff on the move" }
+    - { product-id: P09, text: "4G/5G backup that takes over automatically if the main line goes down, at {quantity} site(s)" }
+    - { product-id: P10, text: "Managed SD-WAN to connect and manage {quantity} sites centrally" }
+    - { product-id: P11, text: "Static IP for remote access, servers or viewing cameras from outside" }
+    - { product-id: P12, text: "{quantity} cloud telephony channel(s) for a business number and call routing" }
+    - { product-id: P13, text: "Toll-free number so customers can call you at no cost to them" }
+    - { product-id: P14, text: "10,000 business SMS for order updates, reminders and offers" }
+    - { product-id: P15, text: "WhatsApp Business API for catalogues, order updates and customer chats" }
+    - { product-id: P16, text: "Business email and office suite for {quantity} user(s)" }
+    - { product-id: P17, text: "1 TB cloud backup for business files and records" }
+    - { product-id: P18, text: "Website with your own domain so customers can find you online" }
+    - { product-id: P19, text: "Cloud POS and billing for {quantity} counter(s)" }
+    - { product-id: P20, text: "Endpoint security for {quantity} device(s)" }
+    - { product-id: P21, text: "Managed firewall protecting the network at {quantity} site(s)" }
+    - { product-id: P22, text: "Secure Wi-Fi with a separate guest network at {quantity} site(s)" }
+    - { product-id: P23, text: "{quantity} cloud CCTV camera(s) you can view from your phone" }
+    - { product-id: P24, text: "Machine monitoring for {quantity} machine(s): uptime tracking and alerts" }
+    - { product-id: P25, text: "Fleet tracking for {quantity} vehicle(s)" }

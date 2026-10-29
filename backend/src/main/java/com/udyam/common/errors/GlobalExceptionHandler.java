@@ -43,8 +43,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ApiError> handleUnreadableBody(HttpMessageNotReadableException ex, HttpServletRequest req) {
+        String detail = ex.getMostSpecificCause().getMessage();
+        List<String> errors = detail == null ? null : List.of(detail.lines().findFirst().orElse(detail));
         ApiError body = new ApiError(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                "INVALID_REQUEST", "Request body is missing or is not valid JSON", req.getRequestURI(), null);
+                "INVALID_REQUEST", "Request body is missing or is not valid JSON", req.getRequestURI(), errors);
         return ResponseEntity.badRequest().body(body);
     }
 

@@ -8,6 +8,7 @@ Living handoff file. Every phase reads this first and updates it at the end (app
 |---|---|---|
 | 1 | 2026-10-29 | Spring Boot backend, Neon connection, Flyway V1 schema, idempotent CSV loader, read-only product + data-summary APIs, parsing unit tests |
 | 2 | 2026-10-29 | GSTIN/Udyam validators (format, mod-36 checksum, state codes), registry-aware OCR correction, `GstinVerificationService`, mock lookup APIs under `/api/mock`, masked logging, `code`/`errors` on error JSON |
+| 3 | 2026-10-30 | Rules engine: profile resolution (city → tier, type → segment, GSTIN status), fixed-point eligibility, YAML-driven recommendation, quote (MIN pricing), reference APIs, mis-selling audit (48/368 = 13.0%) |
 
 ## 2. How to run
 
@@ -36,6 +37,12 @@ registry/                 GstinRecord / UdyamRecord entities + repositories; reg
 registry/validation/      Pure validators (no DB): GstinValidator, UdyamValidator, state-code tables
 leads/                    DataSummary DTO, DataSummaryService (JdbcTemplate), DataSummaryController
 dataload/                 CsvParsing (static helpers), BundleItem, DataLoader (ApplicationRunner)
+rules/data/               In-memory rules snapshot (catalogue, city/business-type maps) + /api/reference
+rules/profile/            BusinessProfile (request) → ResolvedProfile; Segment, Need, GstinStatus enums
+rules/eligibility/        Catalogue rules, fixed-point bundle resolution, /api/eligibility
+rules/recommend/          Template-driven recommendation + quantity rules, /api/recommend
+rules/quote/              Pricing + quote, /api/quote
+rules/audit/              Mis-selling audit over activated leads, /api/admin/audit/mis-selling
 ```
 
 ## 4. Key classes
@@ -73,7 +80,7 @@ dataload/                 CsvParsing (static helpers), BundleItem, DataLoader (A
 | `registry.validation.UdyamValidationResult` | record `(normalized, formatValid, stateCode, stateName, errors)` |
 | `registry.validation.UdyamStateCodes` | Data-derived 2-letter code → state (14 codes); `name(code)` (null if not in data), `all()` |
 | `registry.GstinRegistryLookup` | Interface: `find(gstin)` → `Optional<GstinDetails>`, `exists`, `findExisting(Collection)` (expects normalized GSTINs) |
-| `registry.JpaGstinRegistryLookup` | `@Component` impl over `GstinRegistryRepository` (the bean the app injects) |
+| `registry.JpaGstinRegistryLookup` | `@Component` impl over `GstinRegistryRepository` (the bean the app injects). Since Phase 3: loads all 3534 rows into an in-memory map on `ApplicationReadyEvent` (never caches an empty table) and serves lookups from memory |
 | `registry.CsvGstinRegistryLookup` | Non-bean impl: `CsvGstinRegistryLookup.fromCsv(path)`; for DB-free tests |
 | `registry.GstinDetails` | record of a registry row `(gstin, legalName, tradeName, constitution, principalPlaceOfBusiness, state, registrationDate, status)`; `active()` = status == "Active" |
 | `registry.GstinCorrectionService` | `correct(raw)` → `GstinCorrection`. Position-aware OCR fixes, max 2 substitutions; accepts only if EXACTLY ONE candidate is format+checksum valid AND in the registry. Never tries 5↔S / 8↔B. |
@@ -84,6 +91,29 @@ dataload/                 CsvParsing (static helpers), BundleItem, DataLoader (A
 | `registry.UdyamDetails` | record `(udyamNumber, enterpriseName, enterpriseType, majorActivity, nicDescription, state, city, dateOfRegistration)` |
 | `registry.GstinLookupResponse` | GET GSTIN response record (adds `stateCode`, `active`) |
 | `registry.MockRegistryController` | `/api/mock/**` endpoints; logs masked identifiers only |
+
+**Phase 3 (rules engine, `com.udyam.rules`)**
+
+| Class | What it does |
+|---|---|
+| `data.CatalogueProduct` | Immutable product record (`productId, category, productName, unit, priceMinInr, priceMaxInr, setupFeeInr, minContractMonths, cityTiers, minEmployees, minSites, requiresGstin, requiresOneOf, installDays, targetSegments`); `from(Product)`, `from(CSVRecord)` |
+| `data.Catalogue` | 25 products by id; `get(id)` (case-insensitive, throws 400 `UNKNOWN_PRODUCT`), `find`, `all`, `name` |
+| `data.RulesData` | Snapshot: catalogue + `city(name)` → `CityRef(city, tier, state)` + `businessType(name)` → `BusinessTypeRef(businessType, segment)`. Throws on ambiguous mappings. `RulesData.fromCsv(dataDir)` for tests |
+| `data.RulesDataProvider` | `RulesData get()`. App bean: `DbRulesDataProvider` (loads from Neon on `ApplicationReadyEvent`; 503 `RULES_DATA_NOT_READY` before that). Tests: `() -> data` |
+| `profile.ProfileResolver` | `resolve(BusinessProfile)` → `ResolvedProfile`. Uses `GstinVerificationService.validate` + `find` (no OCR correction for typed input) |
+| `profile.Segment` | `MICRO/PROF/MULTI/MFG` with `code()` (micro/prof/multi/mfg) and JSON display name; `parse` accepts name/code |
+| `profile.GstinStatus` | `VERIFIED_ACTIVE, INACTIVE, INVALID, DECLARED_UNVERIFIED, NONE` |
+| `profile.Need` | 16 needs (WHATSAPP, CCTV, POS_BILLING, CLOUD_EMAIL, BACKUP, SECURITY, TELEPHONY, TOLL_FREE, SMS, WEBSITE, FLEET, MACHINE_IOT, FAILOVER, GUEST_WIFI, STATIC_IP, MULTI_SITE_MGMT) |
+| `eligibility.EligibilityService` | `ruleReasons(ctx, product)`, `resolveBundle(ctx, ids[, userRemovedIds])` (fixed point), `check(ctx, id, bundle)`, `checkAll(ctx, bundle)`, `auditReasons(ctx, id, soldIds)` (no cascade). Constant `KYC_CONDITION` |
+| `eligibility.EligibilityContext` | Interface (`cityTier, employees, sites, gstinStatus, gstinRegistryStatus`), implemented by `ResolvedProfile` |
+| `eligibility.EligibilityResult` / `Reason` / `ReasonCode` / `BundleResolution` | `{productId, productName, eligible, conditional, condition, reasons[{code, message}]}`; `BundleResolution{kept[], removed[]}` |
+| `recommend.RecommendationProperties` | Binds `recommendation-templates.yml` (prefix `recommendation`) |
+| `recommend.QuantityCalculator` | `quantity(profile, product)` from YAML rules (BigDecimal factors, ceil, clamp 1..500) |
+| `recommend.RecommendationService` | `recommend(BusinessProfile | ResolvedProfile)` → `Recommendation` |
+| `quote.PriceCalculator` | `unitPrice(product)` per `app.pricing.mode` |
+| `quote.QuoteService` | `quote(profile, items, removedProductIds)` → `Quote` |
+| `audit.MisSellingAuditor` | Pure: `report(List<SoldBundle>)`, `audit(bundles, GstinSemantics)` |
+| `audit.MisSellingAuditService` | Loads activated leads + bundles (JdbcTemplate) → report |
 
 No JPA entity exists for `smb_lead` / `lead_bundle_item` (read via JdbcTemplate only).
 
@@ -99,6 +129,19 @@ No JPA entity exists for `smb_lead` / `lead_bundle_item` (read via JdbcTemplate 
 | GET | `/api/mock/gstin/{gstin}` | **MOCK.** Normalized first. 200 `GstinLookupResponse {gstin, legalName, tradeName, constitution, principalPlaceOfBusiness, state, stateCode, registrationDate, status, active}`. Cancelled/Suspended → 200 with `active:false` | 400 `INVALID_FORMAT` / `INVALID_CHECKSUM` (+`errors`), 404 `NOT_FOUND` |
 | GET | `/api/mock/udyam/{udyamNumber}` | **MOCK.** URL-decoded + whitespace removed. 200 `UdyamDetails` | 400 `INVALID_FORMAT`, 404 `NOT_FOUND` |
 | POST | `/api/mock/gstin/verify` | body `{"gstin":"..."}` → 200 `GstinVerification` (always 200, even when invalid/not found) | 400 `INVALID_REQUEST` (blank/missing gstin, bad JSON) |
+| GET | `/api/reference/cities` | `[{city, tier, state}]` (22) | 503 `RULES_DATA_NOT_READY` |
+| GET | `/api/reference/business-types` | `[{businessType, segment}]` (35) | 503 |
+| POST | `/api/profile/resolve` | body `BusinessProfile` → `ResolvedProfile` | 400 `INVALID_REQUEST`, `CITY_REQUIRED`, `CITY_TIER_REQUIRED`, `INVALID_SEGMENT` |
+| POST | `/api/eligibility` | `{profile, bundleProductIds?}` → `{resolvedProfile, bundleProductIds, results[25 EligibilityResult]}` | 400 as above + `UNKNOWN_PRODUCT` |
+| POST | `/api/recommend` | `{profile}` → `{resolvedProfile, segment, included[Line], optionalAddOns[Line], excluded[EligibilityResult], notes[], quote}` | 400 as above |
+| POST | `/api/quote` | `{profile, items[{productId, quantity 1..500}] (non-empty), removedProductIds?}` → `Quote` | 400 as above + `DUPLICATE_PRODUCT` |
+| GET | `/api/admin/audit/mis-selling` | `{hasGstinFlag: Variant, registryActive: Variant}`; Variant = `{gstinSemantics, description, activatedChecked, bundlesWithViolations, misSoldPercent, totalViolations, violationsByProductAndReason[{productId, productName, reason, count}], sampleLeadIds[≤10]}` | - |
+
+**Phase 3 shapes**
+- `BusinessProfile`: `businessType?, segment?, city?, cityTier? (1|2), employees (1..100000, required), sites (1..500, required), gstin?, gstinDeclared?, currentInternet?, monthlyTelecomSpendInr? (≥0), fibreUnavailable?, needs? [Need], officeUsers?, mobileLines?, cameras?, vehicles?, machines? (1..500)`. Needs city OR cityTier.
+- `ResolvedProfile`: `businessType, segment (display name), segmentCode, segmentSource (GIVEN|BUSINESS_TYPE|INFERRED), city, cityTier, cityState, employees, sites, gstinStatus, gstin, gstinRegistryStatus, gstinErrors[], gstinAutofill{legalName, tradeName, state, principalPlaceOfBusiness}|null, currentInternet, monthlyTelecomSpendInr, fibreUnavailable, needs[], officeUsers, mobileLines, cameras, vehicles, machines, warnings[]`.
+- `Recommendation.Line`: `productId, productName, category, unit, quantity, unitPriceInr, monthlyTotalInr, setupFeeInr, role (PRIMARY|INCLUDED|NEED|ADD_ON|UPGRADE), replaces (upgrade only), why, conditional`.
+- `Quote`: `pricingMode, lines[{productId, productName, unit, quantity, unitPriceInr, monthlyTotalInr, setupFeeInr, minContractMonths, installDays, conditional}], monthlyTotalInr, oneTimeTotalInr, contractMonths (max), maxInstallDays, estimatedActivationDate (reference date + maxInstallDays; null if no lines), conditional, removed[{productId, productName, quantity, reasons[]}], availableAddOns[{productId, productName, unit, unitPriceInr, defaultQuantity, setupFeePerUnitInr, conditional}], ineligibleProducts[EligibilityResult], comparison{currentSpendInr, newMonthlyInr, differenceInr}|null, notes[]`.
 
 `GstinVerification` semantics: `formatValid`, `checksumValid`, `errors` describe the input as given (normalized). `effectiveGstin` = the registry GSTIN the input resolves to (itself, or the OCR-corrected value), null if none. `found/status/active/stateCode/stateName` describe `effectiveGstin` when found. `correction` is non-null only when a correction was applied. **Use `effectiveGstin` + `active`; treat `found=false` or `active=false` as "no valid GSTIN".**
 
@@ -118,11 +161,28 @@ Error body: `{"status":404,"error":"Not Found","message":"...","path":"/api/..."
 | `app.reference-date` | 2026-07-15 | "Today" for all date checks (README) |
 | `app.cors.allowed-origins` | `[http://localhost:5173]` | Future frontend |
 
-Phase 2 added no config keys.
+Phase 2 added no config keys. Phase 3 added:
+
+| Key | Default | Purpose |
+|---|---|---|
+| `spring.config.import` | `classpath:recommendation-templates.yml` | Loads the recommendation templates |
+| `app.pricing.mode` | `MIN` | `MIN` = catalogue `price_min` (digital price); `MID` = (min+max)/2 rounded half-up |
+| `recommendation.*` (in `recommendation-templates.yml`) | - | `fallback-chain` [P05,P03,P02,P01,P04], `fibre-products` [P01,P02,P03], `segments.{micro,prof,multi,mfg}.{primary, primary-if-no-fibre, upgrades, included, optional}`, `needs[{need, products}]`, `quantities.{default-rule, unit-rules, products[{product-id, profile-field, segments, fallback}]}`, `why[{product-id, text}]` |
+
+Recommendation templates (as approved):
+
+| Segment | Primary (fallback chain below it) | Upgrade | Included | Optional add-ons |
+|---|---|---|---|---|
+| micro | P01 (P04 if no fibre) | - | P07 | P19 P22 P23 P15 P18 P14 |
+| prof | P02 | P03 | P16 P08 P20 P17 | P11 P09 P12 P14 P15 P07 |
+| multi | P02 (P04 if no fibre) | - | P08 P09 P19 P23 P10 | P22 P13 P15 P25 |
+| mfg | P05 → P03 → P02 | P06 | P08 P16 P20 | P21 P11 P23 P24 P25 |
+
+Quantity rules: per-site units = sites; P19 = sites; P16 = officeUsers else prof ceil(0.7×emp), mfg ceil(0.15×emp), others emp; P20 = officeUsers else prof ceil(0.5×emp), mfg ceil(0.1×emp), others 2; P07/P08 = mobileLines else micro 2, prof max(2, ceil(emp/5)), multi max(2, ceil(0.6×sites)), mfg 4; P23 = cameras else micro 2, multi 2×sites, mfg 4, others 2; P24 = machines else 5; P25 = vehicles else 2; P12 = max(2, ceil(emp/5)); everything else 1.
 
 ## 7. Database (Neon PostgreSQL 18.6)
 
-Flyway versions applied: **V1** `V1__init_reference_data.sql` (Phase 2 added no migrations).
+Flyway versions applied: **V1** `V1__init_reference_data.sql` (Phases 2 and 3 added no migrations; Phase 3 templates live in YAML, not the DB).
 
 | Table | Key columns / types |
 |---|---|
@@ -151,9 +211,16 @@ Phase 2 facts (verified by tests against the CSVs):
 - KYC OCR examples: `19E0GXH4115Y1ZL`→`19EOGXH4115Y1ZL`, `24X0RXG9365M1Z3`→`24XORXG9365M1Z3`, `27QHIXK0658U1ZL`→`27QHJXK0658U1ZL` (all corrected). **Tampered** `08YKZXS8189L1Z0` (registry `08YKZXS5189L1ZO`, 5→8) fails checksum and is NOT corrected.
 - Handy test values: Active `32TTNXB7384T1ZW` (Balaji Dental Care LLP, Udyam `UDYAM-KL-00-3078801`); Cancelled `37IHKXV5167L1ZS`; Suspended `23QYBXS1811Q1ZD`; valid checksum but unregistered `27AAAXA0000A1ZR`.
 
+Phase 3 facts (from smb_leads, verified by tests and live API):
+- **Cities (22, one tier + state each):** tier 1 (8): Ahmedabad, Bengaluru, Chennai, Delhi, Hyderabad, Kolkata, Mumbai, Pune. Tier 2 (14): Bhopal, Coimbatore, Indore, Jaipur, Kochi, Lucknow, Ludhiana, Mysuru, Nagpur, Nashik, Patna, Surat, Vadodara, Visakhapatnam.
+- **Business types (35, one segment each):** micro (10) Bakery, Boutique, Hardware store, Kirana store, Mobile repair shop, Optician, Pharmacy, Salon, Stationery shop, Sweet shop · prof (10) Architecture studio, CA firm, Coaching centre, Dental clinic, Diagnostic lab, Insurance agency, Law office, Physiotherapy clinic, Real estate agency, Travel agency · multi (8) Apparel retail chain, Bakery chain, Budget hotel group, Electronics retail chain, Gym chain, Pharmacy chain, Pre-school chain, Restaurant chain · mfg (7) Auto-parts unit, Food processing unit, Furniture workshop, Packaging unit, Plastic moulding unit, Printing press, Textile unit.
+- **GST-required products (10):** P03, P05, P06, P10, P12, P13, P14, P15, P21, P24. Products with dependencies: P09/P10/P21 (P01|P02|P03|P05|P06), P11 (P01|P02|P03), P12/P23 (P01–P06), P22 (P01–P04).
+- **Mis-selling audit:** (a) has_gstin flag: 48/368 bundles (13.0%), 53 violations: P03 tier 24, P03 employees 7, P03 GSTIN 3, P06 employees 1, P10 GSTIN 1, P11 dependency 9, P12 GSTIN 2, P14 GSTIN 1, P15 GSTIN 5. (b) registry Active: 56/368 (15.2%), 63 violations (adds GSTIN_INACTIVE: P03 3, P05 1, P10 1, P13 1, P15 4). 22 activated leads have Cancelled/Suspended GSTINs.
+- **Reference scenarios (MIN pricing):** kirana tier 2 no GSTIN → P01 + P07×2 = ₹1,597/mo; dental tier 1 14 emp GSTIN → P02 + P16×10 + P08×3 + P20×7 + P17 = ₹5,738/mo; restaurant chain 8 sites 60 emp GSTIN → ₹46,955/mo + ₹1,00,800 one-time, 24 months, activation 2026-07-29; textile 85 emp GSTIN → P05 primary ₹12,912/mo; factory tier 2 8 emp → P05 (emp) → P03 (tier) → P02.
+
 ## 9. Testing
 
-All tests are pure unit tests (no Spring context, no DB). **Total: 41.**
+All tests are pure unit tests (no Spring context, no DB). **Total: 117** (41 after Phase 2, +76 in Phase 3).
 
 | Test class | Tests | Covers |
 |---|---|---|
@@ -163,6 +230,15 @@ All tests are pure unit tests (no Spring context, no DB). **Total: 41.**
 | `registry.GstinCorrectionServiceTest` | 9 | 3 OCR corrections, tampered not corrected, unchanged valid GSTIN, never 5/8/S/B |
 | `registry.GstinVerificationServiceTest` | 4 | active, cancelled, corrected, tampered |
 | `common.privacy.MaskingTest` | 3 | masked output never shows middle characters |
+| `rules.data.RulesDataTest` | 4 | 25 products, 22 cities, 35 types, every template product id exists |
+| `rules.profile.ProfileResolverTest` | 9 | city/tier, unknown city, GSTIN statuses + autofill + state warning, no OCR correction, segment inference |
+| `rules.eligibility.EligibilityServiceTest` | 38 | 33 parameterized rule cases + messages, fixed point, cascade chain, user-removed, checkAll |
+| `rules.recommend.RecommendationServiceTest` | 12 | the 10 required scenarios + declared GSTIN + explicit quantities |
+| `rules.quote.QuoteServiceTest` | 10 | 3 hand-calculated totals, MID rounding, removed/cascade, add-ons, comparison, validation |
+| `rules.recommend.AllLeadsRecommendationTest` | 1 | all 5000 leads: no exception, everything included eligible, total > 0 |
+| `rules.audit.MisSellingAuditorTest` | 2 | variant (a) exactly 48/53 + breakdown; variant (b) 56/63 |
+
+- Rules tests use `src/test/java/com/udyam/rules/RulesFixture.java`: the whole engine wired by hand from the CSVs (`RulesData.fromCsv`, `CsvGstinRegistryLookup`) and the real `recommendation-templates.yml` (bound with Spring's `Binder`). Constants: `ACTIVE_GSTIN`, `CANCELLED_GSTIN`, `SUSPENDED_GSTIN`; helpers `profile(...)`, `resolved(...)`.
 
 - Test data: `src/test/java/com/udyam/TestData.java` exposes `DATA_DIR`, `GSTIN_CSV`, `UDYAM_CSV`, `PRODUCT_CSV`, `LEADS_CSV` (resolved from `../data`; working dir during `mvn test` is `backend/`). Registry-dependent tests use `CsvGstinRegistryLookup.fromCsv(TestData.GSTIN_CSV)`.
 - There is deliberately **no** `@SpringBootTest` (it would need Neon).
@@ -178,6 +254,13 @@ All tests are pure unit tests (no Spring context, no DB). **Total: 41.**
 - Phase 2: a format-valid GSTIN with an unknown state code (e.g. `99...`) is reported as `formatValid=false` / `INVALID_FORMAT`.
 - Phase 2: `UdyamStateCodes` lists only the 14 codes present in the data; a well-formed Udyam number with another code is still format-valid (stateName null).
 - Phase 2: `POST /api/mock/gstin/verify` returns 200 for invalid/unknown GSTINs (the result describes the problem); only a missing/blank body field is a 400.
+- Phase 3: `POST /api/quote` accepts optional `removedProductIds` (products the user toggled off) so dependents get `DEPENDENCY_REMOVED` "removed because X was removed"; without it a missing dependency is `DEPENDENCY_MISSING`.
+- Phase 3: upgrades (prof P03, mfg P06) are returned in `optionalAddOns` with `role: UPGRADE` and `replaces` (swap, not add).
+- Phase 3: `fibreUnavailable` applies to all segments: the fallback chain and upgrades skip P01/P02/P03 (micro/multi switch straight to P04).
+- Phase 3: an invalid/unregistered GSTIN gives `GSTIN_REQUIRED` (message says it could not be verified); Cancelled/Suspended gives `GSTIN_INACTIVE`.
+- Phase 3: added a P19 quantity rule (= sites; unit is "per counter") found by the restaurant-chain test; matches 100% of activated bundles.
+- Phase 3: the rules engine reads an in-memory snapshot loaded from Neon at `ApplicationReadyEvent` (not at bean creation, so a fresh DB is loaded first); the GST registry is cached in memory for <30 ms responses.
+- Phase 3: `/api/eligibility` also returns `resolvedProfile`; quote also returns `conditional` and `notes` (price note, no discounts/taxes, activation assumption, KYC condition).
 
 ## 11. Known issues / TODOs
 
@@ -187,17 +270,38 @@ All tests are pure unit tests (no Spring context, no DB). **Total: 41.**
 - No admin auth on `/api/admin/data-summary` (prototype only).
 - Error responses echo the request `path`, which for `/api/mock/...` contains the identifier the caller sent (not logged; acceptable for a mock API).
 - No Udyam OCR correction (only whitespace normalization); the KYC set's known Udyam OCR issues are whitespace only.
-- Each `verify` of an unregistered/garbled GSTIN does 1–3 small Neon queries (candidates are filtered by checksum first, then one `findAllById`).
+- GSTIN lookups are served from the in-memory registry cache since Phase 3 (no Neon query per lookup). The cache is never refreshed; fine for read-only reference data, restart the app if the table changes.
+- Rules endpoints return 503 `RULES_DATA_NOT_READY` for the few seconds between "Started" and the ready event.
+- Spend comparison is facts only (new − current); it does not know what the current spend covers.
+- `estimatedActivationDate` = reference date + max install days; KYC (Phase 6) / tracker (Phase 8) should shift it from the KYC completion date.
+- No auth on `/api/admin/**`.
 
-## 12. Notes for the next phase (Phase 3: rules engine - eligibility, recommendation, quote)
+## 12. Notes for the next phase (Phase 4: Python AI advisor with tool calling)
 
-- **GSTIN in-process:** inject `com.udyam.registry.GstinVerificationService` and call `verify(raw)`. Treat the customer as having a valid GSTIN only if `found && active` (status exactly `Active`). `requires_gstin = Y` products need that. Use `effectiveGstin` for any stored value.
-- **Udyam in-process:** inject `com.udyam.registry.UdyamLookupService` (`validate(raw)`, `find(raw)`).
-- **Pure checks without DB:** `GstinValidator.validate/isValid`, `UdyamValidator.validate` (static).
-- **Registry access:** inject the `GstinRegistryLookup` interface (bean = `JpaGstinRegistryLookup`); in tests use `CsvGstinRegistryLookup.fromCsv(TestData.GSTIN_CSV)`. Don't create new GSTIN repositories.
-- **Catalogue:** `ProductRepository` / `ProductService` / `ProductDto` exist (arrays exposed as lists). Eligibility fields: `availableCityTiers`, `minEmployees`, `minSites`, `requiresGstin`, `requiresOneOf` (needs ≥1 of these in the same bundle; empty list = no dependency), `targetSegments` (codes: micro, prof, multi, mfg). Prices are a min–max range per unit; never invent prices.
-- **Tests without DB:** load the catalogue with `CsvParsing.readAll(TestData.PRODUCT_CSV)` + the Phase 1 helpers (`splitIntList`, `splitList(..., ALT_LIST_SEPARATOR)` for `requires_one_of`).
-- **Errors:** throw `ApiException(status, CODE, message, errors)` for coded errors, `NotFoundException` for plain 404s.
-- **Privacy:** log via `Masking.gstin(...)` / `Masking.udyam(...)`; never log names or full identifiers.
-- Use `AppProperties.referenceDate()` (2026-07-15) as "today". Never use `LocalDate.now()`.
-- `DataSummaryService.FUNNEL_STAGES` holds the canonical stage order.
+The advisor NEVER decides eligibility, products or prices itself. It collects facts, calls these backend endpoints as tools, and explains their output. Base URL `http://localhost:8080`, JSON, CORS allows `http://localhost:5173`.
+
+**Tools (map 1:1 to endpoints)**
+
+| Tool | Endpoint | Body → use |
+|---|---|---|
+| `resolve_profile` | `POST /api/profile/resolve` | `BusinessProfile` → `ResolvedProfile`. Call as soon as a GSTIN is given: `gstinAutofill` pre-fills legal/trade name, state, address; `warnings` (state mismatch, inactive GSTIN, inferred segment) should be mentioned |
+| `recommend_bundle` | `POST /api/recommend` | `{"profile": BusinessProfile}` → `Recommendation`. Present `included` (use `why`, translate/rephrase only), `quote.monthlyTotalInr` / `oneTimeTotalInr` / `contractMonths` / `estimatedActivationDate`, offer `optionalAddOns` (UPGRADE = swap `replaces`), explain `excluded[].reasons[].message` and `notes` |
+| `get_quote` | `POST /api/quote` | `{"profile", "items":[{"productId","quantity"}], "removedProductIds"?}` → `Quote`. Call on every add/remove/quantity change; report `removed[]` reasons, never drop silently; when the user removes an item, send it in `removedProductIds` |
+| `check_eligibility` | `POST /api/eligibility` | `{"profile", "bundleProductIds"?}` → all 25 with reasons. Use for "can I get X?" questions |
+| `list_cities` / `list_business_types` | `GET /api/reference/cities`, `/business-types` | To map free text to known values (unknown city → ask for tier 1/2) |
+
+**Fields the advisor must collect** (send as `BusinessProfile`)
+- Required: `employees` (int ≥1), `sites` (int ≥1), `city` (or `cityTier` 1|2 if the city is unknown → API returns 400 `CITY_TIER_REQUIRED`).
+- Strongly recommended: `businessType` (free text; known types map to a segment), `gstin` (or `gstinDeclared: true` if they have one but don't know it → GST products shown as `conditional`, "Active GSTIN will be verified at KYC"), `needs` (subset of the 16 `Need` values).
+- Optional: `fibreUnavailable`, `currentInternet`, `monthlyTelecomSpendInr` (enables `quote.comparison`), `officeUsers`, `mobileLines`, `cameras`, `vehicles`, `machines` (override default quantities), `segment` (override).
+
+**Advisor rules**
+- Prices only from `unitPriceInr` / `monthlyTotalInr` / `quote.*` (integer ₹, catalogue MIN price, no discounts or taxes). Quote `notes` verbatim where relevant.
+- GSTIN typed by the user: send it as `profile.gstin`; do NOT OCR-correct it. `gstinStatus` INACTIVE/INVALID means no GST-only products.
+- Error JSON: `{status, error, code?, message, path, errors?}`; 400 codes `INVALID_REQUEST` (field messages in `errors`), `CITY_REQUIRED`, `CITY_TIER_REQUIRED`, `INVALID_SEGMENT`, `UNKNOWN_PRODUCT`, `DUPLICATE_PRODUCT`; 503 `RULES_DATA_NOT_READY` (retry).
+- Example bodies: `backend/http-examples/recommend-*.json`, `quote-*.json`, `eligibility-cancelled.json`, `profile-resolve.json`.
+
+**Backend reminders (unchanged)**
+- In-process Java: `RecommendationService.recommend`, `QuoteService.quote`, `EligibilityService.check/checkAll/resolveBundle`, `ProfileResolver.resolve`, `GstinVerificationService.verify` (OCR documents, KYC), `UdyamLookupService`.
+- Tests without DB: `RulesFixture` (rules), `CsvGstinRegistryLookup` + `TestData` (registries).
+- Errors: `ApiException(status, CODE, message, errors)`; privacy: `Masking.*` in logs; "today" = `AppProperties.referenceDate()` (2026-07-15), never `LocalDate.now()`.
