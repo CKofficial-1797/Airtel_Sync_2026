@@ -54,7 +54,9 @@ public class ConsentNotices {
                         + " are kept only for the period required by telecom rules, as required by law (currently "
                         + days + " days), and then deleted.",
                 days,
-                List.of("Withdraw your consent at any time; your extracted KYC data is deleted and the KYC stops.",
+                List.of("Withdraw your consent at any time before your service is installed; your extracted KYC data is"
+                                + " deleted and the KYC stops. Once it is installed, telecom rules require us to keep"
+                                + " these records for a live connection: contact our Grievance Officer.",
                         "Ask what data we hold about you and correct it.",
                         "Raise a grievance with our Grievance Officer, and then with the Data Protection Board of"
                                 + " India."),
@@ -79,8 +81,9 @@ public class ConsentNotices {
                         + " टेलीकॉम नियमों द्वारा तय अवधि तक, कानून के अनुसार (अभी " + days + " दिन), रखी जाती है और"
                         + " फिर हटा दी जाती है।",
                 days,
-                List.of("आप कभी भी अपनी सहमति वापस ले सकते हैं; आपकी निकाली गई KYC जानकारी हटा दी जाएगी और KYC रुक"
-                                + " जाएगा।",
+                List.of("सेवा इंस्टॉल होने से पहले आप कभी भी अपनी सहमति वापस ले सकते हैं; आपकी निकाली गई KYC जानकारी हटा दी"
+                                + " जाएगी और KYC रुक जाएगा। इंस्टॉल होने के बाद चालू कनेक्शन के लिए टेलीकॉम नियमों के तहत"
+                                + " ये रिकॉर्ड रखना ज़रूरी है: हमारे शिकायत अधिकारी से संपर्क करें।",
                         "आप पूछ सकते हैं कि हमारे पास आपकी कौन-सी जानकारी है और उसे ठीक करवा सकते हैं।",
                         "आप हमारे शिकायत अधिकारी से, और फिर भारत के डेटा संरक्षण बोर्ड से शिकायत कर सकते हैं।"),
                 CONTACT);

@@ -11,8 +11,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-/** KycStore for unit tests (no DB). */
-class InMemoryKycStore implements KycStore {
+/** KycStore for unit tests (no DB). Public: the tracker tests reuse it. */
+public class InMemoryKycStore implements KycStore {
 
     final Map<UUID, List<Consent>> consent = new HashMap<>();
     final Map<UUID, Integer> withdrawals = new HashMap<>();

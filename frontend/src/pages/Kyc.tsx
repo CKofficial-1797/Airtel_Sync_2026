@@ -14,6 +14,9 @@ import { Toast } from "../components/Toast";
 import { useKyc } from "../hooks/useKyc";
 import { stepFor } from "../lib/kyc";
 
+/** Once installed the records back a live connection; the notice points to the Grievance Officer instead. */
+const NO_WITHDRAWAL = ["INSTALLED", "ACTIVE"];
+
 function Skeleton() {
   const { t } = useTranslation();
   return (
@@ -90,8 +93,16 @@ export function Kyc() {
             <p className="mb-3 text-sm text-slate-600">
               {t("kyc.orderRef")}: <span className="font-mono font-semibold text-slate-900">{view.orderRef}</span>
             </p>
-            {step === "consent" && <ConsentStep onAgree={kyc.consent} />}
-            {step === "upload" && (
+            {view.orderStatus === "CANCELLED" && (
+              <p role="status" className="rounded-2xl border border-slate-200 bg-white p-4 text-slate-800">
+                {t("kyc.cancelled")}{" "}
+                <Link to={`/track/${view.orderId}`} className="font-medium text-teal-800 underline">
+                  {t("kyc.results.track")}
+                </Link>
+              </p>
+            )}
+            {view.orderStatus !== "CANCELLED" && step === "consent" && <ConsentStep onAgree={kyc.consent} />}
+            {view.orderStatus !== "CANCELLED" && step === "upload" && (
               <UploadStep
                 view={view}
                 focusSlot={fixSlot}
@@ -104,7 +115,7 @@ export function Kyc() {
             )}
             {step === "results" && <ResultsStep view={view} onFix={setFixSlot} onCallback={() => setToast(t("kyc.results.callbackDone"))} />}
 
-            {view.consent.active && (
+            {view.consent.active && !NO_WITHDRAWAL.includes(view.orderStatus) && (
               <footer className="mt-6 border-t border-slate-200 pt-2 text-center">
                 <button
                   type="button"

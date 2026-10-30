@@ -1,5 +1,5 @@
 {
-  "version": "2026-07-v1",
+  "version": "2026-07-v2",
   "language": "en",
   "title": "Consent for business KYC",
   "dataFiduciary": "Accel Telecom (Accel Business)",
@@ -27,7 +27,7 @@
   "retention": "Raw document images are deleted immediately after the fields are extracted. The extracted fields are kept only for the period required by telecom rules, as required by law (currently 2555 days), and then deleted.",
   "retentionDays": 2555,
   "rights": [
-    "Withdraw your consent at any time; your extracted KYC data is deleted and the KYC stops.",
+    "Withdraw your consent at any time before your service is installed; your extracted KYC data is deleted and the KYC stops. Once it is installed, telecom rules require us to keep these records for a live connection: contact our Grievance Officer.",
     "Ask what data we hold about you and correct it.",
     "Raise a grievance with our Grievance Officer, and then with the Data Protection Board of India."
   ],

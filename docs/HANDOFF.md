@@ -13,6 +13,7 @@ Living handoff file. Every phase reads this first and updates it at the end (app
 | 5 | 2026-10-30 | React frontend (Landing, Advisor chat, Quote & checkout, KYC/Track placeholders, EN/HI) + orders backend (Flyway V3, `POST/GET /api/orders`, server-side quote recompute, 409 QUOTE_CHANGED) |
 | 6 | 2026-10-30 | Smart KYC backend: DPDP consent (EN/HI notice, withdraw + purge), upload (magic bytes, temp file always deleted), ai-service `POST /extract` (OpenCV blur/skew + Gemini structured output), 17 checks C01–C17 with EN/HI messages + fix hints, KYC order statuses (Flyway V4), specimen harness + 47 golden fixtures (12/12 verdicts match). Live Gemini specimen run deferred (no API quota) |
 | 7 | 2026-10-30 | KYC frontend: `/kyc/:orderId` (consent → upload → results, resumable, EN/HI), journey stepper, client-side photo resize, withdraw flow, `/track/:orderId` placeholder. Backend: fixed a Phase 6 withdrawal bug (withdraw + re-consent could give a false VERIFIED, and names survived in check messages), fixture cache answers WRONG_DOC_TYPE for a specimen in another slot, readable wrong-document hint |
+| 8 | 2026-10-30 | Order tracker: `OrderStatusMachine` (one place for all transitions, Flyway V5), per-item ETAs from a business date, self-service install slots, `/track` lookup with rate limit, `/track/:orderId` (timeline, slot picker, hold banner, 30 s auto-refresh, EN/HI), view-count metric, demo controls behind `app.demo-mode`. Core prototype done |
 
 ## 2. How to run
 
@@ -38,6 +39,7 @@ Living handoff file. Every phase reads this first and updates it at the end (app
   - Calibration table (OpenCV only, no Gemini): `ai-service\.venv\Scripts\python ai-service\scripts\calibrate_quality.py`
   - Specimen harness: `POST /api/admin/kyc/run-specimens[?applicants=K02,K07]` with header `X-Internal-Token: <app.ai-service.token>`. With the cache OFF it calls Gemini once per readable image (46 for all 12) and overwrites the fixtures it extracts.
   - Regenerate the hand-transcribed fixtures: `ai-service\.venv\Scripts\python ai-service\scripts\write_kyc_fixtures.py`
+- **Tracker (Phase 8)**: nothing extra to run. For the demo controls, set `app.demo-mode: true` under `app:` in `application-local.yml` (or env `APP_DEMO_MODE=true`) and open `/track/<orderId>?demo=1`. See the demo script in section 12.
 - Terminals opened before Java/Maven were installed don't have them on PATH: refresh with `$env:JAVA_HOME = [Environment]::GetEnvironmentVariable("JAVA_HOME","User"); $env:Path = [Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [Environment]::GetEnvironmentVariable("Path","User")`.
 
 ## 3. Package structure (`backend/src/main/java/com/udyam`)
@@ -69,6 +71,7 @@ kyc/extract/              DocumentExtractor (interface), AiServiceExtractor (mul
 kyc/checks/               KycValidationService (C01–C17, pure), CheckCode, CheckResult, Text (en/hi), KycInput,
                           ValidationReport (overall rule), NameMatcher, AddressMatcher
 kyc/harness/              SpecimenHarness + controller (/api/admin/kyc/run-specimens), ExpectedVerdicts
+tracker/                  (Phase 8) TrackerService, EtaCalculator, StepMapper, InstallSlotService, lookup + rate limit, demo controls
 ```
 
 `frontend/src` (React 18 + TypeScript strict + Vite 8 + Tailwind 4, Phase 5):
@@ -80,7 +83,9 @@ lib/                   format.ts (formatInr ₹1,23,456, formatDate), mask.ts (m
 hooks/                 useAdvisorSession.ts, useQuote.ts (+ pure helpers), useSessionSnapshot.ts
 components/            Layout (+Header), LanguageToggle, ChatBubble, TypingIndicator, QuickReplies, RecommendationCard,
                        ProfileSummary, QuoteLineItem, AddOnToggle, IneligibleList, TotalsBar, ErrorBanner, ConfirmDialog, ErrorBoundary
-pages/                 Landing, Advisor, Quote, Kyc (Phase 7, step router), TrackPlaceholder, NotFound
+pages/                 Landing, Advisor, Quote, Kyc (Phase 7, step router), Track + TrackLookup (Phase 8), NotFound
+components/track/      (Phase 8) Timeline, EtaCard, NextActionCard, SlotPicker, HoldBanner, ActivityList, HelpSection, DemoPanel
+api/track.ts           (Phase 8) typed tracker calls; hooks/useTracker.ts (state + auto-refresh)
 components/kyc/        (Phase 7) JourneyStepper, ConsentStep, UploadStep, UploadSlot, ResultsStep, StatusHeader, CheckItem
 components/Toast.tsx   (Phase 7) short auto-dismissing confirmation
 api/kyc.ts             (Phase 7) typed KYC calls; hooks/useKyc.ts (state); lib/image.ts (checks + resize); lib/kyc.ts (pure helpers)
@@ -224,6 +229,30 @@ scripts/write_kyc_fixtures.py  (Phase 6) writes the 47 hand-transcribed golden f
 | `orders` (changed) | `OrderStatus` + 5 KYC constants; `OrderStore.updateStatus`; `OrderService.createBlank(note)` |
 | `registry` (changed) | new `UdyamRegistryLookup` interface (`JpaUdyamRegistryLookup` bean, `CsvUdyamRegistryLookup.fromCsv` for tests); `UdyamLookupService` now depends on it (same API). `Masking.keepLast3` for ID / consumer numbers |
 
+**Phase 8 (Spring, `com.udyam.orders` + `com.udyam.tracker`)**
+
+| Class | What it does |
+|---|---|
+| `orders.OrderStatusMachine` | The one place statuses change: `ALLOWED` map, `transition`, `hold`, `resume`, `canTransition`, `withdrawalBlocked`. Writes the `order_event` (actor + business date) and clears slot and hold where needed |
+| `common.config.BusinessClock` | `today()` = `app.reference-date` |
+| `tracker.EtaCalculator` | Pure: item ETAs, slowest item, overall date, message |
+| `tracker.StepMapper` | Pure: status + paused status → 5 steps + `customerStep` |
+| `tracker.TrackerService` | Builds `TrackerView`; counts views; business name from the documents, else the registry via the profile GSTIN |
+| `tracker.TrackerTexts`, `HoldReason` | Bilingual event text, next actions, hold messages |
+| `tracker.InstallSlotService` | Window, validation, booking, earliest slot; moves `estimated_activation_date` with the slot |
+| `tracker.TrackLookupService`, `LookupRateLimiter` | Reference + PIN lookup, 10 attempts / 10 min |
+| `tracker.DemoService`, `DemoController` | Demo moves through the same machine, gated by `app.demo-mode` |
+
+**Phase 8 (frontend)**
+
+| Name | What it does |
+|---|---|
+| `pages/Track` | Header (name, ref + copy, monthly), hold banner, next action, ETA, timeline, activity, refresh, help, demo panel |
+| `pages/TrackLookup` | `/track` form: validates `UD-yymmdd-nnnn` and a 6-digit PIN |
+| `hooks/useTracker` | Load, 30 s visible-only refresh, one counted view per open, newest request wins, `apply` for action results |
+| `components/track/*` | `Timeline`, `EtaCard`, `NextActionCard`, `SlotPicker`, `HoldBanner`, `ActivityList`, `HelpSection`, `DemoPanel` |
+| `api/track.ts` | Typed tracker, slot, lookup and demo calls |
+
 **Phase 7 (frontend)**
 
 | Name | What it does |
@@ -325,7 +354,22 @@ No JPA entity exists for `smb_lead` / `lead_bundle_item` (read via JdbcTemplate 
 
 **Stage values**: `COLLECTING`, `RECOMMENDED`, `CUSTOMISING`, `READY_FOR_CHECKOUT`, `OUT_OF_SCOPE` (from the ai-service), plus `CHECKOUT_DONE` (Phase 5, set by `POST /api/orders` with a sessionId; Spring-only, sticky).
 
-**Frontend routes (Phase 7)**: `/kyc/:orderId` is now the real KYC page; `/track/:orderId` is a placeholder showing the order ref + "Tracking comes next"; `/track` (landing page link) stays, without an order. The rest as below.
+**Tracker endpoints (Phase 8)**:
+
+| Method | Path | Response | Errors |
+|---|---|---|---|
+| GET | `/api/orders/{id}/tracker[?auto=1]` | `TrackerView {orderId, orderRef, businessName, currentStatus, customerStep, steps[{key, labelEn, labelHi, state, date}], items[{productName, quantity, etaDays, etaDate}], etaDaysAfterVerification, expectedActivationDate, etaMessageEn, etaMessageHi, installSlot{date, slot}, nextAction{type, labelEn, labelHi, link}, onHold{reasonCode, messageEn, messageHi, nextEn, nextHi}, blocked{messageEn, messageHi, helpEn, helpHi}, events[{status, textEn, textHi, at, businessDate}] (latest first), lastUpdated, monthlyTotalInr}`. Counts a view unless `auto=1` | 404 |
+| GET | `/api/orders/{id}/install-slots` | `{bookable, etaDate, latestDate, dates[{date, available}], slots[], current{date, slot}}` | 404 |
+| POST | `/api/orders/{id}/install-slot` | `{date, slot}` → `TrackerView` | 400 `INVALID_SLOT` (+`errors`), 409 `INVALID_TRANSITION`, 404 |
+| POST | `/api/track/lookup` | `{orderRef, pincode}` → `{orderId}` | 404 "Order not found", 429 `RATE_LIMITED` |
+| GET | `/api/demo/status` | `{enabled}` | - |
+| POST | `/api/demo/orders/{id}/advance` | `{toStatus?, onHoldReason?, note?}` (all optional) → `TrackerView` | 404 when demo mode is off, 409 `INVALID_TRANSITION`, 400 `INVALID_HOLD_REASON` |
+
+Hold reasons: `SITE_NOT_FEASIBLE`, `CUSTOMER_UNAVAILABLE`, `PAYMENT_PENDING`. KYC endpoints gained 409 `KYC_CLOSED` (upload, submit) and 409 `WITHDRAW_NOT_ALLOWED` (withdraw).
+
+**Frontend routes (Phase 8)**: `/track` is the lookup form, `/track/:orderId` the tracker (`?demo=1` for the demo panel).
+
+**Frontend routes (Phase 7)**: `/kyc/:orderId` is now the real KYC page; `/track/:orderId` was a placeholder until Phase 8. The rest as below.
 
 **Frontend routes (Phase 5)**: `/` Landing · `/advisor` chat · `/quote` quote & checkout · `/kyc/:orderId` placeholder (shows order ref; Phase 7 replaces it) · `/track` placeholder · `*` NotFound.
 
@@ -392,11 +436,13 @@ Phase 6 added:
 | `app.kyc.fixture-dir` / `specimen-dir` / `expected-verdicts` | `src/test/resources/kyc/fixtures` / `../data/kyc_documents` / `src/test/resources/kyc/expected-verdicts.json` | Harness + cache (relative to `backend/`) |
 | ai-service `Settings` | `gemini_extract_model=gemini-2.5-flash-lite`, `blur_threshold=100.0`, `skew_threshold_deg=1.5`, `max_upload_bytes=5 MB` | `.env` keys `GEMINI_EXTRACT_MODEL`, `BLUR_THRESHOLD`, `SKEW_THRESHOLD_DEG`, `MAX_UPLOAD_BYTES` |
 
+Phase 8 added: `app.demo-mode` (default `false`, env `APP_DEMO_MODE`; enables `/api/demo/**`). `app.kyc.notice-version` is now `2026-07-v2`.
+
 Quantity rules: per-site units = sites; P19 = sites; P16 = officeUsers else prof ceil(0.7×emp), mfg ceil(0.15×emp), others emp; P20 = officeUsers else prof ceil(0.5×emp), mfg ceil(0.1×emp), others 2; P07/P08 = mobileLines else micro 2, prof max(2, ceil(emp/5)), multi max(2, ceil(0.6×sites)), mfg 4; P23 = cameras else micro 2, multi 2×sites, mfg 4, others 2; P24 = machines else 5; P25 = vehicles else 2; P12 = max(2, ceil(emp/5)); everything else 1.
 
 ## 7. Database (Neon PostgreSQL 18.6)
 
-Flyway versions applied: **V1** `V1__init_reference_data.sql` (Phases 2 and 3 added no migrations; Phase 3 templates live in YAML, not the DB), **V2** `V2__advisor_sessions.sql` (Phase 4), **V3** `V3__orders.sql` (Phase 5), **V4** `V4__kyc.sql` (Phase 6, applied to Neon 2026-10-30).
+Flyway versions applied: **V1** `V1__init_reference_data.sql` (Phases 2 and 3 added no migrations; Phase 3 templates live in YAML, not the DB), **V2** `V2__advisor_sessions.sql` (Phase 4), **V3** `V3__orders.sql` (Phase 5), **V4** `V4__kyc.sql` (Phase 6, applied to Neon 2026-10-30), **V5** `V5__order_tracker.sql` (Phase 8).
 
 | Table (V2) | Key columns / types |
 |---|---|
@@ -421,6 +467,13 @@ Flyway versions applied: **V1** `V1__init_reference_data.sql` (Phases 2 and 3 ad
 | `kyc_check` | `id`, `order_id` FK, `run_id UUID`, `check_code`, `check_name`, `status` (CHECK PASS/WARN/FAIL/SKIPPED), `severity` (CHECK BLOCKING/SOFT), `fixable`, `message_en/hi`, `fix_hint_en/hi`, `evidence_json JSONB` (identifiers masked; row deleted on withdrawal), `created_at`; index `(order_id, id)` |
 
 Check after a withdrawal: `SELECT (SELECT count(*) FROM kyc_document WHERE order_id = '<id>') AS documents, (SELECT count(*) FROM kyc_check WHERE order_id = '<id>') AS checks;` (expect 0, 0). `kyc_consent` (with `withdrawn_at`) and `order_event` stay as the audit trail.
+
+**V5** `V5__order_tracker.sql` (Phase 8, applied to Neon 2026-10-30):
+
+| Table | New columns |
+|---|---|
+| `order_event` | `actor` (CHECK SYSTEM/CUSTOMER/DEMO, default SYSTEM), `business_date DATE NOT NULL` (existing rows set to 2026-07-15) |
+| `customer_order` | `tracker_view_count INT`, `install_slot_date DATE`, `install_slot` (CHECK the 3 slots), `hold_reason`, `hold_note`, `hold_previous_status` |
 
 Back-office query for "leads the advisor could not close": `SELECT id, stage, profile_json, updated_at FROM advisor_session WHERE stage NOT IN ('READY_FOR_CHECKOUT', 'CHECKOUT_DONE') ORDER BY updated_at DESC;`
 
@@ -465,7 +518,7 @@ Phase 3 facts (from smb_leads, verified by tests and live API):
 
 ## 9. Testing
 
-All tests are pure unit tests (no Spring context, no DB, no network). **JUnit total: 218** (41 after Phase 2, +76 in Phase 3, +9 in Phase 4, +9 in Phase 5, +77 in Phase 6, +6 in Phase 7). **pytest (ai-service): 146** (42 + 104 in Phase 6). **Vitest (frontend): 74** (18 + 56 in Phase 7).
+All tests are pure unit tests (no Spring context, no DB, no network). **Totals after Phase 8: JUnit 412 · pytest (ai-service) 146 · Vitest (frontend) 122.** JUnit: 41 after Phase 2, +76 in Phase 3, +9 in Phase 4, +9 in Phase 5, +77 in Phase 6, +6 in Phase 7, +194 in Phase 8 (121 of them the transition table). pytest: 42 + 104 in Phase 6. Vitest: 18 + 56 in Phase 7 + 48 in Phase 8.
 
 | Test class | Tests | Covers |
 |---|---|---|
@@ -494,8 +547,15 @@ All tests are pure unit tests (no Spring context, no DB, no network). **JUnit to
 | `common.privacy.MaskingTest` (Phase 6) | +1 (=4) | `keepLast3` for ID / consumer numbers |
 | `kyc.KycServiceTest` (Phase 7 additions) | +5 (=19) | **regressions:** withdraw + new consent + submit can't verify without documents (K07 stays out of VERIFIED, C01 only); no names left in check messages after a withdrawal. Fixture cache: specimen in another slot → WRONG_DOC_TYPE with a readable EN/HI hint, K04 stays UNREADABLE in any slot, non-specimens go to the extractor |
 | `kyc.checks.DateAndOrderChecksTest` (Phase 7) | +1 (=18) | an OK document without fields counts as missing (old purged rows in Neon) |
+| `orders.OrderStatusMachineTest` (Phase 8) | 130 | every status pair against the table spelled out in the test (121), specific invalid moves, business date vs real time, hold + resume, no jumping off a hold, installed orders can't be cancelled or withdrawn, slot released |
+| `tracker.EtaCalculatorTest` | 6 | P07 (1) + P02 (5) + P05 (21) dates and max, no dates before verification, empty order, messages |
+| `tracker.InstallSlotServiceTest` | 11 | first and last allowed dates, before ETA, Sunday, after ETA + 14, bad slot, wrong status (409), reschedule, promised date follows the slot, picker window |
+| `tracker.TrackerServiceTest` | 27 | every status → steps, holds, next actions, K11 / K06 / K01 explanations, hold pauses dates, slot-date installs, friendly events, no identifiers, view count |
+| `tracker.TrackLookupTest` | 6 | right answer, same 404 for all wrong input, no address yet, after withdrawal, 11th attempt limited, window lifts |
+| `tracker.DemoServiceTest` | 8 | 404 when off, walk to ACTIVE, slot-date events, can't fake KYC, invalid moves, hold + resume, bad reason |
+| `kyc.KycServiceTest` (Phase 8 additions) | +6 (=25) | verdict can't be reopened, resubmit needs a new document, rejected owner can withdraw and reapply, no withdrawal once installed, slot released, `kycStatus` after verification |
 
-Vitest (`frontend/src`, run `npm run test`): `lib/format.test.ts` (6: ₹1,23,456, dates, GSTIN mask), `hooks/useQuote.test.ts` (6: add-on payload, OFF, upgrade swap, clamp, remove, removed[] → notice), `components/RecommendationCard.test.tsx` (3: totals/items from JSON, customised JSON, CTA), `api/client.test.ts` (5: success, 503 → AiUnavailableError, 409 → QuoteChangedError with quote, 400 field errors, NetworkError). **Phase 7:** `components/kyc/ConsentStep.test.tsx` (6: nothing pre-ticked, disabled until required ticked, payload, optional true, labels + full notice, save error), `components/kyc/UploadSlot.test.tsx` (10: rejects non-image / > 5 MB, uploads, masked summary, UNREADABLE hint, Hindi hint, WRONG_DOC_TYPE, blank Udyam flagged, network retry keeps the saved document, busy reader), `components/kyc/ResultsStep.test.tsx` (7: K03, K02 OCR note, K11 re-upload, K06 no re-upload + call back, K01-like, Hindi, warnings + text statuses), `hooks/useKyc.test.ts` (7: concurrent uploads, **stale GET regression**, lost consent, failed upload, submit error, 404), `lib/kyc.test.ts` (13), `lib/image.test.ts` (8: target sizes, types, 5 MB, byte-identical), `api/kyc.test.ts` (5: 403 typed, other 403s, 503 typed, multipart, JSON consent). Fixtures in `src/test/fixtures/`: real backend JSON captured with the fixture cache (`kyc-k02/k03/k06/k11.json`, `doc-unreadable.json`, `doc-wrong-type.json`, `notice-en.json`).
+Vitest (`frontend/src`, run `npm run test`): `lib/format.test.ts` (6: ₹1,23,456, dates, GSTIN mask), `hooks/useQuote.test.ts` (6: add-on payload, OFF, upgrade swap, clamp, remove, removed[] → notice), `components/RecommendationCard.test.tsx` (3: totals/items from JSON, customised JSON, CTA), `api/client.test.ts` (5: success, 503 → AiUnavailableError, 409 → QuoteChangedError with quote, 400 field errors, NetworkError). **Phase 7:** `components/kyc/ConsentStep.test.tsx` (6: nothing pre-ticked, disabled until required ticked, payload, optional true, labels + full notice, save error), `components/kyc/UploadSlot.test.tsx` (10: rejects non-image / > 5 MB, uploads, masked summary, UNREADABLE hint, Hindi hint, WRONG_DOC_TYPE, blank Udyam flagged, network retry keeps the saved document, busy reader), `components/kyc/ResultsStep.test.tsx` (7: K03, K02 OCR note, K11 re-upload, K06 no re-upload + call back, K01-like, Hindi, warnings + text statuses), `hooks/useKyc.test.ts` (7: concurrent uploads, **stale GET regression**, lost consent, failed upload, submit error, 404), `lib/kyc.test.ts` (13), `lib/image.test.ts` (8: target sizes, types, 5 MB, byte-identical), `api/kyc.test.ts` (5: 403 typed, other 403s, 503 typed, multipart, JSON consent). Fixtures in `src/test/fixtures/`: real backend JSON captured with the fixture cache (`kyc-k02/k03/k06/k11.json`, `doc-unreadable.json`, `doc-wrong-type.json`, `notice-en.json`). **Phase 8:** `pages/Track.test.tsx` (11: each status fixture, Hindi, activity order, words not colour, not found, no identifiers), `pages/TrackLookup.test.tsx` (9: format validation, match, not found, rate limit, network), `components/track/SlotPicker.test.tsx` (7: window, Sundays disabled, payload, reschedule, refused slot, retry), `components/track/DemoPanel.test.tsx` (8: hidden without `?demo=1`, with demo off, on status error; actions; refusal), `hooks/useTracker.test.ts` (8: one counted view also under StrictMode, 30 s refresh only while visible, stale answers dropped), `components/kyc/UploadStep.test.tsx` (4), `hooks/useKyc.test.ts` (+1 = 8). Tracker fixtures: `tracker-kyc-verified/install-scheduled/on-hold/action-required/rejected/active.json`, `install-slots.json`.
 
 pytest (`ai-service/tests`, run `.venv\Scripts\python -m pytest -q`): `test_tools.py` (12: endpoint/JSON per tool, save_profile validation, auto lookup + auto recommend), `test_advisor_loop.py` (10: one-shot = 2 model calls, prompt state, loop limit 6, Spring 500/timeout → friendly reply + stage unchanged, stages, language), `test_guard.py` (13: amount formats incl. ₹1,23,456 and Devanagari, invented ₹499, products/reasons, retry, template fallback), `test_api.py` (7: health, 401 missing/wrong/empty token, camelCase contract, 503, 422). Fixtures in `tests/conftest.py` (`FakeLlm`, `kirana_recommendation()`, respx `spring`). **Phase 6** `test_kyc_extract.py` (104): blur + skew calibration parameterized over all 47 specimens (only K04 GST blurry, only K02 GST tilted, < 0.5° after deskew), magic bytes / size / undecodable, UNREADABLE returns no fields and makes no model call, deskew before extraction, WRONG_DOC_TYPE, schema contract per docType (nullable, all required, detectedDocType enum), `clean_fields`, `/extract` 401 / contract / 400 (uses `FakeVision`, no Gemini).
 
@@ -551,6 +611,12 @@ KYC test data: `backend/src/test/resources/kyc/fixtures/*.json` (47 golden fixtu
 - Phase 7: upload progress is a spinner + "Reading your document…", not a percentage (most of the wait is reading, not sending).
 - Phase 7: the "Re-upload" flow goes to the upload step and back through "Check again" rather than re-uploading inside the results page.
 - Phase 7: `/track` is kept next to the new `/track/:orderId`.
+- Phase 8: JSON is camelCase like every other API (`labelEn`, not `label_en`). The tracker adds `blocked`, `etaDaysAfterVerification`, `etaMessageEn/Hi`, `onHold.nextEn/nextHi`, `items[].etaDays`, `events[].businessDate`.
+- Phase 8: `QUOTE_ACCEPTED → KYC_IN_PROGRESS` was added (it's how orders actually move), and `KYC_REJECTED` has one exit: withdrawal. Both approved at STOP 1.
+- Phase 8: demo controls can't set KYC statuses; `tracker_view_count` skips auto-refresh; expected activation follows the booked slot; `INSTALLED` / `ACTIVE` count on the slot date. All approved at STOP 1.
+- Phase 8: the ETA message uses product names ("Biz Fibre 100 in 5 days"), because the catalogue files mobile lines under Connectivity, so "mobile lines" couldn't be derived reliably.
+- Phase 8: "Last updated" shows when the page last checked the server, since that's what tells an owner the page is fresh.
+- Phase 8: the demo panel is English only: it's a presenter's tool. A CANCELLED order shows a message on `/kyc/:orderId`.
 
 ## 11. Known issues / TODOs
 
@@ -584,9 +650,18 @@ KYC test data: `backend/src/test/resources/kyc/fixtures/*.json` (47 golden fixtu
 - Phase 7: a C17 failure links back to `/quote`, but changing the quote there creates a **new order**; the old one stays in `KYC_ACTION_REQUIRED`.
 - Phase 7: orders withdrawn before the Phase 7 fix (test data only, all synthetic) still have rows in Neon with null JSON; C01 treats an OK row without fields as missing, so they can't verify.
 - Phase 7: thumbnails don't survive a reload (photos aren't kept); the slot shows its icon and the read summary.
-- Phase 7: a REJECTED order has no re-upload path in the UI; withdrawing consent and starting again is possible, and the documents are simply re-checked. Backend upload itself isn't blocked after a rejection.
+- Phase 7: a REJECTED order has no re-upload path in the UI; withdrawing consent and starting again is possible, and the documents are simply re-checked. (Phase 8: the backend now blocks uploads after a verdict too, 409 `KYC_CLOSED`.)
 - Phase 7: the stepper on a real Quote page and the full advisor → quote start weren't exercised in the browser by me (no Gemini quota); the KYC screens were tested from orders created by API. "Request a call back" is only a toast (prototype).
 - Phase 7: the 503 Retry state is covered by unit tests, not a live run.
+- Phase 8: **the withdrawal limit after installation rests on my reading of telecom record-keeping, not legal advice.** The notice now says so (version `2026-07-v2`); have the wording checked before relying on it. Withdrawing with a booked slot releases it without any notice to a field team (there is none).
+- Phase 8: only demo controls move an order past `INSTALL_SCHEDULED`, and only they place holds or cancel: there's no field-team system or customer cancel button. "Request a call back" is a toast.
+- Phase 8: slots have no capacity model, and the ETA isn't adjusted for tier-2 delays or fibre feasibility; it uses the catalogue's `typical_install_days` only. A site-feasibility problem appears only as a hold.
+- Phase 8: the lookup rate limit keys on the client IP as Spring sees it: all traffic through the Vite proxy shares one IP, and it's in memory (per instance, reset on restart).
+- Phase 8: a held order's `verifiedDate` and dates assume one frozen business date; with a real clock, ETAs should be recalculated on resume.
+- Phase 8: `/track/:orderId` needs no login: the UUID in the link is the only protection, like the rest of this prototype. It shows the business name and order details.
+- Phase 8: the tracker makes ~8 sequential queries, ~2.5 s from India to Neon's US region; the page shows a skeleton meanwhile. Fine for a demo, worth reducing with a nearer region.
+- Phase 8: a dropped network or sleeping laptop gives `UnknownHostException` / "clock leap" in the Spring log and failed requests; Hikari recovers by itself once the connection returns.
+- Phase 8: the advisor → quote → accept start of the journey and the stepper on a real Quote page need Gemini; I didn't exercise them in the browser, and the demo script's advisor replies are unverified.
 
 ### KYC consent + retention design (for the privacy note)
 - **Notice before collection** (`GET /api/kyc/consent-notice?lang=en|hi`, version `2026-07-v1`): data fiduciary (Accel Telecom), the 3 purposes, exactly which fields are collected, retention, rights, grievance contact.
@@ -595,7 +670,7 @@ KYC test data: `backend/src/test/resources/kyc/fixtures/*.json` (47 golden fixtu
 - **Data minimisation**: raw images are never stored. Spring writes the upload to a temp file only for the extraction call and deletes it in a `finally` block (tested, including when the ai-service fails); the ai-service processes images in memory. Only the sha256, quality metrics and the schema fields are kept; blurry images are rejected before any model call, so no fields are guessed.
 - **Masking**: API responses mask GSTIN (`32TTN*****1ZW`), Udyam (`UDYAM-KL-00-****801`), ID and consumer numbers (last 3 visible); check evidence is stored masked. Full values exist only in `kyc_document.extracted_json`, which the checks need.
 - **Logs**: order ref, doc type, status, blur/skew, ms and check codes only; never names, numbers, addresses or extracted values (verified by a log scan in the live checklist).
-- **Withdrawal** (corrected in Phase 7): `POST …/kyc/consent/withdraw` closes consent, **deletes the order's `kyc_document` and `kyc_check` rows** (fields, hashes, quality metrics, check messages and evidence), clears the activation date, sets the order to `KYC_PENDING_CONSENT` and logs an event. Kept as the audit trail: `kyc_consent` rows and `order_event` notes, which hold no extracted values. The UI confirms with a modal and a toast.
+- **Withdrawal** (corrected in Phase 7): `POST …/kyc/consent/withdraw` closes consent, **deletes the order's `kyc_document` and `kyc_check` rows** (fields, hashes, quality metrics, check messages and evidence), clears the activation date, sets the order to `KYC_PENDING_CONSENT` and logs an event. Kept as the audit trail: `kyc_consent` rows and `order_event` notes, which hold no extracted values. The UI confirms with a modal and a toast. **Phase 8:** a booked slot is released too, and once a service is installed withdrawal returns 409 `WITHDRAW_NOT_ALLOWED`, pointing to the Grievance Officer, because telecom rules are taken to require the records for a live connection (notice `2026-07-v2`; get this wording checked).
 - **Client side** (Phase 7): identifiers are shown only as the server masked them; photos above 2000 px are re-encoded in the browser before upload (which also drops their EXIF data, such as location; smaller photos are sent unchanged); nothing about the documents is written to browser storage.
 - **Retention**: extracted fields are kept "for the period required by telecom rules, as required by law" (`app.kyc.retention-days`, 2555 by default); deletion job TODO.
 - **Third party**: document images are sent to the Google Gemini API for extraction (same free vs paid tier caveat as the advisor above).
@@ -606,23 +681,92 @@ KYC test data: `backend/src/test/resources/kyc/fixtures/*.json` (47 golden fixtu
 - Not logged in plain text: message text, names, full GSTINs (ai-service logs session id prefix, tool names, stage, guard result, latency; Spring logs ids/stages/timings and masks GSTINs in paths and tool traces).
 - Stored in Neon: full conversation text (`advisor_message.content`) and profile JSON. No retention job yet (TODO: define and implement a retention period).
 
-## 12. Notes for the next phase (Phase 8: tracker)
+## 12. Notes for whoever continues (core prototype done after Phase 8)
 
-**Where**: replace `frontend/src/pages/TrackPlaceholder.tsx`. Two routes exist: **`/track/:orderId`** (from "Track my order" on the VERIFIED screen) and `/track` (landing page CTA, no order: needs a lookup by order ref, which doesn't exist yet).
+**Still open, in order of importance**
+1. **Live Gemini specimen run** (deferred from Phase 6): start the ai-service with a key, run Spring with the fixture cache OFF, then `POST /api/admin/kyc/run-specimens?applicants=K02,K07,K11` (~12 calls) and review those fixtures against the images before running the rest. Until then, extraction accuracy on the real images is unproven (see section 11).
+2. Advisor evals 4–15 still need quota (`evals/run_scenarios.py --rerun-failed --delay 6`).
+3. Out of scope so far: back-office, WhatsApp, real notifications, deployment, auth on `/api/admin/**`, a KYC retention job.
 
-**What the tracker page receives**
-- `orderId` from the URL. `GET /api/orders/{orderId}` → `{orderId, orderRef, status, createdAt, quote (lines, totals, maxInstallDays, estimatedActivationDate), profile (GSTIN masked), events[{status, note, createdAt}]}`.
-- `GET /api/orders/{orderId}/kyc` → `kycStatus`, `overall`, `estimatedActivationDate` (set only when VERIFIED: reference date + `quote.maxInstallDays`; not in `OrderView` yet, add it if the tracker should not call `/kyc`).
+**Adding an order status**: add the constant to `OrderStatus`, its row to `OrderStatusMachine.ALLOWED` and to the table in `OrderStatusMachineTest`, then map it in `StepMapper.currentIndex`, `TrackerTexts` (event text + next action) and `KycService.POST_KYC_STATUSES` if it comes after verification. Never call `OrderStore.updateStatus` from anywhere else.
 
-**Order statuses so far** (`customer_order.status`, free text, one `order_event` per transition): `QUOTE_ACCEPTED` → `KYC_IN_PROGRESS` → `KYC_VERIFIED` | `KYC_ACTION_REQUIRED` | `KYC_REJECTED`; a re-upload after a verdict → `KYC_IN_PROGRESS`; withdraw → `KYC_PENDING_CONSENT`. Event notes look like `KYC ACTION_REQUIRED: C14`. Only `KYC_VERIFIED` should start the tracker's install steps; for other statuses link back to `/kyc/:orderId`.
+### Order tracker (Phase 8, implemented)
 
-**Watch out when adding tracker statuses**
-- `KycService.view` reports any status not starting with `KYC_` as `kycStatus: KYC_PENDING_CONSENT`, and `lib/kyc.stepFor` shows the upload step for anything that isn't a verdict. Post-KYC statuses (e.g. `INSTALL_SCHEDULED`) would send a verified order back to the upload screen, so update both.
-- Don't allow new uploads once installation has started, or a re-upload will reopen the KYC.
-- Reuse `JourneyStepper current="track"`, `formatDate`, `Toast`, `ErrorBanner`, and the `hooks/useKyc` pattern of dropping stale GETs if the page polls. "Today" stays `app.reference-date`; don't use `new Date()` for tracker dates.
-- Testing without Gemini: create an order by curl, run K03 through `/kyc/:orderId` with `KYC_FIXTURE_CACHE=true`, then open `/track/:orderId`.
+**Status machine** (`OrderStatusMachine`, the only code that changes a status; anything else is 409 `INVALID_TRANSITION`):
 
-**Still deferred from Phase 6**: the live Gemini specimen run (STOP 3): `run-specimens?applicants=K02,K07,K11` first (~12 calls). Advisor evals 4–15 also still need quota.
+| From | Allowed to | Trigger (actor) |
+|---|---|---|
+| `QUOTE_ACCEPTED` | `KYC_IN_PROGRESS` | consent (CUSTOMER) |
+| | `KYC_PENDING_CONSENT` | allowed as specified; nothing triggers it today |
+| | `CANCELLED` | demo only for now |
+| `KYC_PENDING_CONSENT` | `KYC_IN_PROGRESS`, `CANCELLED` | consent (CUSTOMER) |
+| `KYC_IN_PROGRESS` | `KYC_VERIFIED`, `KYC_ACTION_REQUIRED`, `KYC_REJECTED` | submit (SYSTEM) |
+| | `KYC_PENDING_CONSENT`, `CANCELLED` | withdrawal (CUSTOMER) |
+| `KYC_ACTION_REQUIRED` | `KYC_IN_PROGRESS` | new document (CUSTOMER) |
+| | `KYC_PENDING_CONSENT`, `CANCELLED` | withdrawal |
+| `KYC_REJECTED` | `KYC_PENDING_CONSENT` | withdrawal only: the data must be deletable, and it's how an owner applies again after fixing the cause |
+| `KYC_VERIFIED` | `INSTALL_SCHEDULED`, `ON_HOLD`, `KYC_PENDING_CONSENT`, `CANCELLED` | slot (CUSTOMER), hold (DEMO), withdrawal |
+| `INSTALL_SCHEDULED` | `INSTALL_SCHEDULED`, `INSTALLED`, `ON_HOLD`, `KYC_PENDING_CONSENT`, `CANCELLED` | reschedule (CUSTOMER), install or hold (DEMO), withdrawal (slot released) |
+| `INSTALLED` | `ACTIVE`, `ON_HOLD` | DEMO |
+| `ON_HOLD` | the status it paused only; `KYC_PENDING_CONSENT` and `CANCELLED` unless it paused `INSTALLED` | resume (DEMO), withdrawal |
+| `ACTIVE`, `CANCELLED` | none | terminal |
+
+**KYC rules that depend on it**: uploads only in `KYC_IN_PROGRESS` / `KYC_ACTION_REQUIRED`, submit only in `KYC_IN_PROGRESS` (else 409 `KYC_CLOSED`). Withdrawal is refused once installed (409 `WITHDRAW_NOT_ALLOWED`). `kycStatus` stays `KYC_VERIFIED` for every status after verification.
+
+**Business date**: `BusinessClock.today()` = `app.reference-date` (2026-07-15), used for ETAs, slot limits and each event's `business_date`. `order_event.created_at` stays the real time. `INSTALLED` and `ACTIVE` count on the slot date, otherwise a frozen "today" would date an installation before its own visit. The UI shows business dates in the timeline and activity list, and the real clock only in "Last updated".
+
+**Honest dates**: each item's ETA = verified business date + `installDays` from the quote stored on the order. Expected activation = the later of the slowest item and the booked slot. Before verification: "N days after your documents are verified". On hold: no date ("New date once this clears"). Rejected or cancelled: no date card.
+
+**Install slots**: ETA to ETA + 14 days, not Sundays, `MORNING | AFTERNOON | EVENING`. No capacity model: every offered slot is free.
+
+**Steps**: `StepMapper`. Pre-verification statuses → step 2 current (`GIVE_CONSENT` / `UPLOAD_DOCS`); `KYC_ACTION_REQUIRED` → step 2 BLOCKED, `FIX_DOCS`; `KYC_REJECTED` → step 2 BLOCKED, `NONE`, with `blocked` explaining; `KYC_VERIFIED` → step 3 current, `PICK_SLOT`; `INSTALL_SCHEDULED` → step 4; `INSTALLED` → step 5; `ACTIVE` → all done; `ON_HOLD` → the paused step BLOCKED (the UI words it "On hold"); `CANCELLED` → step 1 done, the rest upcoming, `blocked` says so.
+
+**Lookup**: `POST /api/track/lookup`. The PIN comes from the read address proof (GST address as fallback), so it only works once a document with an address has been read, and not after a withdrawal. Wrong reference, wrong PIN and no address all give the same 404. 10 attempts per IP per 10 minutes, right or wrong, then 429 `RATE_LIMITED` (in memory, reset by a restart).
+
+**Demo mode**: set `app.demo-mode: true` under `app:` in `application-local.yml` (or env `APP_DEMO_MODE=true`), default false. Off → `POST /api/demo/**` is 404 and `GET /api/demo/status` says `{enabled: false}`. The panel needs that AND `?demo=1` in the URL. Controls work from `KYC_VERIFIED` onward (plus hold and resume) and can't produce a KYC verdict. Advancing from `KYC_VERIFIED` books the earliest slot, Morning.
+
+**Tracker metric** (`customer_order.tracker_view_count`): page opens and the Refresh button count; 30-second auto-refresh (`?auto=1`), bookings and demo actions don't, or the number would measure open tabs instead of status checks. Business case: activated customers made 3.01 follow-up calls on average; 1 call → NPS 7.47, churn 5.9%; 5 calls → NPS 5.98, churn 27.9% (checked against `smb_leads.csv`, n = 368).
+```sql
+SELECT order_ref, status, tracker_view_count FROM customer_order ORDER BY tracker_view_count DESC LIMIT 20;
+SELECT avg(tracker_view_count) AS avg_self_serve_checks FROM customer_order WHERE status IN ('INSTALL_SCHEDULED', 'INSTALLED', 'ACTIVE');
+```
+
+**Refresh**: `hooks/useTracker` refreshes every 30 s while the tab is visible and as soon as it becomes visible again. Only the newest request may update the page, so a slow answer can't undo a booking.
+
+### End-to-end demo script (3-minute video)
+
+**Before recording**
+- `app.demo-mode: true` in `application-local.yml`. Start Spring, the ai-service (advisor and any non-specimen upload need it, with a Gemini key) and `npm run dev`. Set Chrome DevTools to a 375 px phone view, UI in English.
+- **Decide how documents are read, and be open about it.** With `KYC_FIXTURE_CACHE=true`, specimen uploads return the hand-transcribed fixtures instantly: no AI reads them. That's fine for rehearsing, but say so in the video if you film that way. To show real extraction, film with the cache off after the live specimen run (section 12, item 1); expect 3–10 s per image.
+- Gemini quota is small (~18 calls hit the limit before): each advisor turn costs 2–4. Rehearse the KYC and tracker parts freely, and the advisor part once.
+- Dates show July 2026 on purpose: "today" is the reference date.
+- Prepare two background orders and keep each open in a tab (K11 → `/track/<id>` shows the fix path; K06 → `/kyc/<id>` shows the rejection). For each, create an order, give consent and upload the four files through `/kyc/<id>`, or with this bash (use K06 as well):
+```bash
+B=http://localhost:8080; K=K11; O=$(curl -s -X POST $B/api/orders -H "Content-Type: application/json" -d '{"profile":{"businessType":"Kirana store","cityTier":2,"employees":3,"sites":1},"items":[{"productId":"P01","quantity":1}]}' | python -c "import sys,json;print(json.load(sys.stdin)['orderId'])"); curl -s -o /dev/null -X POST $B/api/orders/$O/kyc/consent -H "Content-Type: application/json" -d '{"noticeVersion":"2026-07-v2","language":"en","purposes":{"KYC_VERIFICATION":true,"SERVICE_INSTALLATION":true}}'; for t in gst_certificate udyam_certificate signatory_id address_proof; do curl -s -o /dev/null -X POST $B/api/orders/$O/kyc/documents -F docType=$(echo $t | tr a-z A-Z) -F "file=@data/kyc_documents/${K}_$t.png"; done; curl -s -o /dev/null -X POST $B/api/orders/$O/kyc/submit; echo "$K http://localhost:5173/track/$O"
+```
+
+**The story**: Ganesh Woodcraft, a furniture workshop in Nagpur (specimen K03). Everything below was dry-run through the API on 2026-10-30 except the advisor's replies, which only a live Gemini call can produce.
+
+| Time | Click path | Point to make |
+|---|---|---|
+| 0:00–0:10 | Landing → **Talk to the advisor** | Phone-first, one clear start |
+| 0:10–0:40 | Type: `I run a furniture workshop in Nagpur, 6 staff, one site. GSTIN 27XUIXG0767D1ZP` | The advisor collects facts; the rules engine decides. Name autofills to Ganesh Woodcraft; bundle = Biz Fibre 300, Postpaid 599 ×4, Cloud Email, Endpoint Security, **₹4,119/month** |
+| 0:40–0:55 | Type in Hindi: `यह प्लान मेरे व्यवसाय के लिए क्यों सही है?` | The same advisor replies in Hindi, with the same grounded numbers |
+| 0:55–1:10 | **View & customise quote** → switch on **Static IP** (₹4,119 → **₹4,319**) | Instant repricing from the catalogue, no LLM |
+| 1:10–1:15 | **Accept & continue to KYC** | The server recomputes the quote |
+| 1:15–1:25 | Tap **हिंदी** and back on consent. Tick the 2 required boxes (WhatsApp stays unticked) → **Agree & continue** | DPDP: plain notice, nothing pre-ticked |
+| 1:25–1:40 | GST slot → **Choose photo** → `K04_gst_certificate.png` → **Unreadable** + hint | Blurred photo caught, nothing guessed |
+| 1:40–1:50 | Signatory slot → `K03_udyam_certificate.png` → **Wrong document** + hint | Wrong slot caught |
+| 1:50–2:05 | Upload the right files: `K03_gst_certificate.png`, `K03_udyam_certificate.png`, `K03_signatory_id.png`, `K03_address_proof.png` → masked summaries → **Check my documents** → **Documents verified** | Identifiers masked; photos deleted after reading |
+| 2:05–2:20 | Switch to the K11 tab, then the K06 tab | K11: bill 257 days old, **Fix documents**. K06: tampered GSTIN, explained calmly, no re-upload loop |
+| 2:20–2:35 | Back: **Track my order** → items with dates (Postpaid and others 16 Jul, Fibre 20 Jul) → pick **Wed 22 Jul**, **Afternoon** → **Confirm slot** | Self-scheduling; Sundays disabled; the promised date moves to 22 Jul honestly |
+| 2:35–2:55 | Add `?demo=1` to the URL → **Put on hold: site not feasible** → amber banner → **Resume** → **Advance** → **Advance** → all steps done, Active | "You don't need to call us": the fix for 3 calls per customer. Mention demo controls stand in for field teams |
+| 2:55–3:00 | Tap **हिंदी**, end on the tracker | Bilingual to the end |
+
+Optional if time allows: `/track` lookup with the order reference + PIN `411231`.
+
+### i18n keys added in Phase 8
+`track.*` (replaced: `timeline`, `eta`, `slot`, `hold`, `help`, `lookup`), `kyc.cancelled`, `kyc.upload.fixFirst`; `kyc.consent.rightsBody` reworded. Step labels, next actions, hold reasons and activity text come from the backend in both languages.
 
 ### i18n keys added in Phase 7
 `journey.*`, `kyc.consent.*`, `kyc.doc.<DocType>.{title,short,hint}`, `kyc.upload.*` (`status`, `summary`, `errors`), `kyc.results.*` (`status`, `reason.<code>`, `almostThere_one/_other`), `kyc.withdraw.*` in `en.json` + `hi.json`. Removed: `kyc.monthly`, `kyc.comingNext`, `kyc.body`. Changed: `kyc.title`, `kyc.orderRef`, `track.body`. Check messages and fix hints come from the backend in both languages, not from i18n.
@@ -655,7 +799,7 @@ KYC test data: `backend/src/test/resources/kyc/fixtures/*.json` (47 golden fixtu
 
 **Developing without Gemini**: run Spring with `KYC_FIXTURE_CACHE=true` and upload the files from `data/kyc_documents/` (each in its own slot): K03 → VERIFIED, K04 GST → UNREADABLE, K11 → ACTION_REQUIRED (C14), K06 → REJECTED (C04), K05 (3 files) → ACTION_REQUIRED (C01), K07 → REJECTED (name mismatch). No ai-service needed for those uploads.
 
-**Phase 8 (tracker) hooks**: `GET /api/orders/{id}` `events[]` already contains every KYC transition (`KYC_IN_PROGRESS`, `KYC_ACTION_REQUIRED: C14`, `KYC_VERIFIED`, …); `estimated_activation_date` is on `customer_order` (exposed today via `GET …/kyc`; add it to `OrderView` if the tracker needs it).
+**Phase 8 note**: in the KYC_ACTION_REQUIRED fix flow, **Check again** stays disabled until a document changes (the backend would answer 409 `KYC_CLOSED`); any 409 reloads the page state.
 
 ### Order → KYC link (Phase 5 notes, implemented in Phase 6)
 

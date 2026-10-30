@@ -1,0 +1,73 @@
+{
+  "bookable": true,
+  "etaDate": "2026-07-20",
+  "latestDate": "2026-08-03",
+  "dates": [
+    {
+      "date": "2026-07-20",
+      "available": true
+    },
+    {
+      "date": "2026-07-21",
+      "available": true
+    },
+    {
+      "date": "2026-07-22",
+      "available": true
+    },
+    {
+      "date": "2026-07-23",
+      "available": true
+    },
+    {
+      "date": "2026-07-24",
+      "available": true
+    },
+    {
+      "date": "2026-07-25",
+      "available": true
+    },
+    {
+      "date": "2026-07-26",
+      "available": false
+    },
+    {
+      "date": "2026-07-27",
+      "available": true
+    },
+    {
+      "date": "2026-07-28",
+      "available": true
+    },
+    {
+      "date": "2026-07-29",
+      "available": true
+    },
+    {
+      "date": "2026-07-30",
+      "available": true
+    },
+    {
+      "date": "2026-07-31",
+      "available": true
+    },
+    {
+      "date": "2026-08-01",
+      "available": true
+    },
+    {
+      "date": "2026-08-02",
+      "available": false
+    },
+    {
+      "date": "2026-08-03",
+      "available": true
+    }
+  ],
+  "slots": [
+    "MORNING",
+    "AFTERNOON",
+    "EVENING"
+  ],
+  "current": null
+}

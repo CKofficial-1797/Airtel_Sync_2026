@@ -330,3 +330,73 @@ export interface KycSubmitResult {
   estimatedActivationDate: string | null;
   runId: string;
 }
+
+// ---- Tracker (Phase 8): mirrors GET /api/orders/{id}/tracker. It holds no identifiers. ----
+
+export type StepState = "DONE" | "CURRENT" | "UPCOMING" | "BLOCKED";
+export type NextActionType = "GIVE_CONSENT" | "UPLOAD_DOCS" | "FIX_DOCS" | "PICK_SLOT" | "NONE";
+export type InstallSlotName = "MORNING" | "AFTERNOON" | "EVENING";
+
+export interface TrackerStep {
+  key: string;
+  labelEn: string;
+  labelHi: string;
+  state: StepState;
+  date: string | null;
+}
+
+export interface TrackerItem {
+  productName: string;
+  quantity: number;
+  etaDays: number;
+  etaDate: string | null;
+}
+
+export interface InstallSlot {
+  date: string;
+  slot: InstallSlotName;
+}
+
+export interface TrackerEvent {
+  status: string;
+  textEn: string;
+  textHi: string;
+  at: string;
+  businessDate: string;
+}
+
+export interface TrackerView {
+  orderId: string;
+  orderRef: string;
+  businessName: string | null;
+  currentStatus: string;
+  customerStep: number;
+  steps: TrackerStep[];
+  items: TrackerItem[];
+  etaDaysAfterVerification: number;
+  expectedActivationDate: string | null;
+  etaMessageEn: string;
+  etaMessageHi: string;
+  installSlot: InstallSlot | null;
+  nextAction: { type: NextActionType; labelEn: string; labelHi: string; link: string | null };
+  onHold: { reasonCode: string; messageEn: string; messageHi: string; nextEn: string; nextHi: string } | null;
+  blocked: { messageEn: string; messageHi: string; helpEn: string; helpHi: string } | null;
+  events: TrackerEvent[];
+  lastUpdated: string;
+  monthlyTotalInr: number;
+}
+
+export interface InstallSlots {
+  bookable: boolean;
+  etaDate: string | null;
+  latestDate: string | null;
+  dates: { date: string; available: boolean }[];
+  slots: InstallSlotName[];
+  current: InstallSlot | null;
+}
+
+export interface DemoAdvance {
+  toStatus?: string;
+  onHoldReason?: string;
+  note?: string;
+}

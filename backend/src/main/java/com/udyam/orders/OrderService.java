@@ -58,7 +58,7 @@ public class OrderService {
         store.insert(new OrderStore.Order(id, ref, sessionId, json.valueToTree(profile), json.valueToTree(quote),
                 quote.monthlyTotalInr(), quote.oneTimeTotalInr(), quote.contractMonths(), OrderStatus.QUOTE_ACCEPTED,
                 null));
-        store.addEvent(id, OrderStatus.QUOTE_ACCEPTED, "Quote accepted by the customer");
+        store.addEvent(id, OrderStatus.QUOTE_ACCEPTED, "Quote accepted by the customer", EventActor.CUSTOMER, referenceDate);
         if (sessionId != null) {
             store.markSessionCheckedOut(sessionId, id);
         }
@@ -72,7 +72,7 @@ public class OrderService {
         UUID id = UUID.randomUUID();
         store.insert(new OrderStore.Order(id, orderRef(store.nextRefNumber()), null, json.nullNode(),
                 json.createObjectNode(), 0, 0, 0, OrderStatus.QUOTE_ACCEPTED, null));
-        store.addEvent(id, OrderStatus.QUOTE_ACCEPTED, note);
+        store.addEvent(id, OrderStatus.QUOTE_ACCEPTED, note, EventActor.SYSTEM, referenceDate);
         return id;
     }
 

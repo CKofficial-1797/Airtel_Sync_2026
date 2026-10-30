@@ -16,7 +16,9 @@ import com.udyam.kyc.extract.DocumentExtractor;
 import com.udyam.kyc.extract.ExtractResult;
 import com.udyam.kyc.extract.FixtureCache;
 import com.udyam.kyc.extract.Hashing;
+import com.udyam.orders.EventActor;
 import com.udyam.orders.OrderStatus;
+import com.udyam.orders.OrderStatusMachine;
 import com.udyam.orders.OrderStore;
 import com.udyam.rules.data.CatalogueProduct;
 import com.udyam.rules.data.RulesDataProvider;
@@ -53,10 +55,13 @@ public class KycService {
     private static final Logger log = LoggerFactory.getLogger(KycService.class);
     private static final byte[] PNG_MAGIC = {(byte) 0x89, 'P', 'N', 'G', '\r', '\n', 0x1A, '\n'};
     private static final byte[] JPEG_MAGIC = {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF};
-    private static final Set<String> VERDICT_STATUSES = Set.of(OrderStatus.KYC_ACTION_REQUIRED,
-            OrderStatus.KYC_REJECTED, OrderStatus.KYC_VERIFIED);
+    /** Documents can only change while the KYC is open; a verdict that stands must not be reopened by an upload. */
+    private static final Set<String> UPLOAD_STATUSES = Set.of(OrderStatus.KYC_IN_PROGRESS, OrderStatus.KYC_ACTION_REQUIRED);
+    private static final Set<String> POST_KYC_STATUSES = Set.of(OrderStatus.INSTALL_SCHEDULED, OrderStatus.INSTALLED,
+            OrderStatus.ACTIVE, OrderStatus.ON_HOLD);
 
     private final OrderStore orders;
+    private final OrderStatusMachine machine;
     private final KycStore store;
     private final KycValidationService validator;
     private final DocumentExtractor extractor;
@@ -66,10 +71,11 @@ public class KycService {
     private final RulesDataProvider rules;
     private final LocalDate referenceDate;
 
-    public KycService(OrderStore orders, KycStore store, KycValidationService validator, DocumentExtractor extractor,
-                      FixtureCache fixtures, ConsentNotices notices, KycProperties props, RulesDataProvider rules,
-                      AppProperties app) {
+    public KycService(OrderStore orders, OrderStatusMachine machine, KycStore store, KycValidationService validator,
+                      DocumentExtractor extractor, FixtureCache fixtures, ConsentNotices notices, KycProperties props,
+                      RulesDataProvider rules, AppProperties app) {
         this.orders = orders;
+        this.machine = machine;
         this.store = store;
         this.validator = validator;
         this.extractor = extractor;
@@ -118,24 +124,36 @@ public class KycService {
             rows.put(p, Boolean.TRUE.equals(request.purposes().get(p)));
         }
         store.saveConsent(orderId, request.noticeVersion(), language, rows);
-        if (!order.status().startsWith("KYC_") || OrderStatus.KYC_PENDING_CONSENT.equals(order.status())) {
-            transition(orderId, OrderStatus.KYC_IN_PROGRESS, "KYC consent given (notice " + request.noticeVersion()
-                    + ", " + language + ")");
+        if (OrderStatus.QUOTE_ACCEPTED.equals(order.status()) || OrderStatus.KYC_PENDING_CONSENT.equals(order.status())) {
+            machine.transition(orderId, OrderStatus.KYC_IN_PROGRESS, EventActor.CUSTOMER,
+                    "KYC consent given (notice " + request.noticeVersion() + ", " + language + ")");
         }
         log.info("KYC consent given for order {} (whatsapp={})", order.orderRef(),
                 rows.get(ConsentNotices.WHATSAPP_UPDATES));
         return view(orderId);
     }
 
-    /** DPDP withdrawal: consent closed, documents + check runs deleted, order back to pending consent. */
+    /**
+     * DPDP withdrawal: consent closed, documents + check runs deleted, order back to pending consent (any booked
+     * slot is released). A cancelled order keeps its status. Once installed the records back a live connection:
+     * 409 WITHDRAW_NOT_ALLOWED, and the owner goes to the Grievance Officer named in the notice.
+     */
     @Transactional
     public KycView withdrawConsent(UUID orderId) {
         OrderStore.Order order = order(orderId);
+        if (machine.withdrawalBlocked(orderId)) {
+            throw new ApiException(HttpStatus.CONFLICT, "WITHDRAW_NOT_ALLOWED",
+                    "Your service is installed, so telecom rules require us to keep these records. "
+                            + "Please contact the Grievance Officer named in the consent notice.");
+        }
         int withdrawn = store.withdrawConsent(orderId);
         store.deleteDocumentsAndChecks(orderId);
         store.setActivationDate(orderId, null);
         if (withdrawn > 0) {
-            transition(orderId, OrderStatus.KYC_PENDING_CONSENT, "KYC consent withdrawn; KYC documents and checks deleted");
+            if (machine.canTransition(orderId, OrderStatus.KYC_PENDING_CONSENT)) {
+                machine.transition(orderId, OrderStatus.KYC_PENDING_CONSENT, EventActor.CUSTOMER,
+                        "KYC consent withdrawn; KYC documents and checks deleted");
+            }
             log.info("KYC consent withdrawn for order {}; documents and checks deleted", order.orderRef());
         }
         return view(orderId);
@@ -146,6 +164,9 @@ public class KycService {
     public DocumentView upload(UUID orderId, String docTypeValue, byte[] data) {
         OrderStore.Order order = order(orderId);
         requireConsent(orderId);
+        if (!UPLOAD_STATUSES.contains(order.status())) {
+            throw new ApiException(HttpStatus.CONFLICT, "KYC_CLOSED", "Documents can't be changed for this order now");
+        }
         DocType docType = DocType.parse(docTypeValue).orElseThrow(() -> new ApiException(HttpStatus.BAD_REQUEST,
                 "INVALID_DOC_TYPE", "docType must be one of GST_CERTIFICATE, UDYAM_CERTIFICATE, SIGNATORY_ID,"
                 + " ADDRESS_PROOF"));
@@ -157,9 +178,8 @@ public class KycService {
 
         KycDocument doc = KycDocument.from(docType, sha256, result);
         store.saveDocument(orderId, doc);
-        if (VERDICT_STATUSES.contains(order.status())) {
-            store.setActivationDate(orderId, null);
-            transition(orderId, OrderStatus.KYC_IN_PROGRESS, "KYC document replaced: " + docType);
+        if (OrderStatus.KYC_ACTION_REQUIRED.equals(order.status())) {
+            machine.transition(orderId, OrderStatus.KYC_IN_PROGRESS, EventActor.CUSTOMER, "KYC document replaced: " + docType);
         }
         log.info("KYC upload order {} {} -> {} ({} ms{})", order.orderRef(), docType, doc.status(), result.ms(),
                 cached.isPresent() ? ", fixture cache" : "");
@@ -208,6 +228,9 @@ public class KycService {
     public SubmitResult submit(UUID orderId) {
         OrderStore.Order order = order(orderId);
         requireConsent(orderId);
+        if (!OrderStatus.KYC_IN_PROGRESS.equals(order.status())) {
+            throw new ApiException(HttpStatus.CONFLICT, "KYC_CLOSED", "These documents were already checked");
+        }
 
         Map<DocType, KycDocument> docs = new EnumMap<>(DocType.class);
         store.documents(orderId).forEach(d -> docs.put(d.docType(), d));
@@ -229,7 +252,7 @@ public class KycService {
             activation = referenceDate.plusDays(order.quote().get("maxInstallDays").asInt());
         }
         store.setActivationDate(orderId, activation);
-        transition(orderId, status, report.blockingCodes().isEmpty() ? "KYC verified"
+        machine.transition(orderId, status, EventActor.SYSTEM, report.blockingCodes().isEmpty() ? "KYC verified"
                 : "KYC " + report.overall() + ": " + String.join(", ", report.blockingCodes()));
         log.info("KYC submit order {} -> {} blocking={} warnings={}", order.orderRef(), report.overall(),
                 report.blockingCodes(), report.warningCodes());
@@ -252,13 +275,20 @@ public class KycService {
         List<CheckResult> checks = store.latestChecks(orderId);
         String overall = checks.isEmpty() ? null : ValidationReport.of(checks).overall();
         String orderStatus = orders.find(orderId).map(OrderStore.Order::status).orElse(order.status());
-        String kycStatus = orderStatus.startsWith("KYC_") ? orderStatus : OrderStatus.KYC_PENDING_CONSENT;
-        return new KycView(orderId, order.orderRef(), orderStatus, kycStatus, consentView,
+        return new KycView(orderId, order.orderRef(), orderStatus, kycStatusOf(orderStatus), consentView,
                 docs.stream().map(d -> DocumentView.of(d, false)).toList(), missing, overall, checks,
                 store.activationDate(orderId).orElse(null));
     }
 
     // ---- helpers ---------------------------------------------------------------------------------------
+
+    /** The KYC's own state: anything after verification is still "verified"; a new order hasn't had consent yet. */
+    private static String kycStatusOf(String orderStatus) {
+        if (POST_KYC_STATUSES.contains(orderStatus)) {
+            return OrderStatus.KYC_VERIFIED;
+        }
+        return OrderStatus.QUOTE_ACCEPTED.equals(orderStatus) ? OrderStatus.KYC_PENDING_CONSENT : orderStatus;
+    }
 
     private OrderStore.Order order(UUID orderId) {
         return orders.find(orderId).orElseThrow(() -> new NotFoundException("Order not found: " + orderId));
@@ -274,11 +304,6 @@ public class KycService {
     private static boolean hasRequired(List<KycStore.Consent> consent) {
         return ConsentNotices.REQUIRED.stream().allMatch(p -> consent.stream()
                 .anyMatch(c -> c.purpose().equals(p) && c.granted()));
-    }
-
-    private void transition(UUID orderId, String status, String note) {
-        orders.updateStatus(orderId, status);
-        orders.addEvent(orderId, status, note);
     }
 
     /** Names of ordered products that need an active GSTIN (catalogue requires_gstin). */

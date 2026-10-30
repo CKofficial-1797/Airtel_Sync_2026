@@ -22,7 +22,7 @@ public record KycProperties(
         String tempDir,
         @DefaultValue("5242880") long maxUploadBytes,
         @DefaultValue("2555") int retentionDays,
-        @DefaultValue("2026-07-v1") String noticeVersion,
+        @DefaultValue("2026-07-v2") String noticeVersion,
         @DefaultValue("false") boolean fixtureCache,
         @DefaultValue("src/test/resources/kyc/fixtures") String fixtureDir,
         @DefaultValue("../data/kyc_documents") String specimenDir,

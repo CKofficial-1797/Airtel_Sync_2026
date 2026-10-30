@@ -56,7 +56,7 @@ describe("ConsentStep", () => {
     await user.click(agreeButton());
 
     expect(onAgree).toHaveBeenCalledWith({
-      noticeVersion: "2026-07-v1",
+      noticeVersion: "2026-07-v2",
       language: "en",
       purposes: { KYC_VERIFICATION: true, SERVICE_INSTALLATION: true, WHATSAPP_UPDATES: false },
     });

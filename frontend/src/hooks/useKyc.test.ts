@@ -93,6 +93,18 @@ describe("useKyc", () => {
     expect(result.current.view?.consent.active).toBe(false);
   });
 
+  it("a 409 means the order moved on: catch up with the server instead of showing an error", async () => {
+    const { ApiError } = await import("../api/client");
+    const { result } = await loaded();
+    vi.spyOn(api, "submitKyc").mockRejectedValue(new ApiError(409, "already checked", "KYC_CLOSED"));
+    vi.mocked(api.getKyc).mockResolvedValueOnce(k03);
+    await act(async () => {
+      await result.current.submit();
+    });
+    expect(result.current.submitError).toBeNull();
+    expect(result.current.view?.kycStatus).toBe("KYC_VERIFIED");
+  });
+
   it("a failed upload keeps the documents already saved", async () => {
     const { result } = await loaded();
     vi.spyOn(api, "uploadDocument").mockResolvedValueOnce(doc("GST_CERTIFICATE")).mockRejectedValueOnce(new NetworkError());

@@ -1,0 +1,101 @@
+{
+  "orderId": "1c035b64-da61-4181-aaba-cf119829cd9f",
+  "orderRef": "UD-260715-0041",
+  "businessName": "Trinity Bake House Pvt Ltd",
+  "currentStatus": "KYC_ACTION_REQUIRED",
+  "customerStep": 2,
+  "steps": [
+    {
+      "key": "ORDER_PLACED",
+      "labelEn": "Order placed",
+      "labelHi": "ऑर्डर हो गया",
+      "state": "DONE",
+      "date": "2026-07-15"
+    },
+    {
+      "key": "DOCUMENTS",
+      "labelEn": "Documents verified",
+      "labelHi": "दस्तावेज़ सत्यापित",
+      "state": "BLOCKED",
+      "date": null
+    },
+    {
+      "key": "SCHEDULED",
+      "labelEn": "Installation scheduled",
+      "labelHi": "इंस्टॉलेशन तय",
+      "state": "UPCOMING",
+      "date": null
+    },
+    {
+      "key": "INSTALLED",
+      "labelEn": "Installed",
+      "labelHi": "इंस्टॉल हो गया",
+      "state": "UPCOMING",
+      "date": null
+    },
+    {
+      "key": "ACTIVE",
+      "labelEn": "Active",
+      "labelHi": "सेवा चालू",
+      "state": "UPCOMING",
+      "date": null
+    }
+  ],
+  "items": [
+    {
+      "productName": "Business Postpaid 299",
+      "quantity": 2,
+      "etaDays": 1,
+      "etaDate": null
+    },
+    {
+      "productName": "Biz Fibre 100",
+      "quantity": 1,
+      "etaDays": 5,
+      "etaDate": null
+    }
+  ],
+  "etaDaysAfterVerification": 5,
+  "expectedActivationDate": null,
+  "etaMessageEn": "Business Postpaid 299 in 1 day, Biz Fibre 100 in 5 days",
+  "etaMessageHi": "Business Postpaid 299: 1 दिन में, Biz Fibre 100: 5 दिन में",
+  "installSlot": null,
+  "nextAction": {
+    "type": "FIX_DOCS",
+    "labelEn": "Fix documents",
+    "labelHi": "दस्तावेज़ ठीक करें",
+    "link": "/kyc/1c035b64-da61-4181-aaba-cf119829cd9f"
+  },
+  "onHold": null,
+  "blocked": {
+    "messageEn": "The address proof is dated 2025-10-31, 257 days old; it must be at most 90 days old.",
+    "messageHi": "पते का प्रमाण 2025-10-31 का है, यानी 257 दिन पुराना; यह 90 दिन से ज़्यादा पुराना नहीं होना चाहिए।",
+    "helpEn": "Upload a utility bill from the last 90 days.",
+    "helpHi": "पिछले 90 दिनों का बिजली/उपयोगिता बिल अपलोड करें।"
+  },
+  "events": [
+    {
+      "status": "KYC_ACTION_REQUIRED",
+      "textEn": "Your documents need a fix",
+      "textHi": "आपके दस्तावेज़ों में सुधार चाहिए",
+      "at": "2026-10-30T14:58:21.234669Z",
+      "businessDate": "2026-07-15"
+    },
+    {
+      "status": "KYC_IN_PROGRESS",
+      "textEn": "Ready for your documents",
+      "textHi": "आपके दस्तावेज़ों का इंतज़ार है",
+      "at": "2026-10-30T14:58:09.990416Z",
+      "businessDate": "2026-07-15"
+    },
+    {
+      "status": "QUOTE_ACCEPTED",
+      "textEn": "Order placed",
+      "textHi": "ऑर्डर हो गया",
+      "at": "2026-10-30T14:58:08.468843Z",
+      "businessDate": "2026-07-15"
+    }
+  ],
+  "lastUpdated": "2026-10-30T14:58:21.234669Z",
+  "monthlyTotalInr": 1597
+}

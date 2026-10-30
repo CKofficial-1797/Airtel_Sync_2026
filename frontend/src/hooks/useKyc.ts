@@ -6,6 +6,11 @@ import { withDocument, withSubmitResult } from "../lib/kyc";
 
 export type KycLoadError = "notFound" | "network" | "generic";
 
+/** Consent gone, or a verdict already stands (e.g. from another tab): the page should catch up with the server. */
+function stateMovedOn(e: unknown): boolean {
+  return e instanceof ConsentRequiredError || (e instanceof ApiError && e.status === 409);
+}
+
 /** All KYC state lives on the server; this hook mirrors GET /kyc, so a reload resumes at the right step. */
 export function useKyc(orderId: string) {
   const [view, setView] = useState<KycView | null>(null);
@@ -49,7 +54,7 @@ export function useKyc(orderId: string) {
         changes.current += 1;
         setView((v) => (v ? withDocument(v, doc) : v));
       } catch (e) {
-        if (e instanceof ConsentRequiredError) await load();
+        if (stateMovedOn(e)) await load();
         throw e;
       }
     },
@@ -64,7 +69,7 @@ export function useKyc(orderId: string) {
       changes.current += 1;
       setView((v) => (v ? withSubmitResult(v, result) : v));
     } catch (e) {
-      if (e instanceof ConsentRequiredError) await load();
+      if (stateMovedOn(e)) await load();
       else setSubmitError(e instanceof NetworkError ? "network" : "generic");
     } finally {
       setSubmitting(false);

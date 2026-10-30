@@ -3,6 +3,7 @@ package com.udyam.orders;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -39,8 +40,45 @@ public class JdbcOrderStore implements OrderStore {
     }
 
     @Override
-    public void addEvent(UUID orderId, String status, String note) {
-        jdbc.update("INSERT INTO order_event (order_id, status, note) VALUES (?, ?, ?)", orderId, status, note);
+    public void addEvent(UUID orderId, String status, String note, String actor, LocalDate businessDate) {
+        jdbc.update("INSERT INTO order_event (order_id, status, note, actor, business_date) VALUES (?, ?, ?, ?, ?)",
+                orderId, status, note, actor, businessDate);
+    }
+
+    @Override
+    public Optional<Order> findByRef(String orderRef) {
+        return jdbc.query("SELECT id FROM customer_order WHERE order_ref = ?",
+                (rs, i) -> rs.getObject("id", UUID.class), orderRef).stream().findFirst().flatMap(this::find);
+    }
+
+    @Override
+    public Tracking tracking(UUID orderId) {
+        return jdbc.query("""
+                SELECT install_slot_date, install_slot, hold_reason, hold_note, hold_previous_status, tracker_view_count
+                FROM customer_order WHERE id = ?
+                """, (rs, i) -> new Tracking(rs.getObject("install_slot_date", LocalDate.class),
+                rs.getString("install_slot"), rs.getString("hold_reason"), rs.getString("hold_note"),
+                rs.getString("hold_previous_status"), rs.getInt("tracker_view_count")), orderId)
+                .stream().findFirst().orElse(new Tracking(null, null, null, null, null, 0));
+    }
+
+    @Override
+    public void setInstallSlot(UUID orderId, LocalDate date, String slot) {
+        jdbc.update("UPDATE customer_order SET install_slot_date = ?, install_slot = ?, updated_at = now() WHERE id = ?",
+                date, slot, orderId);
+    }
+
+    @Override
+    public void setHold(UUID orderId, String reason, String note, String previousStatus) {
+        jdbc.update("""
+                UPDATE customer_order SET hold_reason = ?, hold_note = ?, hold_previous_status = ?, updated_at = now()
+                WHERE id = ?
+                """, reason, note, previousStatus, orderId);
+    }
+
+    @Override
+    public void incrementTrackerViews(UUID orderId) {
+        jdbc.update("UPDATE customer_order SET tracker_view_count = tracker_view_count + 1 WHERE id = ?", orderId);
     }
 
     @Override
@@ -63,9 +101,11 @@ public class JdbcOrderStore implements OrderStore {
 
     @Override
     public List<Event> events(UUID orderId) {
-        return jdbc.query("SELECT status, note, created_at FROM order_event WHERE order_id = ? ORDER BY id",
-                (rs, i) -> new Event(rs.getString("status"), rs.getString("note"),
-                        rs.getObject("created_at", OffsetDateTime.class)), orderId);
+        return jdbc.query("""
+                SELECT status, note, actor, business_date, created_at FROM order_event WHERE order_id = ? ORDER BY id
+                """, (rs, i) -> new Event(rs.getString("status"), rs.getString("note"), rs.getString("actor"),
+                rs.getObject("business_date", LocalDate.class), rs.getObject("created_at", OffsetDateTime.class)),
+                orderId);
     }
 
     @Override

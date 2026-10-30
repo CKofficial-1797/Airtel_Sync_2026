@@ -33,6 +33,7 @@ management:
 app:
   data-dir: ../data               # resolved relative to the working directory (backend/)
   reference-date: 2026-07-15      # treat as "today" for all date checks (data/README.md)
+  demo-mode: false                # true enables /api/demo/** (video only); set it in application-local.yml
   cors:
     allowed-origins:
       - http://localhost:5173
@@ -46,7 +47,7 @@ app:
     temp-dir: ${KYC_TEMP_DIR:}    # empty = {java.io.tmpdir}/udyam-kyc; uploads are deleted right after extraction
     max-upload-bytes: 5242880     # 5 MB, same as the ai-service
     retention-days: 2555          # extracted fields kept "as required by law" (shown in the consent notice)
-    notice-version: 2026-07-v1
+    notice-version: 2026-07-v2    # v2: withdrawal limits once a service is installed
     fixture-cache: ${KYC_FIXTURE_CACHE:false}   # DEV ONLY: specimen uploads reuse golden fixtures (no Gemini call)
     fixture-dir: src/test/resources/kyc/fixtures
     specimen-dir: ../data/kyc_documents

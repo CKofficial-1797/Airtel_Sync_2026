@@ -6,7 +6,8 @@ import { Kyc } from "./pages/Kyc";
 import { Landing } from "./pages/Landing";
 import { NotFound } from "./pages/NotFound";
 import { Quote } from "./pages/Quote";
-import { TrackPlaceholder } from "./pages/TrackPlaceholder";
+import { Track } from "./pages/Track";
+import { TrackLookup } from "./pages/TrackLookup";
 
 export function App() {
   return (
@@ -17,8 +18,8 @@ export function App() {
           <Route path="/advisor" element={<Advisor />} />
           <Route path="/quote" element={<Quote />} />
           <Route path="/kyc/:orderId" element={<Kyc />} />
-          <Route path="/track" element={<TrackPlaceholder />} />
-          <Route path="/track/:orderId" element={<TrackPlaceholder />} />
+          <Route path="/track" element={<TrackLookup />} />
+          <Route path="/track/:orderId" element={<Track />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Layout>

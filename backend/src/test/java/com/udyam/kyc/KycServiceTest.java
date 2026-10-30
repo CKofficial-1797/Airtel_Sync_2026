@@ -10,7 +10,9 @@ import com.udyam.kyc.extract.ExtractResult;
 import com.udyam.kyc.extract.FixtureCache;
 import com.udyam.orders.InMemoryOrderStore;
 import com.udyam.orders.OrderService;
+import com.udyam.common.config.BusinessClock;
 import com.udyam.orders.OrderStatus;
+import com.udyam.orders.OrderStatusMachine;
 import com.udyam.orders.OrderStore;
 import com.udyam.rules.RulesFixture;
 import com.udyam.rules.quote.QuoteItem;
@@ -72,9 +74,9 @@ class KycServiceTest {
 
     private KycService service(boolean fixtureCache) {
         KycProperties props = KycFixtures.props(tempDir, fixtureCache);
-        return new KycService(orderStore, kycStore, KycFixtures.VALIDATOR, extractor,
-                new FixtureCache(props, KycFixtures.JSON), new ConsentNotices(props), props, RulesFixture.PROVIDER,
-                RulesFixture.APP);
+        return new KycService(orderStore, new OrderStatusMachine(orderStore, new BusinessClock(RulesFixture.APP)), kycStore,
+                KycFixtures.VALIDATOR, extractor, new FixtureCache(props, KycFixtures.JSON), new ConsentNotices(props),
+                props, RulesFixture.PROVIDER, RulesFixture.APP);
     }
 
     private UUID consentedOrder() {
@@ -358,6 +360,92 @@ class KycServiceTest {
         assertThat(r.overall()).isEqualTo("ACTION_REQUIRED");
         assertThat(r.blockingChecks()).containsExactly("C01");
         assertThat(r.estimatedActivationDate()).isNull();
+    }
+
+    // ---- rules the status machine added (Phase 8) ----
+
+    private void assertClosed(Runnable call) {
+        assertApiError(call, HttpStatus.CONFLICT, "KYC_CLOSED");
+    }
+
+    @Test
+    void aVerdictThatStandsCantBeReopenedByAnUploadOrAResubmit() {
+        UUID verified = consentedOrder();
+        uploadAll(verified, "K03");
+        kyc.submit(verified);
+        assertClosed(() -> kyc.upload(verified, "GST_CERTIFICATE", KycFixtures.specimen("K03", DocType.GST_CERTIFICATE)));
+        assertClosed(() -> kyc.submit(verified));
+
+        UUID rejected = consentedOrder();
+        uploadAll(rejected, "K06");
+        kyc.submit(rejected);
+        assertClosed(() -> kyc.upload(rejected, "GST_CERTIFICATE", KycFixtures.specimen("K03", DocType.GST_CERTIFICATE)));
+        assertThat(orderStore.find(rejected).orElseThrow().status()).isEqualTo(OrderStatus.KYC_REJECTED);
+    }
+
+    @Test
+    void submitNeedsANewDocumentAfterActionRequired() {
+        UUID id = consentedOrder();
+        uploadAll(id, "K11");
+        kyc.submit(id);
+        assertClosed(() -> kyc.submit(id));
+        kyc.upload(id, "ADDRESS_PROOF", KycFixtures.specimen("K11", DocType.ADDRESS_PROOF));
+        assertThat(kyc.submit(id).overall()).isEqualTo("ACTION_REQUIRED");
+    }
+
+    @Test
+    void aRejectedOwnerCanWithdrawAndApplyAgain() {
+        UUID id = consentedOrder();
+        uploadAll(id, "K06");
+        kyc.submit(id);
+
+        kyc.withdrawConsent(id);
+        assertThat(orderStore.find(id).orElseThrow().status()).isEqualTo(OrderStatus.KYC_PENDING_CONSENT);
+
+        kyc.giveConsent(id, new KycService.ConsentRequest("2026-07-v1", "en", ALL_REQUIRED));
+        uploadAll(id, "K03");
+        assertThat(kyc.submit(id).overall()).isEqualTo("VERIFIED");
+    }
+
+    @Test
+    void withdrawalIsRefusedOnceInstalled() {
+        UUID id = consentedOrder();
+        uploadAll(id, "K03");
+        kyc.submit(id);
+        OrderStatusMachine machine = new OrderStatusMachine(orderStore, new BusinessClock(RulesFixture.APP));
+        machine.transition(id, OrderStatus.INSTALL_SCHEDULED, "SYSTEM", null);
+        machine.transition(id, OrderStatus.INSTALLED, "SYSTEM", null);
+
+        assertApiError(() -> kyc.withdrawConsent(id), HttpStatus.CONFLICT, "WITHDRAW_NOT_ALLOWED");
+        assertThat(kycStore.documents(id)).hasSize(4);
+        assertThat(kyc.view(id).kycStatus()).isEqualTo(OrderStatus.KYC_VERIFIED);
+    }
+
+    @Test
+    void withdrawingWithABookedSlotReleasesIt() {
+        UUID id = consentedOrder();
+        uploadAll(id, "K03");
+        kyc.submit(id);
+        new OrderStatusMachine(orderStore, new BusinessClock(RulesFixture.APP))
+                .transition(id, OrderStatus.INSTALL_SCHEDULED, "CUSTOMER", null);
+        orderStore.setInstallSlot(id, RulesFixture.REFERENCE_DATE.plusDays(5), "MORNING");
+
+        kyc.withdrawConsent(id);
+        assertThat(orderStore.tracking(id).slotDate()).isNull();
+        assertThat(orderStore.find(id).orElseThrow().status()).isEqualTo(OrderStatus.KYC_PENDING_CONSENT);
+    }
+
+    @Test
+    void theKycStatusStaysVerifiedOnceTheOrderMovesOn() {
+        UUID id = consentedOrder();
+        uploadAll(id, "K03");
+        kyc.submit(id);
+        OrderStatusMachine machine = new OrderStatusMachine(orderStore, new BusinessClock(RulesFixture.APP));
+        machine.transition(id, OrderStatus.INSTALL_SCHEDULED, "SYSTEM", null);
+        assertThat(kyc.view(id).kycStatus()).isEqualTo(OrderStatus.KYC_VERIFIED);
+        machine.hold(id, "PAYMENT_PENDING", null, "DEMO");
+        assertThat(kyc.view(id).kycStatus()).isEqualTo(OrderStatus.KYC_VERIFIED);
+        assertThat(kyc.view(orders.createBlank("new")).kycStatus()).isEqualTo(OrderStatus.KYC_PENDING_CONSENT);
     }
 
     /** Regression: check messages quote names, so they must not survive a withdrawal. */

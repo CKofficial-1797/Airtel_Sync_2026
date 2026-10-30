@@ -41,6 +41,8 @@ export function UploadStep({ view, focusSlot, submitting, submitError, onUpload,
   const lastFailures = view.overall ? view.checks.filter((c) => c.status === "FAIL") : [];
   const missingNames = unread.map((d) => t(`kyc.doc.${d}.short`)).join(", ");
   const checkLabel = view.overall ? t("kyc.upload.checkAgain") : t("kyc.upload.check");
+  // The verdict stands until a document changes: checking the same documents again can't change it.
+  const awaitingFix = view.kycStatus === "KYC_ACTION_REQUIRED";
 
   return (
     <div className="space-y-4">
@@ -95,13 +97,14 @@ export function UploadStep({ view, focusSlot, submitting, submitError, onUpload,
         <button
           type="button"
           onClick={onSubmit}
-          disabled={unread.length > 0 || anyBusy || submitting}
+          disabled={unread.length > 0 || anyBusy || submitting || awaitingFix}
           className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-teal-700 px-4 font-semibold text-white hover:bg-teal-800 disabled:opacity-60"
         >
           {submitting && <Loader2 className="size-4 animate-spin" aria-hidden />}
           {submitting ? t("kyc.upload.checking") : checkLabel}
         </button>
-        {unread.length > 0 && (
+        {awaitingFix && <p className="mt-2 text-center text-sm text-slate-600">{t("kyc.upload.fixFirst")}</p>}
+        {unread.length > 0 && !awaitingFix && (
           <button
             type="button"
             onClick={() => setConfirming(true)}

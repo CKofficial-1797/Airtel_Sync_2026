@@ -131,7 +131,7 @@
       "howLongTitle": "How long",
       "howLongBody": "Only as long as telecom rules require by law (currently {{days}} days), then deleted.",
       "rightsTitle": "Your rights",
-      "rightsBody": "Withdraw your consent anytime: your documents and details are deleted and the KYC stops.",
+      "rightsBody": "Withdraw your consent anytime before your service is installed: your documents and details are deleted and the KYC stops. Once installed, telecom rules require us to keep these records.",
       "contactTitle": "Contact",
       "readFull": "Read full notice",
       "noticeVersion": "Notice version {{version}}",
@@ -201,7 +201,8 @@
       "noAllBody": "Still missing or unreadable: {{docs}}. We'll check what you've added and tell you what's needed to finish.",
       "noAllConfirm": "Check what I've added",
       "backToResults": "Back to results",
-      "lastCheck": "From your last check"
+      "lastCheck": "From your last check",
+      "fixFirst": "Upload the corrected document first, then check again."
     },
     "results": {
       "verifiedTitle": "Documents verified ✓",
@@ -250,11 +251,77 @@
       "confirm": "Yes, withdraw",
       "done": "Your documents and details were deleted.",
       "failed": "We couldn't withdraw your consent just now. Please try again."
-    }
+    },
+    "cancelled": "This order was cancelled."
   },
   "track": {
     "title": "Track my order",
-    "body": "Tracking comes next."
+    "notFound": "We couldn't find this order.",
+    "findOrder": "Find my order",
+    "copy": "Copy order reference",
+    "copied": "Order reference copied.",
+    "copyFailed": "Couldn't copy. Please note the reference down.",
+    "lastUpdated": "Last updated {{time}}",
+    "refresh": "Refresh",
+    "activity": "Activity",
+    "timeline": {
+      "heading": "Your order's progress",
+      "planned": "planned {{date}}",
+      "state": {
+        "DONE": "Done",
+        "CURRENT": "In progress",
+        "UPCOMING": "Coming up",
+        "BLOCKED": "Needs attention",
+        "ON_HOLD": "On hold"
+      }
+    },
+    "eta": {
+      "heading": "Expected activation",
+      "by": "By {{date}}",
+      "activeSince": "Active since {{date}}",
+      "onHold": "New date once this clears",
+      "afterVerification_one": "{{count}} day after your documents are verified",
+      "afterVerification_other": "{{count}} days after your documents are verified",
+      "days_one": "{{count}} day",
+      "days_other": "{{count}} days"
+    },
+    "slot": {
+      "date": "Choose a date",
+      "time": "Choose a time",
+      "noSundays": "We don't install on Sundays.",
+      "MORNING": "Morning",
+      "AFTERNOON": "Afternoon",
+      "EVENING": "Evening",
+      "confirm": "Confirm slot",
+      "booked": "Installation booked",
+      "change": "Change slot",
+      "invalid": "That slot isn't available any more. Please pick another."
+    },
+    "hold": {
+      "title": "Your order is on hold"
+    },
+    "help": {
+      "heading": "Help",
+      "whenQ": "When will my services start?",
+      "whenA": "Each service has its own date, shown above. They count from the day your documents are verified, and the last one sets your activation date.",
+      "changeSlotQ": "Can I change my installation slot?",
+      "changeSlotA": "Yes. Use \"Change slot\" on this page any time before the installation.",
+      "holdQ": "What if my order goes on hold?",
+      "holdA": "This page explains why and what happens next. Nothing is lost, and the order continues from the same step.",
+      "callback": "Request a call back"
+    },
+    "lookup": {
+      "heading": "Find your order",
+      "body": "Use your order reference and the PIN code of your installation address.",
+      "orderRef": "Order reference",
+      "orderRefError": "Enter the reference as shown on your order, like UD-260715-0042.",
+      "pincode": "Installation PIN code",
+      "pincodeError": "Enter your 6-digit PIN code.",
+      "submit": "Find my order",
+      "notFound": "Order not found. Please check the details and try again.",
+      "rateLimited": "Too many attempts. Please try again in a few minutes.",
+      "hint": "This works once your address proof has been read. Before that, use the link from your order page."
+    }
   },
   "notFound": {
     "title": "Page not found",

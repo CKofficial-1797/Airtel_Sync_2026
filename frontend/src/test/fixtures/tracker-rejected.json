@@ -1,0 +1,101 @@
+{
+  "orderId": "e6b8e1c1-b49a-4e10-90f7-f5d553ddc479",
+  "orderRef": "UD-260715-0042",
+  "businessName": "Saffron Unisex Salon",
+  "currentStatus": "KYC_REJECTED",
+  "customerStep": 2,
+  "steps": [
+    {
+      "key": "ORDER_PLACED",
+      "labelEn": "Order placed",
+      "labelHi": "ऑर्डर हो गया",
+      "state": "DONE",
+      "date": "2026-07-15"
+    },
+    {
+      "key": "DOCUMENTS",
+      "labelEn": "Documents verified",
+      "labelHi": "दस्तावेज़ सत्यापित",
+      "state": "BLOCKED",
+      "date": null
+    },
+    {
+      "key": "SCHEDULED",
+      "labelEn": "Installation scheduled",
+      "labelHi": "इंस्टॉलेशन तय",
+      "state": "UPCOMING",
+      "date": null
+    },
+    {
+      "key": "INSTALLED",
+      "labelEn": "Installed",
+      "labelHi": "इंस्टॉल हो गया",
+      "state": "UPCOMING",
+      "date": null
+    },
+    {
+      "key": "ACTIVE",
+      "labelEn": "Active",
+      "labelHi": "सेवा चालू",
+      "state": "UPCOMING",
+      "date": null
+    }
+  ],
+  "items": [
+    {
+      "productName": "Business Postpaid 299",
+      "quantity": 2,
+      "etaDays": 1,
+      "etaDate": null
+    },
+    {
+      "productName": "Biz Fibre 100",
+      "quantity": 1,
+      "etaDays": 5,
+      "etaDate": null
+    }
+  ],
+  "etaDaysAfterVerification": 5,
+  "expectedActivationDate": null,
+  "etaMessageEn": "Business Postpaid 299 in 1 day, Biz Fibre 100 in 5 days",
+  "etaMessageHi": "Business Postpaid 299: 1 दिन में, Biz Fibre 100: 5 दिन में",
+  "installSlot": null,
+  "nextAction": {
+    "type": "NONE",
+    "labelEn": "See the details above.",
+    "labelHi": "ऊपर दी गई जानकारी देखें।",
+    "link": null
+  },
+  "onHold": null,
+  "blocked": {
+    "messageEn": "GSTIN 08YKZ*****1Z0 fails the format/checksum test and no safe OCR correction exists. The document may have been altered.",
+    "messageHi": "GSTIN 08YKZ*****1Z0 फ़ॉर्मेट/चेकसम जाँच में विफल है और कोई सुरक्षित OCR सुधार नहीं है। दस्तावेज़ में बदलाव किया गया हो सकता है।",
+    "helpEn": "Please contact Accel Business support with your original documents.",
+    "helpHi": "कृपया अपने मूल दस्तावेज़ों के साथ Accel Business सहायता से संपर्क करें।"
+  },
+  "events": [
+    {
+      "status": "KYC_REJECTED",
+      "textEn": "We couldn't verify your documents",
+      "textHi": "हम आपके दस्तावेज़ सत्यापित नहीं कर सके",
+      "at": "2026-10-30T14:58:40.267034Z",
+      "businessDate": "2026-07-15"
+    },
+    {
+      "status": "KYC_IN_PROGRESS",
+      "textEn": "Ready for your documents",
+      "textHi": "आपके दस्तावेज़ों का इंतज़ार है",
+      "at": "2026-10-30T14:58:29.739817Z",
+      "businessDate": "2026-07-15"
+    },
+    {
+      "status": "QUOTE_ACCEPTED",
+      "textEn": "Order placed",
+      "textHi": "ऑर्डर हो गया",
+      "at": "2026-10-30T14:58:28.461444Z",
+      "businessDate": "2026-07-15"
+    }
+  ],
+  "lastUpdated": "2026-10-30T14:58:40.267034Z",
+  "monthlyTotalInr": 1597
+}
