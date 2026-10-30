@@ -33,7 +33,7 @@ Living handoff file. Every phase reads this first and updates it at the end (app
   - Install: `ai-service/.venv/Scripts/python -m pip install -r ai-service/requirements.txt`
   - Run (from `ai-service/`): `.venv\Scripts\python -m uvicorn app.main:app --reload --port 8000` (bash: `.venv/bin/python ...`)
   - Start order: Spring (:8080) first, then ai-service (:8000). The advisor UI talks only to Spring.
-  - Gemini check (1 call): `.venv\Scripts\python scripts\check_gemini.py` → `OK gemini-2.5-flash`
+  - Gemini check (1 call): `.venv\Scripts\python scripts\check_gemini.py` → `OK gemini-3-flash-preview`
 - **frontend (Phase 5)**: Node 24.16 / npm 11.13. From `frontend/`: `npm install` (first time), `npm run dev` → http://localhost:5173 (`npm run dev -- --host` to test on a phone over LAN), `npm run test` (Vitest), `npm run build` (`tsc --noEmit && vite build` → `dist/`). The Vite dev server proxies `/api` → `http://localhost:8080`, so the browser never calls Spring cross-origin and never calls the ai-service.
   - Full stack for a demo: Spring (:8080) → ai-service (:8000) → `npm run dev` (:5173).
 - **KYC (Phase 6)**: uploads go Spring → ai-service `/extract` (needs the ai-service running and a Gemini key). **Quota saver / offline demo:** start Spring with `KYC_FIXTURE_CACHE=true` (PowerShell `$env:KYC_FIXTURE_CACHE = "true"`): any upload byte-identical to a specimen image in `data/kyc_documents/` is answered from its golden fixture (no ai-service, no Gemini): the fixture in its own slot, `WRONG_DOC_TYPE` in another slot (the blurred K04 GST stays `UNREADABLE` in any slot). Other uploads still go to the ai-service. Off by default.
@@ -422,7 +422,7 @@ Phase 4 added:
 | `app.ai-service.base-url` | `${AI_SERVICE_URL:http://localhost:8000}` | Python advisor |
 | `app.ai-service.token` | `${INTERNAL_TOKEN:}` | Shared secret (set in `application-local.yml`); empty → ai-service answers 401 → 503 AI_UNAVAILABLE |
 | `app.ai-service.timeout-ms` | 45000 | Read timeout for /chat |
-| ai-service `.env` | `GEMINI_API_KEY`, `GEMINI_MODEL=gemini-2.5-flash`, `BACKEND_BASE_URL=http://localhost:8080`, `INTERNAL_TOKEN`, `BACKEND_TIMEOUT_S=10`, `GEMINI_TIMEOUT_S=30` | Settings in `app/config.py` (also `temperature=0.2`, `max_tool_iterations=6`, `gemini_max_attempts=3`) |
+| ai-service `.env` | `GEMINI_API_KEY`, `GEMINI_MODEL=gemini-3-flash-preview`, `BACKEND_BASE_URL=http://localhost:8080`, `INTERNAL_TOKEN`, `BACKEND_TIMEOUT_S=10`, `GEMINI_TIMEOUT_S=30` | Settings in `app/config.py` (also `temperature=0.2`, `max_tool_iterations=6`, `gemini_max_attempts=3`) |
 
 Phase 6 added:
 
@@ -435,7 +435,7 @@ Phase 6 added:
 | `app.kyc.notice-version` | `2026-07-v1` | Consent must quote the current version |
 | `app.kyc.fixture-cache` | `${KYC_FIXTURE_CACHE:false}` | DEV ONLY specimen fixture cache |
 | `app.kyc.fixture-dir` / `specimen-dir` / `expected-verdicts` | `src/test/resources/kyc/fixtures` / `../data/kyc_documents` / `src/test/resources/kyc/expected-verdicts.json` | Harness + cache (relative to `backend/`) |
-| ai-service `Settings` | `gemini_extract_model=gemini-2.5-flash-lite`, `blur_threshold=100.0`, `skew_threshold_deg=1.5`, `max_upload_bytes=5 MB` | `.env` keys `GEMINI_EXTRACT_MODEL`, `BLUR_THRESHOLD`, `SKEW_THRESHOLD_DEG`, `MAX_UPLOAD_BYTES` |
+| ai-service `Settings` | `gemini_extract_model=gemini-3.1-flash-lite`, `blur_threshold=100.0`, `skew_threshold_deg=1.5`, `max_upload_bytes=5 MB` | `.env` keys `GEMINI_EXTRACT_MODEL`, `BLUR_THRESHOLD`, `SKEW_THRESHOLD_DEG`, `MAX_UPLOAD_BYTES` |
 
 Phase 8 added: `app.demo-mode` (default `false`, env `APP_DEMO_MODE`; enables `/api/demo/**`). `app.kyc.notice-version` is now `2026-07-v2`.
 
@@ -949,3 +949,7 @@ JUnit 480 (68 new), pytest 146, Vitest 163 (41 new). `npm run build` passes.
 - Right after boot, Insights can answer 503 `RULES_DATA_NOT_READY` for a few seconds.
 - `hi.json` has no back-office text, so staff pages fall back to English. Recharts was not needed: the charts are plain bars, with a table view of the lift chart.
 - `README.md` is still the Phase 1 text.
+
+### Gemini models changed (2026-10-31)
+
+Google closed `gemini-2.5-flash` and `gemini-2.5-flash-lite` to new API keys (404 NOT_FOUND), which stopped the advisor and KYC reading. Defaults are now `gemini-3-flash-preview` (advisor) and `gemini-3.1-flash-lite` (document reading); override with `GEMINI_MODEL` and `GEMINI_EXTRACT_MODEL` in `ai-service/.env`. On the new models, the advisor ran in the browser in English and Hindi, and K03, K11 and K04 gave their expected results. The live evals recorded earlier (scenarios 1-3) ran on `gemini-2.5-flash`; scenarios 4-15 have still not run. `gemini-3-flash-preview` is a preview model, so recheck it before the demo.

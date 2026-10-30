@@ -49,7 +49,7 @@ Uploads go to a temp file only for the extraction call and are deleted straight 
 | Frontend | React 18, TypeScript, Vite 8, Tailwind CSS 4, react-i18next |
 | Backend | Spring Boot 3.5, Java 21, Maven, Flyway |
 | AI service | Python 3.12, FastAPI, google-genai, OpenCV |
-| AI models | `gemini-2.5-flash` (advisor), `gemini-2.5-flash-lite` (document reading) |
+| AI models | `gemini-3-flash-preview` (advisor), `gemini-3.1-flash-lite` (document reading) |
 | Database | Neon serverless PostgreSQL (no Docker or local Postgres) |
 | Propensity model | scikit-learn logistic regression, trained offline |
 

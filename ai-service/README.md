@@ -65,7 +65,8 @@ Spring on :8080 and ai-service on :8000 must be running.
 | Key | Default | Purpose |
 |---|---|---|
 | `GEMINI_API_KEY` | - | Google AI Studio key |
-| `GEMINI_MODEL` | `gemini-2.5-flash` | Model |
+| `GEMINI_MODEL` | `gemini-3-flash-preview` | Advisor model |
+| `GEMINI_EXTRACT_MODEL` | `gemini-3.1-flash-lite` | Document reading model |
 | `BACKEND_BASE_URL` | `http://localhost:8080` | Spring |
 | `INTERNAL_TOKEN` | - | Shared secret, required on /chat and sent to Spring |
 | `BACKEND_TIMEOUT_S` / `GEMINI_TIMEOUT_S` | 10 / 30 | Timeouts |
