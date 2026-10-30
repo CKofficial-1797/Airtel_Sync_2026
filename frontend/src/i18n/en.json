@@ -119,16 +119,142 @@
     "placing": "Placing your order…"
   },
   "kyc": {
-    "title": "Order created",
-    "orderRef": "Order reference",
-    "monthly": "Monthly total",
-    "comingNext": "KYC comes next",
-    "body": "Next you'll upload your GSTIN / Udyam documents to verify your business. This step is coming in the next update.",
-    "notFound": "We couldn't find this order."
+    "title": "Business KYC",
+    "orderRef": "Order",
+    "notFound": "We couldn't find this order.",
+    "consent": {
+      "heading": "Before we check your documents",
+      "whatTitle": "What we collect",
+      "whatBody": "4 business documents: GST certificate, Udyam certificate, authorised signatory ID and address proof.",
+      "keepTitle": "What we keep",
+      "keepBody": "Only the details we read from them. The photos are deleted right after reading.",
+      "howLongTitle": "How long",
+      "howLongBody": "Only as long as telecom rules require by law (currently {{days}} days), then deleted.",
+      "rightsTitle": "Your rights",
+      "rightsBody": "Withdraw your consent anytime: your documents and details are deleted and the KYC stops.",
+      "contactTitle": "Contact",
+      "readFull": "Read full notice",
+      "noticeVersion": "Notice version {{version}}",
+      "purposesTitle": "Why we need them",
+      "required": "Required",
+      "optional": "Optional",
+      "agree": "Agree & continue",
+      "requiredHint": "Tick the required items to continue."
+    },
+    "doc": {
+      "GST_CERTIFICATE": {
+        "title": "GST certificate",
+        "short": "GST certificate",
+        "hint": "Photo of the full page, flat, in good light"
+      },
+      "UDYAM_CERTIFICATE": {
+        "title": "Udyam certificate",
+        "short": "Udyam certificate",
+        "hint": "Photo of the full page, flat, in good light"
+      },
+      "SIGNATORY_ID": {
+        "title": "Authorised signatory ID",
+        "short": "signatory ID",
+        "hint": "The whole card, with name and validity date clear"
+      },
+      "ADDRESS_PROOF": {
+        "title": "Address proof (electricity bill)",
+        "short": "address proof",
+        "hint": "A bill from the last 90 days, full page"
+      }
+    },
+    "upload": {
+      "heading": "Add your 4 documents",
+      "status": {
+        "empty": "Not added yet",
+        "uploading": "Reading your document…",
+        "read": "Read",
+        "unreadable": "Unreadable",
+        "wrong": "Wrong document"
+      },
+      "takePhoto": "Take photo",
+      "retake": "Retake photo",
+      "choose": "Choose photo",
+      "previewAlt": "Photo of your {{doc}}",
+      "summary": {
+        "gstin": "GSTIN",
+        "gstinBlank": "GSTIN not found on the document",
+        "udyam": "Udyam no.",
+        "udyamBlank": "Udyam number not found on the document",
+        "idNumber": "ID no.",
+        "idNumberBlank": "ID number not found on the document",
+        "consumerNumber": "Consumer no.",
+        "consumerNumberBlank": "Consumer number not found on the document"
+      },
+      "errors": {
+        "type": "Please use a clear PNG or JPEG photo.",
+        "size": "This file is too large. Please use a photo under 5 MB.",
+        "decode": "We couldn't open this photo. Please take it again.",
+        "busy": "Document reading is busy right now. Your earlier documents are safe; please try again in a minute."
+      },
+      "privacy": "Photos are deleted right after reading",
+      "check": "Check my documents",
+      "checkAgain": "Check again",
+      "checking": "Checking your documents…",
+      "noAll": "I don't have all documents",
+      "noAllTitle": "Check without all documents?",
+      "noAllBody": "Still missing or unreadable: {{docs}}. We'll check what you've added and tell you what's needed to finish.",
+      "noAllConfirm": "Check what I've added",
+      "backToResults": "Back to results",
+      "lastCheck": "From your last check"
+    },
+    "results": {
+      "verifiedTitle": "Documents verified ✓",
+      "activation": "Expected activation by {{date}}",
+      "track": "Track my order",
+      "almostThere_one": "Almost there: {{count}} thing to fix",
+      "almostThere_other": "Almost there: {{count}} things to fix",
+      "almostThereBody": "Fix this and check again. Everything else is saved.",
+      "toFix": "To fix",
+      "reupload": "Re-upload {{doc}}",
+      "upload": "Upload {{doc}}",
+      "changeOrder": "Change my order",
+      "rejectedTitle": "We couldn't verify your business",
+      "why": "Why, and what you can do",
+      "alsoFound": "We also noticed",
+      "callback": "Request a call back",
+      "callbackDone": "Thanks! Our team will call you back.",
+      "ocrTitle": "Corrected automatically",
+      "notes": "Good to know",
+      "allChecks_one": "All checks ({{count}} passed)",
+      "allChecks_other": "All checks ({{count}} passed)",
+      "status": {
+        "PASS": "Passed",
+        "WARN": "Note",
+        "FAIL": "Problem",
+        "SKIPPED": "Not checked"
+      },
+      "reason": {
+        "C04": "The GSTIN on the certificate doesn't match official records.",
+        "C05": "This GSTIN isn't in the GST registry.",
+        "C06": "Your GSTIN isn't active in the GST registry.",
+        "C06Cancelled": "Your GSTIN is cancelled in the GST registry.",
+        "C06Suspended": "Your GSTIN is suspended in the GST registry.",
+        "C07": "The names on your GST certificate don't match the GST registry.",
+        "C09": "Your Udyam details don't match the Udyam registry.",
+        "C10": "Business names on your documents don't match.",
+        "C11": "The signatory isn't the proprietor named on the GST certificate.",
+        "C12": "The address proof is for a different address.",
+        "C13": "The state in your GSTIN doesn't match your address."
+      }
+    },
+    "withdraw": {
+      "link": "Withdraw consent",
+      "title": "Withdraw your consent?",
+      "body": "Your documents and details will be deleted and the KYC will stop. You can start again later.",
+      "confirm": "Yes, withdraw",
+      "done": "Your documents and details were deleted.",
+      "failed": "We couldn't withdraw your consent just now. Please try again."
+    }
   },
   "track": {
     "title": "Track my order",
-    "body": "Order tracking is coming next."
+    "body": "Tracking comes next."
   },
   "notFound": {
     "title": "Page not found",
@@ -139,5 +265,14 @@
     "title": "Something went wrong",
     "body": "Please reload the page. Your chat is saved.",
     "reload": "Reload"
+  },
+  "journey": {
+    "label": "Order progress",
+    "advisor": "Advisor",
+    "quote": "Quote",
+    "kyc": "KYC",
+    "track": "Track",
+    "done": "(done)",
+    "current": "(current step)"
   }
 }

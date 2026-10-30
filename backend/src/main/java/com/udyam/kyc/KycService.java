@@ -127,16 +127,16 @@ public class KycService {
         return view(orderId);
     }
 
-    /** DPDP withdrawal: consent closed, extracted fields + check evidence deleted, order back to pending consent. */
+    /** DPDP withdrawal: consent closed, documents + check runs deleted, order back to pending consent. */
     @Transactional
     public KycView withdrawConsent(UUID orderId) {
         OrderStore.Order order = order(orderId);
         int withdrawn = store.withdrawConsent(orderId);
-        store.purgeExtractedData(orderId);
+        store.deleteDocumentsAndChecks(orderId);
         store.setActivationDate(orderId, null);
         if (withdrawn > 0) {
-            transition(orderId, OrderStatus.KYC_PENDING_CONSENT, "KYC consent withdrawn; extracted KYC data deleted");
-            log.info("KYC consent withdrawn for order {}; extracted data purged", order.orderRef());
+            transition(orderId, OrderStatus.KYC_PENDING_CONSENT, "KYC consent withdrawn; KYC documents and checks deleted");
+            log.info("KYC consent withdrawn for order {}; documents and checks deleted", order.orderRef());
         }
         return view(orderId);
     }
@@ -348,10 +348,15 @@ public class KycService {
                         "फ़ोटो धुंधली है। अच्छी रोशनी में, दस्तावेज़ को मेज़ पर सीधा रखकर दोबारा फ़ोटो लें और अपलोड करें।");
             }
             if (ExtractResult.WRONG_DOC_TYPE.equals(d.status())) {
-                return Text.of("This looks like a different document (" + d.detectedDocType() + "). Upload the "
-                                + d.docType() + " in this slot.",
-                        "यह कोई दूसरा दस्तावेज़ लगता है (" + d.detectedDocType() + ")। इस जगह पर " + d.docType()
-                                + " अपलोड करें।");
+                Text slot = d.docType().label();
+                return DocType.parse(d.detectedDocType()).map(DocType::label)
+                        .map(found -> Text.of("This looks like the " + found.en() + ", not the " + slot.en()
+                                        + ". Upload the " + slot.en() + " here.",
+                                "यह " + found.hi() + " लगता है, " + slot.hi() + " नहीं। यहाँ " + slot.hi()
+                                        + " अपलोड करें।"))
+                        .orElse(Text.of("This doesn't look like the " + slot.en() + ". Upload the " + slot.en()
+                                        + " here.",
+                                "यह " + slot.hi() + " नहीं लगता। यहाँ " + slot.hi() + " अपलोड करें।"));
             }
             return null;
         }

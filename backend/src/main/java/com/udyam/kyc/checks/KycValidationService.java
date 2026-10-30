@@ -65,12 +65,6 @@ public class KycValidationService {
     private static final Text REUPLOAD_CLEAR = Text.of("Upload a clear photo of the full document.",
             "पूरे दस्तावेज़ की साफ़ फ़ोटो अपलोड करें।");
 
-    private static final Map<DocType, Text> DOC_NAMES = Map.of(
-            GST_CERTIFICATE, Text.of("GST certificate", "GST प्रमाणपत्र"),
-            UDYAM_CERTIFICATE, Text.of("Udyam certificate", "उद्यम प्रमाणपत्र"),
-            SIGNATORY_ID, Text.of("signatory ID", "हस्ताक्षरकर्ता पहचान पत्र"),
-            ADDRESS_PROOF, Text.of("address proof", "पते का प्रमाण"));
-
     private final GstinVerificationService gstins;
     private final UdyamLookupService udyams;
     private final LocalDate today;
@@ -115,10 +109,12 @@ public class KycValidationService {
 
     // ---- C01-C03: the documents themselves --------------------------------------------------------------
 
+    /** An OK document without fields counts as missing: it can never prove anything, so it must never verify. */
     CheckResult c01AllDocumentsPresent(KycInput in) {
         List<DocType> missing = new ArrayList<>();
         for (DocType t : DocType.values()) {
-            if (in.doc(t) == null) {
+            KycDocument d = in.doc(t);
+            if (d == null || (ExtractResult.OK.equals(d.status()) && !d.usable())) {
                 missing.add(t);
             }
         }
@@ -338,7 +334,7 @@ public class KycValidationService {
         }
         return CheckResult.warn(CheckCode.C16,
                 Text.of("Udyam certificate " + String.join(" and ", en)
-                                + " differ from the registry (known registry lag; not blocking).",
+                                + (en.size() == 1 ? " differs" : " differ") + " from the registry (known registry lag; not blocking).",
                         "उद्यम प्रमाणपत्र की " + String.join(" और ", hi)
                                 + " रजिस्ट्री से अलग है (रजिस्ट्री में ज्ञात देरी; रुकावट नहीं)।"),
                 null, diffs);
@@ -590,8 +586,8 @@ public class KycValidationService {
     }
 
     private static Text docNames(List<DocType> types) {
-        return Text.of(String.join(", ", types.stream().map(t -> DOC_NAMES.get(t).en()).toList()),
-                String.join(", ", types.stream().map(t -> DOC_NAMES.get(t).hi()).toList()));
+        return Text.of(String.join(", ", types.stream().map(t -> t.label().en()).toList()),
+                String.join(", ", types.stream().map(t -> t.label().hi()).toList()));
     }
 
     private static void compareName(Map<String, Object> mismatches, String field, String onDoc, String inRegistry) {

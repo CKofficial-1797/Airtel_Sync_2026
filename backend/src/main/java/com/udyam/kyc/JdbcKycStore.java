@@ -118,9 +118,9 @@ public class JdbcKycStore implements KycStore {
     }
 
     @Override
-    public void purgeExtractedData(UUID orderId) {
-        jdbc.update("UPDATE kyc_document SET extracted_json = NULL WHERE order_id = ?", orderId);
-        jdbc.update("UPDATE kyc_check SET evidence_json = NULL WHERE order_id = ?", orderId);
+    public void deleteDocumentsAndChecks(UUID orderId) {
+        jdbc.update("DELETE FROM kyc_document WHERE order_id = ?", orderId);
+        jdbc.update("DELETE FROM kyc_check WHERE order_id = ?", orderId);
     }
 
     @Override

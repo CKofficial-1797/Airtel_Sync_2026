@@ -1,0 +1,35 @@
+{
+  "version": "2026-07-v1",
+  "language": "en",
+  "title": "Consent for business KYC",
+  "dataFiduciary": "Accel Telecom (Accel Business)",
+  "purposes": [
+    {
+      "code": "KYC_VERIFICATION",
+      "required": true,
+      "title": "Verify your business",
+      "description": "Read your GST certificate, Udyam certificate, signatory ID and address proof and check them against the GST and Udyam registries, as required for telecom connections."
+    },
+    {
+      "code": "SERVICE_INSTALLATION",
+      "required": true,
+      "title": "Install your services",
+      "description": "Use your verified business address to plan and carry out the installation."
+    },
+    {
+      "code": "WHATSAPP_UPDATES",
+      "required": false,
+      "title": "Order updates on WhatsApp",
+      "description": "Send order and installation updates to your WhatsApp number. Optional."
+    }
+  ],
+  "dataCollected": "Only the fields needed for verification: GSTIN, Udyam number, business and signatory names, designation, ID number and validity, address and bill date.",
+  "retention": "Raw document images are deleted immediately after the fields are extracted. The extracted fields are kept only for the period required by telecom rules, as required by law (currently 2555 days), and then deleted.",
+  "retentionDays": 2555,
+  "rights": [
+    "Withdraw your consent at any time; your extracted KYC data is deleted and the KYC stops.",
+    "Ask what data we hold about you and correct it.",
+    "Raise a grievance with our Grievance Officer, and then with the Data Protection Board of India."
+  ],
+  "contact": "Grievance Officer, Accel Telecom: privacy@accelbusiness.example, 1800-000-0000"
+}

@@ -1,0 +1,373 @@
+{
+  "orderId": "3ec67971-9bf7-40ca-a92a-01ea77c45dab",
+  "orderRef": "UD-260715-0027",
+  "orderStatus": "KYC_ACTION_REQUIRED",
+  "kycStatus": "KYC_ACTION_REQUIRED",
+  "consent": {
+    "active": true,
+    "noticeVersion": "2026-07-v1",
+    "language": "en",
+    "purposes": {
+      "KYC_VERIFICATION": true,
+      "SERVICE_INSTALLATION": true,
+      "WHATSAPP_UPDATES": false
+    },
+    "givenAt": "2026-10-30T13:40:07.239937Z"
+  },
+  "documents": [
+    {
+      "docType": "GST_CERTIFICATE",
+      "status": "OK",
+      "detectedDocType": "GST_CERTIFICATE",
+      "quality": {
+        "blurScore": 1258.5,
+        "skewDeg": 0.0,
+        "deskewed": false
+      },
+      "fields": {
+        "gstin": "03KGZ*****1ZZ",
+        "legalName": "Trinity Bake House Pvt Ltd",
+        "tradeName": "Trinity Bake House Pvt Ltd",
+        "constitution": "Private Limited Company",
+        "dateOfLiability": "2019-08-19",
+        "principalAddress": "Shop/Unit 188, Industrial Area Phase 2, Ludhiana, Punjab - 541498",
+        "registrationType": "Regular"
+      },
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "model": "hand-transcribed",
+      "fromFixtureCache": false,
+      "uploadedAt": "2026-10-30T13:40:12.46752Z"
+    },
+    {
+      "docType": "UDYAM_CERTIFICATE",
+      "status": "OK",
+      "detectedDocType": "UDYAM_CERTIFICATE",
+      "quality": {
+        "blurScore": 966.7,
+        "skewDeg": 0.0,
+        "deskewed": false
+      },
+      "fields": {
+        "city": "Ludhiana",
+        "state": "Punjab",
+        "udyamNumber": "UDYAM-PB-00-****478",
+        "majorActivity": "Services",
+        "enterpriseName": "Trinity Bake House Pvt Ltd",
+        "dateOfRegistration": "2025-09-15"
+      },
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "model": "hand-transcribed",
+      "fromFixtureCache": false,
+      "uploadedAt": "2026-10-30T13:40:13.641998Z"
+    },
+    {
+      "docType": "SIGNATORY_ID",
+      "status": "OK",
+      "detectedDocType": "SIGNATORY_ID",
+      "quality": {
+        "blurScore": 821.3,
+        "skewDeg": 0.0,
+        "deskewed": false
+      },
+      "fields": {
+        "name": "Vikram Pillai",
+        "idNumber": "**********312",
+        "validTill": "2028-12-23",
+        "designation": "Owner",
+        "forBusiness": "Trinity Bake House Pvt Ltd"
+      },
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "model": "hand-transcribed",
+      "fromFixtureCache": false,
+      "uploadedAt": "2026-10-30T13:40:14.81304Z"
+    },
+    {
+      "docType": "ADDRESS_PROOF",
+      "status": "OK",
+      "detectedDocType": "ADDRESS_PROOF",
+      "quality": {
+        "blurScore": 1011.3,
+        "skewDeg": 0.0,
+        "deskewed": false
+      },
+      "fields": {
+        "billDate": "2025-10-31",
+        "billedTo": "Trinity Bake House Pvt Ltd",
+        "amountDueInr": 2768,
+        "documentKind": "Electricity bill",
+        "supplyAddress": "Shop/Unit 188, Industrial Area Phase 2, Ludhiana, Punjab - 541498",
+        "consumerNumber": "*******786"
+      },
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "model": "hand-transcribed",
+      "fromFixtureCache": false,
+      "uploadedAt": "2026-10-30T13:40:15.985838Z"
+    }
+  ],
+  "missingDocuments": [],
+  "overall": "ACTION_REQUIRED",
+  "checks": [
+    {
+      "code": "C01",
+      "name": "ALL_DOCUMENTS_PRESENT",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": true,
+      "messageEn": "All 4 documents are uploaded.",
+      "messageHi": "सभी 4 दस्तावेज़ अपलोड हो गए हैं।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "documents": 4
+      }
+    },
+    {
+      "code": "C02",
+      "name": "IMAGES_READABLE",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": true,
+      "messageEn": "All photos are clear enough to read.",
+      "messageHi": "सभी फ़ोटो पढ़ने लायक साफ़ हैं।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {}
+    },
+    {
+      "code": "C03",
+      "name": "DOC_TYPES_MATCH",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": true,
+      "messageEn": "Each document is in the right slot.",
+      "messageHi": "हर दस्तावेज़ सही जगह पर अपलोड है।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {}
+    },
+    {
+      "code": "C04",
+      "name": "GSTIN_VALID",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": false,
+      "messageEn": "GSTIN 03KGZ*****1ZZ has a valid format and checksum.",
+      "messageHi": "GSTIN 03KGZ*****1ZZ का फ़ॉर्मेट और चेकसम सही है।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "gstin": "03KGZ*****1ZZ"
+      }
+    },
+    {
+      "code": "C05",
+      "name": "GSTIN_IN_REGISTRY",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": false,
+      "messageEn": "GSTIN 03KGZ*****1ZZ is in the GST registry.",
+      "messageHi": "GSTIN 03KGZ*****1ZZ GST रजिस्ट्री में मौजूद है।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "gstin": "03KGZ*****1ZZ"
+      }
+    },
+    {
+      "code": "C06",
+      "name": "GSTIN_ACTIVE",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": false,
+      "messageEn": "GST registration is Active.",
+      "messageHi": "GST पंजीकरण सक्रिय (Active) है।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "registryStatus": "Active"
+      }
+    },
+    {
+      "code": "C07",
+      "name": "GST_DOC_MATCHES_REGISTRY",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": false,
+      "messageEn": "Legal and trade names on the certificate match the GST registry.",
+      "messageHi": "प्रमाणपत्र पर कानूनी और व्यापारिक नाम GST रजिस्ट्री से मेल खाते हैं।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {}
+    },
+    {
+      "code": "C08",
+      "name": "UDYAM_NUMBER_VALID",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": true,
+      "messageEn": "Udyam number UDYAM-PB-00-****478 has a valid format.",
+      "messageHi": "उद्यम नंबर UDYAM-PB-00-****478 का फ़ॉर्मेट सही है।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "udyamNumber": "UDYAM-PB-00-****478"
+      }
+    },
+    {
+      "code": "C09",
+      "name": "UDYAM_IN_REGISTRY",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": false,
+      "messageEn": "Udyam number is in the Udyam registry and the enterprise name matches.",
+      "messageHi": "उद्यम नंबर उद्यम रजिस्ट्री में है और उद्यम का नाम मेल खाता है।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "udyamNumber": "UDYAM-PB-00-****478",
+        "enterpriseName": "Trinity Bake House Pvt Ltd"
+      }
+    },
+    {
+      "code": "C10",
+      "name": "BUSINESS_NAME_CONSISTENT",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": false,
+      "messageEn": "The business name is the same on all documents.",
+      "messageHi": "सभी दस्तावेज़ों पर व्यवसाय का नाम एक जैसा है।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "names": {
+          "billBilledTo": "Trinity Bake House Pvt Ltd",
+          "gstLegalName": "Trinity Bake House Pvt Ltd",
+          "gstTradeName": "Trinity Bake House Pvt Ltd",
+          "idForBusiness": "Trinity Bake House Pvt Ltd",
+          "udyamEnterpriseName": "Trinity Bake House Pvt Ltd"
+        }
+      }
+    },
+    {
+      "code": "C11",
+      "name": "PROPRIETOR_IS_SIGNATORY",
+      "status": "WARN",
+      "severity": "SOFT",
+      "fixable": true,
+      "messageEn": "Private Limited Company: the signatory's authority to sign for the business cannot be proven from these documents.",
+      "messageHi": "Private Limited Company: इन दस्तावेज़ों से यह साबित नहीं होता कि हस्ताक्षरकर्ता व्यवसाय की ओर से हस्ताक्षर कर सकते हैं।",
+      "fixHintEn": "An authorisation letter / board resolution may be required at installation.",
+      "fixHintHi": "इंस्टॉलेशन के समय प्राधिकरण पत्र / बोर्ड प्रस्ताव माँगा जा सकता है।",
+      "evidence": {
+        "signatory": "Vikram Pillai",
+        "designation": "Owner",
+        "constitution": "Private Limited Company"
+      }
+    },
+    {
+      "code": "C12",
+      "name": "ADDRESS_CONSISTENT",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": false,
+      "messageEn": "The GST address matches the address proof.",
+      "messageHi": "GST पता पते के प्रमाण से मेल खाता है।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "gstPincode": "541498",
+        "billPincode": "541498",
+        "tokenOverlap": 1.0
+      }
+    },
+    {
+      "code": "C13",
+      "name": "STATE_CONSISTENT",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": false,
+      "messageEn": "The GSTIN state matches the address state.",
+      "messageHi": "GSTIN का राज्य पते के राज्य से मेल खाता है।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "stateCode": "03",
+        "gstinState": "Punjab",
+        "udyamState": "Punjab",
+        "addressState": "Punjab"
+      }
+    },
+    {
+      "code": "C14",
+      "name": "ADDRESS_PROOF_RECENT",
+      "status": "FAIL",
+      "severity": "BLOCKING",
+      "fixable": true,
+      "messageEn": "The address proof is dated 2025-10-31, 257 days old; it must be at most 90 days old.",
+      "messageHi": "पते का प्रमाण 2025-10-31 का है, यानी 257 दिन पुराना; यह 90 दिन से ज़्यादा पुराना नहीं होना चाहिए।",
+      "fixHintEn": "Upload a utility bill from the last 90 days.",
+      "fixHintHi": "पिछले 90 दिनों का बिजली/उपयोगिता बिल अपलोड करें।",
+      "evidence": {
+        "ageDays": 257,
+        "billDate": "2025-10-31",
+        "maxAgeDays": 90,
+        "referenceDate": "2026-07-15"
+      }
+    },
+    {
+      "code": "C15",
+      "name": "ID_VALID",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": true,
+      "messageEn": "The signatory ID is valid till 2028-12-23.",
+      "messageHi": "हस्ताक्षरकर्ता पहचान पत्र 2028-12-23 तक मान्य है।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "validTill": "2028-12-23",
+        "referenceDate": "2026-07-15"
+      }
+    },
+    {
+      "code": "C16",
+      "name": "UDYAM_DETAILS_SOFT",
+      "status": "WARN",
+      "severity": "SOFT",
+      "fixable": true,
+      "messageEn": "Udyam certificate registration date and major activity differ from the registry (known registry lag; not blocking).",
+      "messageHi": "उद्यम प्रमाणपत्र की पंजीकरण तिथि और मुख्य गतिविधि रजिस्ट्री से अलग है (रजिस्ट्री में ज्ञात देरी; रुकावट नहीं)।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "majorActivity": {
+          "inRegistry": "Trading",
+          "onDocument": "Services"
+        },
+        "dateOfRegistration": {
+          "inRegistry": "2022-08-31",
+          "onDocument": "2025-09-15"
+        }
+      }
+    },
+    {
+      "code": "C17",
+      "name": "ORDER_PROFILE_MATCH",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": true,
+      "messageEn": "The KYC matches the order.",
+      "messageHi": "KYC ऑर्डर से मेल खाता है।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "gstRequiredProducts": []
+      }
+    }
+  ],
+  "estimatedActivationDate": null
+}

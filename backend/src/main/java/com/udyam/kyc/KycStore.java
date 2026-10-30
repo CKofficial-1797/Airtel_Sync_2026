@@ -30,8 +30,12 @@ public interface KycStore {
     /** Checks of the latest run, in code order (empty before the first submit). */
     List<CheckResult> latestChecks(UUID orderId);
 
-    /** DPDP withdrawal: delete extracted fields and check evidence of the order (statuses and hashes stay). */
-    void purgeExtractedData(UUID orderId);
+    /**
+     * DPDP withdrawal: delete the order's documents and check runs. Check messages quote names and dates, and a
+     * kept document row would pass C01 with nothing behind it, so the rows go, not just the JSON columns.
+     * Consent rows and order events stay as the audit trail.
+     */
+    void deleteDocumentsAndChecks(UUID orderId);
 
     void setActivationDate(UUID orderId, LocalDate date);
 

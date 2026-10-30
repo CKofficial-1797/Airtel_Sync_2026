@@ -1,0 +1,16 @@
+{
+  "docType": "SIGNATORY_ID",
+  "status": "WRONG_DOC_TYPE",
+  "detectedDocType": "UDYAM_CERTIFICATE",
+  "quality": {
+    "blurScore": 980.5,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": null,
+  "fixHintEn": "This looks like the Udyam certificate, not the signatory ID. Upload the signatory ID here.",
+  "fixHintHi": "यह उद्यम प्रमाणपत्र लगता है, हस्ताक्षरकर्ता पहचान पत्र नहीं। यहाँ हस्ताक्षरकर्ता पहचान पत्र अपलोड करें।",
+  "model": "hand-transcribed",
+  "fromFixtureCache": true,
+  "uploadedAt": null
+}

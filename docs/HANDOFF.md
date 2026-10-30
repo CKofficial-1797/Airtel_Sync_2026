@@ -12,6 +12,7 @@ Living handoff file. Every phase reads this first and updates it at the end (app
 | 4 | 2026-10-30 | AI advisor: stateless Python `ai-service` (FastAPI + Gemini 2.5 Flash, manual tool calling, grounding guard) + Spring advisor sessions/messages (Flyway V2), `/api/advisor/sessions` endpoints, internal-token filter |
 | 5 | 2026-10-30 | React frontend (Landing, Advisor chat, Quote & checkout, KYC/Track placeholders, EN/HI) + orders backend (Flyway V3, `POST/GET /api/orders`, server-side quote recompute, 409 QUOTE_CHANGED) |
 | 6 | 2026-10-30 | Smart KYC backend: DPDP consent (EN/HI notice, withdraw + purge), upload (magic bytes, temp file always deleted), ai-service `POST /extract` (OpenCV blur/skew + Gemini structured output), 17 checks C01–C17 with EN/HI messages + fix hints, KYC order statuses (Flyway V4), specimen harness + 47 golden fixtures (12/12 verdicts match). Live Gemini specimen run deferred (no API quota) |
+| 7 | 2026-10-30 | KYC frontend: `/kyc/:orderId` (consent → upload → results, resumable, EN/HI), journey stepper, client-side photo resize, withdraw flow, `/track/:orderId` placeholder. Backend: fixed a Phase 6 withdrawal bug (withdraw + re-consent could give a false VERIFIED, and names survived in check messages), fixture cache answers WRONG_DOC_TYPE for a specimen in another slot, readable wrong-document hint |
 
 ## 2. How to run
 
@@ -33,7 +34,7 @@ Living handoff file. Every phase reads this first and updates it at the end (app
   - Gemini check (1 call): `.venv\Scripts\python scripts\check_gemini.py` → `OK gemini-2.5-flash`
 - **frontend (Phase 5)**: Node 24.16 / npm 11.13. From `frontend/`: `npm install` (first time), `npm run dev` → http://localhost:5173 (`npm run dev -- --host` to test on a phone over LAN), `npm run test` (Vitest), `npm run build` (`tsc --noEmit && vite build` → `dist/`). The Vite dev server proxies `/api` → `http://localhost:8080`, so the browser never calls Spring cross-origin and never calls the ai-service.
   - Full stack for a demo: Spring (:8080) → ai-service (:8000) → `npm run dev` (:5173).
-- **KYC (Phase 6)**: uploads go Spring → ai-service `/extract` (needs the ai-service running and a Gemini key). **Quota saver / offline demo:** start Spring with `KYC_FIXTURE_CACHE=true` (PowerShell `$env:KYC_FIXTURE_CACHE = "true"`): any upload byte-identical to a specimen image in `data/kyc_documents/` in its own slot is answered from its golden fixture (no ai-service, no Gemini); other uploads still go to the ai-service. Off by default.
+- **KYC (Phase 6)**: uploads go Spring → ai-service `/extract` (needs the ai-service running and a Gemini key). **Quota saver / offline demo:** start Spring with `KYC_FIXTURE_CACHE=true` (PowerShell `$env:KYC_FIXTURE_CACHE = "true"`): any upload byte-identical to a specimen image in `data/kyc_documents/` is answered from its golden fixture (no ai-service, no Gemini): the fixture in its own slot, `WRONG_DOC_TYPE` in another slot (the blurred K04 GST stays `UNREADABLE` in any slot). Other uploads still go to the ai-service. Off by default.
   - Calibration table (OpenCV only, no Gemini): `ai-service\.venv\Scripts\python ai-service\scripts\calibrate_quality.py`
   - Specimen harness: `POST /api/admin/kyc/run-specimens[?applicants=K02,K07]` with header `X-Internal-Token: <app.ai-service.token>`. With the cache OFF it calls Gemini once per readable image (46 for all 12) and overwrites the fixtures it extracts.
   - Regenerate the hand-transcribed fixtures: `ai-service\.venv\Scripts\python ai-service\scripts\write_kyc_fixtures.py`
@@ -79,7 +80,10 @@ lib/                   format.ts (formatInr ₹1,23,456, formatDate), mask.ts (m
 hooks/                 useAdvisorSession.ts, useQuote.ts (+ pure helpers), useSessionSnapshot.ts
 components/            Layout (+Header), LanguageToggle, ChatBubble, TypingIndicator, QuickReplies, RecommendationCard,
                        ProfileSummary, QuoteLineItem, AddOnToggle, IneligibleList, TotalsBar, ErrorBanner, ConfirmDialog, ErrorBoundary
-pages/                 Landing, Advisor, Quote, KycPlaceholder, TrackPlaceholder, NotFound
+pages/                 Landing, Advisor, Quote, Kyc (Phase 7, step router), TrackPlaceholder, NotFound
+components/kyc/        (Phase 7) JourneyStepper, ConsentStep, UploadStep, UploadSlot, ResultsStep, StatusHeader, CheckItem
+components/Toast.tsx   (Phase 7) short auto-dismissing confirmation
+api/kyc.ts             (Phase 7) typed KYC calls; hooks/useKyc.ts (state); lib/image.ts (checks + resize); lib/kyc.ts (pure helpers)
 test/                  setup.ts (jest-dom + i18n + cleanup), fixtures.ts (kirana quote/recommendation)
 ```
 
@@ -202,15 +206,15 @@ scripts/write_kyc_fixtures.py  (Phase 6) writes the 47 hand-transcribed golden f
 
 | Class | What it does |
 |---|---|
-| `KycService` | `notice(lang)`; `giveConsent(orderId, {noticeVersion, language, purposes})` (`@Transactional`; replaces any active consent, stores all 3 purposes, QUOTE_ACCEPTED/KYC_PENDING_CONSENT → KYC_IN_PROGRESS); `withdrawConsent(orderId)` (closes consent, purges `extracted_json` + check evidence, clears activation date, → KYC_PENDING_CONSENT); `upload(orderId, docType, bytes)` (consent → docType → empty/size/magic bytes → sha256 → fixture cache or temp file + extractor → save; a re-upload after a verdict → KYC_IN_PROGRESS); `submit(orderId)` (`@Transactional`; runs C01–C17, saves a run, sets order status + event, VERIFIED → `estimated_activation_date` = reference date + `quote.maxInstallDays`); `view(orderId)`. Every transition = `OrderStore.updateStatus` + `addEvent`. Logs order ref, doc type, status, ms, check codes only |
+| `KycService` | `notice(lang)`; `giveConsent(orderId, {noticeVersion, language, purposes})` (`@Transactional`; replaces any active consent, stores all 3 purposes, QUOTE_ACCEPTED/KYC_PENDING_CONSENT → KYC_IN_PROGRESS); `withdrawConsent(orderId)` (closes consent, **deletes the order's document and check rows** (Phase 7 fix), clears activation date, → KYC_PENDING_CONSENT); `upload(orderId, docType, bytes)` (consent → docType → empty/size/magic bytes → sha256 → fixture cache or temp file + extractor → save; a re-upload after a verdict → KYC_IN_PROGRESS); `submit(orderId)` (`@Transactional`; runs C01–C17, saves a run, sets order status + event, VERIFIED → `estimated_activation_date` = reference date + `quote.maxInstallDays`); `view(orderId)`. Every transition = `OrderStore.updateStatus` + `addEvent`. Logs order ref, doc type, status, ms, check codes only |
 | `KycController` | thin; the 6 KYC endpoints below |
-| `KycStore` / `JdbcKycStore` | consent rows, document upsert (`ON CONFLICT (order_id, doc_type)`), check runs (`run_id`), `latestChecks`, `purgeExtractedData`, activation date |
+| `KycStore` / `JdbcKycStore` | consent rows, document upsert (`ON CONFLICT (order_id, doc_type)`), check runs (`run_id`), `latestChecks`, `deleteDocumentsAndChecks`, activation date |
 | `KycDocument` | `(docType, status, detectedDocType, sha256, blurScore, skewDeg, deskewed, fields, model, uploadedAt)`; `from(slot, sha, ExtractResult)` keeps fields only when status OK; `usable()`, `text(field)` (blank → null) |
 | `KycMasking.fields` | masks `gstin`, `udyamNumber`, `idNumber`, `consumerNumber` before any API response |
 | `consent.ConsentNotices` | Purpose codes `KYC_VERIFICATION` (required), `SERVICE_INSTALLATION` (required), `WHATSAPP_UPDATES` (optional); EN + HI notice text; `version()` = `app.kyc.notice-version` |
 | `extract.DocumentExtractor` | interface `extract(Path, DocType)`; throws `ExtractionUnavailableException` (→ 503) / `InvalidImageException` (→ 400) |
 | `extract.AiServiceExtractor` | multipart POST `/extract` via the existing `aiServiceRestClient` (token header, 45 s read timeout) |
-| `extract.FixtureCache` | dev only; indexes sha256 of `data/kyc_documents/*.png` → fixture JSON; serves a hit only in the matching slot |
+| `extract.FixtureCache` | dev only; indexes sha256 of `data/kyc_documents/*.png` → fixture JSON; a hit in its own slot returns the fixture, in another slot `WRONG_DOC_TYPE` (UNREADABLE stays UNREADABLE) |
 | `checks.KycValidationService` | pure, deterministic; one method per check; input `KycInput(documents, hasOrderProfile, orderGstin, gstRequiredProducts)`; output `ValidationReport(overall, checks[17])` |
 | `checks.CheckResult` | `(code, name, status PASS|WARN|FAIL|SKIPPED, severity BLOCKING|SOFT, fixable, messageEn, messageHi, fixHintEn, fixHintHi, evidence)`; WARN is always SOFT |
 | `checks.ValidationReport.of` | any non-fixable FAIL → `REJECTED`; only fixable FAILs → `ACTION_REQUIRED`; no FAIL → `VERIFIED` (WARNs allowed) |
@@ -219,6 +223,22 @@ scripts/write_kyc_fixtures.py  (Phase 6) writes the 47 hand-transcribed golden f
 | `harness.SpecimenHarness` | per applicant: `OrderService.createBlank` (profile `null`, quote `{}` → C17 skipped) → consent → upload available files → (live: write fixtures) → submit → compare with `expected-verdicts.json` (verdict AND blocking-code set) |
 | `orders` (changed) | `OrderStatus` + 5 KYC constants; `OrderStore.updateStatus`; `OrderService.createBlank(note)` |
 | `registry` (changed) | new `UdyamRegistryLookup` interface (`JpaUdyamRegistryLookup` bean, `CsvUdyamRegistryLookup.fromCsv` for tests); `UdyamLookupService` now depends on it (same API). `Masking.keepLast3` for ID / consumer numbers |
+
+**Phase 7 (frontend)**
+
+| Name | What it does |
+|---|---|
+| `pages/Kyc` | Step router: `stepFor(view)` from server state, plus local `fixSlot` (a "Re-upload" button shows the upload step while the verdict still stands). Skeleton, not-found, retry on network error, withdraw dialog + toast |
+| `hooks/useKyc` | Mirrors `GET /kyc`: `view`, `loadError`, `reload`, `consent`, `upload`, `submit`, `withdraw`. A `changes` counter drops any GET that started before a change was applied (a slow GET used to wipe finished uploads). 403 `CONSENT_REQUIRED` reloads, which lands on the consent step |
+| `ConsentStep` | Fetches the notice per UI language; plain-language summary, one unticked checkbox per purpose, `<details>` full notice; button disabled until required purposes are ticked; sends all purposes as true/false |
+| `UploadSlot` | One document: icon or thumbnail, hint, status (icon + text), masked summary, backend fix hint, Take photo (`capture="environment"`) + Choose photo (gallery / desktop), Retry with the same file on network / 503. Fields are read-only: the only fix is another photo. A failed attempt keeps the saved document |
+| `UploadStep` | The 4 slots, privacy note, "From your last check" list, **Check my documents** (or **Check again** after a verdict; enabled when all 4 are read and none is busy), "I don't have all documents" + dialog naming what is missing |
+| `ResultsStep` | `StatusHeader` + VERIFIED (date, Track) / ACTION_REQUIRED (fixable FAILs with hint + Re-upload/Upload buttons) / REJECTED (plain reason from `kyc.results.reason.*`, backend message + hint, "We also noticed", call back, no re-upload buttons); OCR note from C04 `evidence.correctedTo`; "Good to know" (WARN); `<details>` all checks |
+| `CheckItem` | Icon AND status word, message in the UI language, optional hint and actions |
+| `lib/image` | `targetSize` (long side ≤ 2000, pure), `prepareImage`: type check, reject > 30 MB input, decode, re-encode as JPEG 0.9 only when resizing (smaller photos stay byte-identical, so the fixture cache still matches), then the 5 MB limit. `ImageRejected(problem: type/size/decode)` |
+| `lib/kyc` | `DOC_TYPES`, `stepFor`, `withDocument`, `withSubmitResult`, `unreadSlots`, `pickText`, `slotsForCheck`, `readSummary` |
+| `api/client` (changed) | `FormData` bodies; typed `ConsentRequiredError` (403) and `ExtractionUnavailableError` (503) |
+| `JourneyStepper` | Advisor → Quote → KYC → Track on the Quote and KYC pages; `aria-current="step"`, ticks + screen-reader text |
 
 **Phase 5 (frontend)**
 
@@ -270,7 +290,7 @@ No JPA entity exists for `smb_lead` / `lead_bundle_item` (read via JdbcTemplate 
 | GET | `/api/orders/{id}` | `{orderId, orderRef, status, createdAt, quote, profile (gstin masked), events[{status, note, createdAt}]}` | 400 (bad UUID), 404 |
 | GET | `/api/kyc/consent-notice?lang=en\|hi` | `{version, language, title, dataFiduciary, purposes[{code, required, title, description}], dataCollected, retention, retentionDays, rights[], contact}` (default `en`) | 400 `INVALID_LANGUAGE` |
 | POST | `/api/orders/{id}/kyc/consent` | body `{noticeVersion, language: en\|hi, purposes: {KYC_VERIFICATION: true, SERVICE_INSTALLATION: true, WHATSAPP_UPDATES: bool}}` → `KycView` | 400 `REQUIRED_CONSENT_MISSING` (+`errors` = missing codes), `NOTICE_VERSION_MISMATCH`, `INVALID_LANGUAGE`, `UNKNOWN_PURPOSE`, `INVALID_REQUEST`; 404 |
-| POST | `/api/orders/{id}/kyc/consent/withdraw` | → `KycView` (consent inactive, fields null, status KYC_PENDING_CONSENT); idempotent | 404 |
+| POST | `/api/orders/{id}/kyc/consent/withdraw` | → `KycView` (consent inactive, `documents` and `checks` empty, `overall` null, status KYC_PENDING_CONSENT); idempotent | 404 |
 | POST | `/api/orders/{id}/kyc/documents` | multipart `docType` (GST_CERTIFICATE \| UDYAM_CERTIFICATE \| SIGNATORY_ID \| ADDRESS_PROOF) + `file` (PNG/JPEG ≤ 5 MB) → `DocumentView {docType, status OK\|UNREADABLE\|WRONG_DOC_TYPE, detectedDocType, quality{blurScore, skewDeg, deskewed}, fields (masked; null unless OK), fixHintEn, fixHintHi (UNREADABLE/WRONG_DOC_TYPE only), model, fromFixtureCache, uploadedAt}`. Same slot again = replace | **403 `CONSENT_REQUIRED`**, 400 `INVALID_DOC_TYPE` / `EMPTY_FILE` / `INVALID_IMAGE` / `INVALID_REQUEST` (missing part), 413 `FILE_TOO_LARGE`, 415 `UNSUPPORTED_FILE_TYPE`, **503 `EXTRACTION_UNAVAILABLE`**, 404 |
 | POST | `/api/orders/{id}/kyc/submit` | → `SubmitResult {orderId, orderRef, overall VERIFIED\|ACTION_REQUIRED\|REJECTED, orderStatus, blockingChecks[codes], warnings[codes], checks[17 CheckResult], estimatedActivationDate (VERIFIED only), runId}` | 403 `CONSENT_REQUIRED`, 404 |
 | GET | `/api/orders/{id}/kyc` | `KycView {orderId, orderRef, orderStatus, kycStatus, consent{active, noticeVersion, language, purposes{code: bool}, givenAt}, documents[DocumentView], missingDocuments[DocType], overall (null before first submit), checks[latest run], estimatedActivationDate}` | 404 |
@@ -304,6 +324,8 @@ No JPA entity exists for `smb_lead` / `lead_bundle_item` (read via JdbcTemplate 
 | C17 | ORDER_PROFILE_MATCH | blocking, fixable | only with an order profile: profile GSTIN = KYC GSTIN; GST-required products in the quote need an Active GSTIN (hint "Remove GST-only services or update your GST registration") |
 
 **Stage values**: `COLLECTING`, `RECOMMENDED`, `CUSTOMISING`, `READY_FOR_CHECKOUT`, `OUT_OF_SCOPE` (from the ai-service), plus `CHECKOUT_DONE` (Phase 5, set by `POST /api/orders` with a sessionId; Spring-only, sticky).
+
+**Frontend routes (Phase 7)**: `/kyc/:orderId` is now the real KYC page; `/track/:orderId` is a placeholder showing the order ref + "Tracking comes next"; `/track` (landing page link) stays, without an order. The rest as below.
 
 **Frontend routes (Phase 5)**: `/` Landing · `/advisor` chat · `/quote` quote & checkout · `/kyc/:orderId` placeholder (shows order ref; Phase 7 replaces it) · `/track` placeholder · `*` NotFound.
 
@@ -395,10 +417,10 @@ Flyway versions applied: **V1** `V1__init_reference_data.sql` (Phases 2 and 3 ad
 |---|---|
 | `customer_order` | new column `estimated_activation_date DATE` (set when KYC is VERIFIED) |
 | `kyc_consent` | `id BIGSERIAL`, `order_id` FK (CASCADE), `purpose VARCHAR(40)`, `granted BOOLEAN`, `notice_version`, `language`, `created_at`, `withdrawn_at` (NULL = active); partial index on active rows |
-| `kyc_document` | `id`, `order_id` FK, `doc_type` (CHECK 4 types), `status` (CHECK OK/UNREADABLE/WRONG_DOC_TYPE), `detected_doc_type`, `file_sha256 CHAR(64)`, `blur_score`, `skew_deg`, `deskewed`, `extracted_json JSONB` (full values, purged on withdrawal), `model`, `uploaded_at`; **UNIQUE (order_id, doc_type)**. No image column |
-| `kyc_check` | `id`, `order_id` FK, `run_id UUID`, `check_code`, `check_name`, `status` (CHECK PASS/WARN/FAIL/SKIPPED), `severity` (CHECK BLOCKING/SOFT), `fixable`, `message_en/hi`, `fix_hint_en/hi`, `evidence_json JSONB` (identifiers masked; purged on withdrawal), `created_at`; index `(order_id, id)` |
+| `kyc_document` | `id`, `order_id` FK, `doc_type` (CHECK 4 types), `status` (CHECK OK/UNREADABLE/WRONG_DOC_TYPE), `detected_doc_type`, `file_sha256 CHAR(64)`, `blur_score`, `skew_deg`, `deskewed`, `extracted_json JSONB` (full values; row deleted on withdrawal), `model`, `uploaded_at`; **UNIQUE (order_id, doc_type)**. No image column |
+| `kyc_check` | `id`, `order_id` FK, `run_id UUID`, `check_code`, `check_name`, `status` (CHECK PASS/WARN/FAIL/SKIPPED), `severity` (CHECK BLOCKING/SOFT), `fixable`, `message_en/hi`, `fix_hint_en/hi`, `evidence_json JSONB` (identifiers masked; row deleted on withdrawal), `created_at`; index `(order_id, id)` |
 
-Purge check after a withdrawal: `SELECT doc_type, extracted_json IS NULL AS purged FROM kyc_document WHERE order_id = '<id>';` and `SELECT count(*) FILTER (WHERE evidence_json IS NOT NULL) FROM kyc_check WHERE order_id = '<id>';` (expect all purged, 0).
+Check after a withdrawal: `SELECT (SELECT count(*) FROM kyc_document WHERE order_id = '<id>') AS documents, (SELECT count(*) FROM kyc_check WHERE order_id = '<id>') AS checks;` (expect 0, 0). `kyc_consent` (with `withdrawn_at`) and `order_event` stay as the audit trail.
 
 Back-office query for "leads the advisor could not close": `SELECT id, stage, profile_json, updated_at FROM advisor_session WHERE stage NOT IN ('READY_FOR_CHECKOUT', 'CHECKOUT_DONE') ORDER BY updated_at DESC;`
 
@@ -443,7 +465,7 @@ Phase 3 facts (from smb_leads, verified by tests and live API):
 
 ## 9. Testing
 
-All tests are pure unit tests (no Spring context, no DB, no network). **JUnit total: 212** (41 after Phase 2, +76 in Phase 3, +9 in Phase 4, +9 in Phase 5, +77 in Phase 6). **pytest (ai-service): 146** (42 + 104 in Phase 6). **Vitest (frontend): 18.**
+All tests are pure unit tests (no Spring context, no DB, no network). **JUnit total: 218** (41 after Phase 2, +76 in Phase 3, +9 in Phase 4, +9 in Phase 5, +77 in Phase 6, +6 in Phase 7). **pytest (ai-service): 146** (42 + 104 in Phase 6). **Vitest (frontend): 74** (18 + 56 in Phase 7).
 
 | Test class | Tests | Covers |
 |---|---|---|
@@ -470,8 +492,10 @@ All tests are pure unit tests (no Spring context, no DB, no network). **JUnit to
 | `kyc.checks.DateAndOrderChecksTest` | 17 | bill age 0/89/90 PASS, 91/257/future FAIL; unreadable date; ID validTill −1/0/+1; proprietor ≠ signatory; moved address; Udyam state soft; WRONG_DOC_TYPE → C03 only; C17 GSTIN mismatch, GST-only products with Cancelled GSTIN, skipped without profile |
 | `kyc.KycServiceTest` | 14 | 403 before consent (no extractor call), required purposes / notice version / language / unknown purpose, consent rows + status + events, EN/HI notice, magic bytes / empty / > 5 MB / bad docType, temp file exists during the call and is deleted after, **temp file deleted when the extractor fails** (503 and unexpected error), UNREADABLE stores no fields + hint, fixture cache (no extractor call; wrong slot not served), K03 VERIFIED + events, activation date from the quote, K11 re-upload reopens, K06 REJECTED, withdraw purges + 403 after |
 | `common.privacy.MaskingTest` (Phase 6) | +1 (=4) | `keepLast3` for ID / consumer numbers |
+| `kyc.KycServiceTest` (Phase 7 additions) | +5 (=19) | **regressions:** withdraw + new consent + submit can't verify without documents (K07 stays out of VERIFIED, C01 only); no names left in check messages after a withdrawal. Fixture cache: specimen in another slot → WRONG_DOC_TYPE with a readable EN/HI hint, K04 stays UNREADABLE in any slot, non-specimens go to the extractor |
+| `kyc.checks.DateAndOrderChecksTest` (Phase 7) | +1 (=18) | an OK document without fields counts as missing (old purged rows in Neon) |
 
-Vitest (`frontend/src`, run `npm run test`): `lib/format.test.ts` (6: ₹1,23,456, dates, GSTIN mask), `hooks/useQuote.test.ts` (6: add-on payload, OFF, upgrade swap, clamp, remove, removed[] → notice), `components/RecommendationCard.test.tsx` (3: totals/items from JSON, customised JSON, CTA), `api/client.test.ts` (5: success, 503 → AiUnavailableError, 409 → QuoteChangedError with quote, 400 field errors, NetworkError).
+Vitest (`frontend/src`, run `npm run test`): `lib/format.test.ts` (6: ₹1,23,456, dates, GSTIN mask), `hooks/useQuote.test.ts` (6: add-on payload, OFF, upgrade swap, clamp, remove, removed[] → notice), `components/RecommendationCard.test.tsx` (3: totals/items from JSON, customised JSON, CTA), `api/client.test.ts` (5: success, 503 → AiUnavailableError, 409 → QuoteChangedError with quote, 400 field errors, NetworkError). **Phase 7:** `components/kyc/ConsentStep.test.tsx` (6: nothing pre-ticked, disabled until required ticked, payload, optional true, labels + full notice, save error), `components/kyc/UploadSlot.test.tsx` (10: rejects non-image / > 5 MB, uploads, masked summary, UNREADABLE hint, Hindi hint, WRONG_DOC_TYPE, blank Udyam flagged, network retry keeps the saved document, busy reader), `components/kyc/ResultsStep.test.tsx` (7: K03, K02 OCR note, K11 re-upload, K06 no re-upload + call back, K01-like, Hindi, warnings + text statuses), `hooks/useKyc.test.ts` (7: concurrent uploads, **stale GET regression**, lost consent, failed upload, submit error, 404), `lib/kyc.test.ts` (13), `lib/image.test.ts` (8: target sizes, types, 5 MB, byte-identical), `api/kyc.test.ts` (5: 403 typed, other 403s, 503 typed, multipart, JSON consent). Fixtures in `src/test/fixtures/`: real backend JSON captured with the fixture cache (`kyc-k02/k03/k06/k11.json`, `doc-unreadable.json`, `doc-wrong-type.json`, `notice-en.json`).
 
 pytest (`ai-service/tests`, run `.venv\Scripts\python -m pytest -q`): `test_tools.py` (12: endpoint/JSON per tool, save_profile validation, auto lookup + auto recommend), `test_advisor_loop.py` (10: one-shot = 2 model calls, prompt state, loop limit 6, Spring 500/timeout → friendly reply + stage unchanged, stages, language), `test_guard.py` (13: amount formats incl. ₹1,23,456 and Devanagari, invented ₹499, products/reasons, retry, template fallback), `test_api.py` (7: health, 401 missing/wrong/empty token, camelCase contract, 503, 422). Fixtures in `tests/conftest.py` (`FakeLlm`, `kirana_recommendation()`, respx `spring`). **Phase 6** `test_kyc_extract.py` (104): blur + skew calibration parameterized over all 47 specimens (only K04 GST blurry, only K02 GST tilted, < 0.5° after deskew), magic bytes / size / undecodable, UNREADABLE returns no fields and makes no model call, deskew before extraction, WRONG_DOC_TYPE, schema contract per docType (nullable, all required, detectedDocType enum), `clean_fields`, `/extract` 401 / contract / 400 (uses `FakeVision`, no Gemini).
 
@@ -521,6 +545,12 @@ KYC test data: `backend/src/test/resources/kyc/fixtures/*.json` (47 golden fixtu
 - Phase 6: specimen-harness orders have `profile_json = null` and `quote_json = {}` (created by `OrderService.createBlank`), so C17 is skipped and no activation date is set.
 - Phase 6: a C11 mismatch for a proprietorship is non-fixable (identity mismatch → REJECTED); C04 with an unreadable GSTIN field is fixable (re-upload).
 - Phase 6: upload errors use specific statuses: 413 `FILE_TOO_LARGE`, 415 `UNSUPPORTED_FILE_TYPE`.
+- Phase 7: **withdrawal deletes `kyc_document` and `kyc_check` rows** instead of nulling `extracted_json` / `evidence_json` as the Phase 6 prompt said. Nulling let a later submit pass with no data, and check messages quote names.
+- Phase 7: the 5 MB limit applies after resizing (only inputs > 30 MB are refused up front), so normal camera photos are shrunk rather than rejected.
+- Phase 7: an extra "Choose photo" input next to "Take photo": `capture="environment"` alone opens only the camera on Android.
+- Phase 7: upload progress is a spinner + "Reading your document…", not a percentage (most of the wait is reading, not sending).
+- Phase 7: the "Re-upload" flow goes to the upload step and back through "Check again" rather than re-uploading inside the results page.
+- Phase 7: `/track` is kept next to the new `/track/:orderId`.
 
 ## 11. Known issues / TODOs
 
@@ -551,6 +581,12 @@ KYC test data: `backend/src/test/resources/kyc/fixtures/*.json` (47 golden fixtu
 - Phase 6: no Udyam OCR correction; a misread Udyam digit fails C09 (non-fixable). Not seen in the specimens.
 - Phase 6: the fixture cache matches by exact sha256; a re-saved/compressed copy of a specimen goes to Gemini.
 - Phase 6: when the order already has a quote, KYC does not recompute it if C17 fails; the customer must change the order (Phase 7/8 decide the UX).
+- Phase 7: a C17 failure links back to `/quote`, but changing the quote there creates a **new order**; the old one stays in `KYC_ACTION_REQUIRED`.
+- Phase 7: orders withdrawn before the Phase 7 fix (test data only, all synthetic) still have rows in Neon with null JSON; C01 treats an OK row without fields as missing, so they can't verify.
+- Phase 7: thumbnails don't survive a reload (photos aren't kept); the slot shows its icon and the read summary.
+- Phase 7: a REJECTED order has no re-upload path in the UI; withdrawing consent and starting again is possible, and the documents are simply re-checked. Backend upload itself isn't blocked after a rejection.
+- Phase 7: the stepper on a real Quote page and the full advisor → quote start weren't exercised in the browser by me (no Gemini quota); the KYC screens were tested from orders created by API. "Request a call back" is only a toast (prototype).
+- Phase 7: the 503 Retry state is covered by unit tests, not a live run.
 
 ### KYC consent + retention design (for the privacy note)
 - **Notice before collection** (`GET /api/kyc/consent-notice?lang=en|hi`, version `2026-07-v1`): data fiduciary (Accel Telecom), the 3 purposes, exactly which fields are collected, retention, rights, grievance contact.
@@ -559,7 +595,8 @@ KYC test data: `backend/src/test/resources/kyc/fixtures/*.json` (47 golden fixtu
 - **Data minimisation**: raw images are never stored. Spring writes the upload to a temp file only for the extraction call and deletes it in a `finally` block (tested, including when the ai-service fails); the ai-service processes images in memory. Only the sha256, quality metrics and the schema fields are kept; blurry images are rejected before any model call, so no fields are guessed.
 - **Masking**: API responses mask GSTIN (`32TTN*****1ZW`), Udyam (`UDYAM-KL-00-****801`), ID and consumer numbers (last 3 visible); check evidence is stored masked. Full values exist only in `kyc_document.extracted_json`, which the checks need.
 - **Logs**: order ref, doc type, status, blur/skew, ms and check codes only; never names, numbers, addresses or extracted values (verified by a log scan in the live checklist).
-- **Withdrawal**: `POST …/kyc/consent/withdraw` closes consent, deletes `extracted_json` and all check evidence, clears the activation date, sets the order to `KYC_PENDING_CONSENT` and logs an event.
+- **Withdrawal** (corrected in Phase 7): `POST …/kyc/consent/withdraw` closes consent, **deletes the order's `kyc_document` and `kyc_check` rows** (fields, hashes, quality metrics, check messages and evidence), clears the activation date, sets the order to `KYC_PENDING_CONSENT` and logs an event. Kept as the audit trail: `kyc_consent` rows and `order_event` notes, which hold no extracted values. The UI confirms with a modal and a toast.
+- **Client side** (Phase 7): identifiers are shown only as the server masked them; photos above 2000 px are re-encoded in the browser before upload (which also drops their EXIF data, such as location; smaller photos are sent unchanged); nothing about the documents is written to browser storage.
 - **Retention**: extracted fields are kept "for the period required by telecom rules, as required by law" (`app.kyc.retention-days`, 2555 by default); deletion job TODO.
 - **Third party**: document images are sent to the Google Gemini API for extraction (same free vs paid tier caveat as the advisor above).
 
@@ -569,9 +606,30 @@ KYC test data: `backend/src/test/resources/kyc/fixtures/*.json` (47 golden fixtu
 - Not logged in plain text: message text, names, full GSTINs (ai-service logs session id prefix, tool names, stage, guard result, latency; Spring logs ids/stages/timings and masks GSTINs in paths and tool traces).
 - Stored in Neon: full conversation text (`advisor_message.content`) and profile JSON. No retention job yet (TODO: define and implement a retention period).
 
-## 12. Notes for the next phase (Phase 7: KYC frontend)
+## 12. Notes for the next phase (Phase 8: tracker)
 
-**Where**: replace `frontend/src/pages/KycPlaceholder.tsx` on the existing route **`/kyc/:orderId`** (the Quote page already navigates there after `POST /api/orders`). The browser talks only to Spring (Vite proxies `/api`); never to the ai-service.
+**Where**: replace `frontend/src/pages/TrackPlaceholder.tsx`. Two routes exist: **`/track/:orderId`** (from "Track my order" on the VERIFIED screen) and `/track` (landing page CTA, no order: needs a lookup by order ref, which doesn't exist yet).
+
+**What the tracker page receives**
+- `orderId` from the URL. `GET /api/orders/{orderId}` → `{orderId, orderRef, status, createdAt, quote (lines, totals, maxInstallDays, estimatedActivationDate), profile (GSTIN masked), events[{status, note, createdAt}]}`.
+- `GET /api/orders/{orderId}/kyc` → `kycStatus`, `overall`, `estimatedActivationDate` (set only when VERIFIED: reference date + `quote.maxInstallDays`; not in `OrderView` yet, add it if the tracker should not call `/kyc`).
+
+**Order statuses so far** (`customer_order.status`, free text, one `order_event` per transition): `QUOTE_ACCEPTED` → `KYC_IN_PROGRESS` → `KYC_VERIFIED` | `KYC_ACTION_REQUIRED` | `KYC_REJECTED`; a re-upload after a verdict → `KYC_IN_PROGRESS`; withdraw → `KYC_PENDING_CONSENT`. Event notes look like `KYC ACTION_REQUIRED: C14`. Only `KYC_VERIFIED` should start the tracker's install steps; for other statuses link back to `/kyc/:orderId`.
+
+**Watch out when adding tracker statuses**
+- `KycService.view` reports any status not starting with `KYC_` as `kycStatus: KYC_PENDING_CONSENT`, and `lib/kyc.stepFor` shows the upload step for anything that isn't a verdict. Post-KYC statuses (e.g. `INSTALL_SCHEDULED`) would send a verified order back to the upload screen, so update both.
+- Don't allow new uploads once installation has started, or a re-upload will reopen the KYC.
+- Reuse `JourneyStepper current="track"`, `formatDate`, `Toast`, `ErrorBanner`, and the `hooks/useKyc` pattern of dropping stale GETs if the page polls. "Today" stays `app.reference-date`; don't use `new Date()` for tracker dates.
+- Testing without Gemini: create an order by curl, run K03 through `/kyc/:orderId` with `KYC_FIXTURE_CACHE=true`, then open `/track/:orderId`.
+
+**Still deferred from Phase 6**: the live Gemini specimen run (STOP 3): `run-specimens?applicants=K02,K07,K11` first (~12 calls). Advisor evals 4–15 also still need quota.
+
+### i18n keys added in Phase 7
+`journey.*`, `kyc.consent.*`, `kyc.doc.<DocType>.{title,short,hint}`, `kyc.upload.*` (`status`, `summary`, `errors`), `kyc.results.*` (`status`, `reason.<code>`, `almostThere_one/_other`), `kyc.withdraw.*` in `en.json` + `hi.json`. Removed: `kyc.monthly`, `kyc.comingNext`, `kyc.body`. Changed: `kyc.title`, `kyc.orderRef`, `track.body`. Check messages and fix hints come from the backend in both languages, not from i18n.
+
+### KYC frontend contract (Phase 7, implemented)
+
+**Where**: `frontend/src/pages/Kyc.tsx` on the route **`/kyc/:orderId`** (the Quote page already navigates there after `POST /api/orders`). The browser talks only to Spring (Vite proxies `/api`); never to the ai-service.
 
 **Screen flow**
 1. Load `GET /api/orders/{orderId}/kyc` → `KycView`. Drive the page from `kycStatus` + `consent.active`:
@@ -587,11 +645,11 @@ KYC test data: `backend/src/test/resources/kyc/fixtures/*.json` (47 golden fixtu
    - `ACTION_REQUIRED` → list FAIL checks with `fixable: true`: message + fix hint + a "Fix" button that scrolls to / reopens the right slot (mapping below); re-upload sets the order back to `KYC_IN_PROGRESS`; then submit again.
    - `REJECTED` → list the non-fixable FAILs with their message and hint (contact support); no re-upload CTA for those.
    - Order: FAIL (red) → WARN (amber) → PASS (collapsed "17 checks") → SKIPPED (grey, "checked after you fix the items above"; `messageEn` explains what is missing).
-4. **Withdraw consent** link (ConfirmDialog): `POST /api/orders/{id}/kyc/consent/withdraw` → `KycView` with `consent.active=false`, documents with `fields: null`; return to the consent step and say the extracted data was deleted.
+4. **Withdraw consent** link (ConfirmDialog): `POST /api/orders/{id}/kyc/consent/withdraw` → `KycView` with `consent.active=false` and no documents or checks; return to the consent step and say the documents and details were deleted.
 
 **Language**: every `CheckResult` has `messageEn`/`messageHi` and `fixHintEn`/`fixHintHi` (null on PASS/SKIPPED); `DocumentView` has `fixHintEn`/`fixHintHi`; the notice is fetched per language. Pick by the UI language; no translation needed in the frontend. Check codes/names are for logic only, not display.
 
-**Check → slot mapping for "Fix" buttons**: C01 → `evidence.missing[]` (DocType names); C02 → `evidence.unreadable[]`; C03 → keys of `evidence.detected`; C04–C07, C13 → GST_CERTIFICATE; C08, C09, C16 → UDYAM_CERTIFICATE; C11, C15 → SIGNATORY_ID; C12, C14 → ADDRESS_PROOF; C10 → `evidence.mismatch[]` keys (`gstTradeName`/`gstLegalName` → GST, `udyamEnterpriseName` → UDYAM, `billBilledTo` → ADDRESS_PROOF, `idForBusiness` → SIGNATORY_ID); C17 → back to `/quote` ("Remove GST-only services or update your GST registration"). After a withdrawal `evidence` is null: fall back to the code mapping.
+**Check → slot mapping for "Fix" buttons**: C01 → `evidence.missing[]` (DocType names); C02 → `evidence.unreadable[]`; C03 → keys of `evidence.detected`; C04–C07, C13 → GST_CERTIFICATE; C08, C09, C16 → UDYAM_CERTIFICATE; C11, C15 → SIGNATORY_ID; C12, C14 → ADDRESS_PROOF; C10 → `evidence.mismatch[]` keys (`gstTradeName`/`gstLegalName` → GST, `udyamEnterpriseName` → UDYAM, `billBilledTo` → ADDRESS_PROOF, `idForBusiness` → SIGNATORY_ID); C17 → back to `/quote` ("Remove GST-only services or update your GST registration").
 
 **Types to add to `api/types.ts`** (mirror section 5): `ConsentNotice`, `ConsentPurpose`, `ConsentRequest`, `KycView`, `ConsentView`, `DocumentView`, `KycQuality`, `CheckResult` (`status: "PASS"|"WARN"|"FAIL"|"SKIPPED"`, `severity: "BLOCKING"|"SOFT"`), `SubmitResult`, `DocType`, `KycOverall = "VERIFIED"|"ACTION_REQUIRED"|"REJECTED"`. `api/client.ts` needs a `FormData` request variant (no JSON content type) and should surface 403 `CONSENT_REQUIRED` / 503 `EXTRACTION_UNAVAILABLE` as typed errors.
 

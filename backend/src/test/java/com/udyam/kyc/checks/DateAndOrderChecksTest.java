@@ -91,6 +91,17 @@ class DateAndOrderChecksTest {
         assertThat(r.blockingCodes()).containsExactly("C03");
     }
 
+    /** Rows purged by the earlier withdrawal logic may still exist in Neon: they must never verify. */
+    @Test
+    void anOkDocumentWithoutFieldsCountsAsMissing() {
+        Map<DocType, KycDocument> docs = KycFixtures.documents("K03");
+        docs.replaceAll((t, d) -> new KycDocument(d.docType(), d.status(), d.detectedDocType(), d.sha256(),
+                d.blurScore(), d.skewDeg(), d.deskewed(), null, d.model(), d.uploadedAt()));
+        ValidationReport r = KycFixtures.VALIDATOR.validate(new KycInput(docs, false, null, List.of()));
+        assertThat(r.overall()).isEqualTo(ValidationReport.ACTION_REQUIRED);
+        assertThat(r.blockingCodes()).containsExactly("C01");
+    }
+
     // ---- C17 ----
 
     private static ValidationReport withProfile(String applicant, String orderGstin, List<String> gstProducts) {

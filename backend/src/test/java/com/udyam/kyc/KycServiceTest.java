@@ -228,8 +228,41 @@ class KycServiceTest {
         assertThat(view.fromFixtureCache()).isTrue();
         assertThat(view.quality().deskewed()).isTrue();
         assertThat(extractor.seen).isEmpty();
-        // A specimen uploaded in the wrong slot is not served from the cache.
-        kyc.upload(id, "UDYAM_CERTIFICATE", KycFixtures.specimen("K02", DocType.SIGNATORY_ID));
+    }
+
+    @Test
+    void fixtureCacheAnswersWrongDocTypeForASpecimenInAnotherSlot() {
+        kyc = service(true);
+        UUID id = consentedOrder();
+
+        KycService.DocumentView view = kyc.upload(id, "GST_CERTIFICATE", KycFixtures.specimen("K03",
+                DocType.UDYAM_CERTIFICATE));
+
+        assertThat(view.status()).isEqualTo(ExtractResult.WRONG_DOC_TYPE);
+        assertThat(view.detectedDocType()).isEqualTo("UDYAM_CERTIFICATE");
+        assertThat(view.fields()).isNull();
+        assertThat(view.fixHintEn()).isEqualTo(
+                "This looks like the Udyam certificate, not the GST certificate. Upload the GST certificate here.");
+        assertThat(view.fixHintHi()).contains("उद्यम प्रमाणपत्र").doesNotContain("UDYAM_CERTIFICATE");
+        assertThat(extractor.seen).isEmpty();
+    }
+
+    @Test
+    void fixtureCacheKeepsABlurrySpecimenUnreadableInAnySlot() {
+        kyc = service(true);
+        UUID id = consentedOrder();
+        KycService.DocumentView view = kyc.upload(id, "ADDRESS_PROOF", KycFixtures.specimen("K04",
+                DocType.GST_CERTIFICATE));
+        assertThat(view.status()).isEqualTo(ExtractResult.UNREADABLE);
+        assertThat(extractor.seen).isEmpty();
+    }
+
+    @Test
+    void fixtureCacheSendsOtherImagesToTheExtractor() {
+        kyc = service(true);
+        UUID id = consentedOrder();
+        byte[] notASpecimen = {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF, 1, 2, 3};
+        kyc.upload(id, "GST_CERTIFICATE", notASpecimen);
         assertThat(extractor.seen).hasSize(1);
     }
 
@@ -290,7 +323,7 @@ class KycServiceTest {
     // ---- withdraw ----
 
     @Test
-    void withdrawPurgesExtractedDataAndBlocksFurtherProcessing() {
+    void withdrawDeletesDocumentsAndChecksAndBlocksFurtherProcessing() {
         UUID id = consentedOrder();
         uploadAll(id, "K03");
         kyc.submit(id);
@@ -300,10 +333,43 @@ class KycServiceTest {
         assertThat(view.consent().active()).isFalse();
         assertThat(view.orderStatus()).isEqualTo(OrderStatus.KYC_PENDING_CONSENT);
         assertThat(view.estimatedActivationDate()).isNull();
-        assertThat(kycStore.documents(id)).hasSize(4).allSatisfy(d -> assertThat(d.fields()).isNull());
-        assertThat(kycStore.latestChecks(id)).allSatisfy(c -> assertThat(c.evidence()).isNull());
+        assertThat(view.documents()).isEmpty();
+        assertThat(view.checks()).isEmpty();
+        assertThat(view.overall()).isNull();
+        assertThat(view.missingDocuments()).hasSize(4);
+        assertThat(kycStore.documents(id)).isEmpty();
+        assertThat(kycStore.latestChecks(id)).isEmpty();
         assertThat(orderStore.events.get(id)).extracting(OrderStore.Event::status)
                 .endsWith(OrderStatus.KYC_PENDING_CONSENT);
         assertApiError(() -> kyc.submit(id), HttpStatus.FORBIDDEN, "CONSENT_REQUIRED");
+    }
+
+    /** Regression: withdraw + new consent + submit used to turn a rejected applicant into VERIFIED. */
+    @Test
+    void withdrawingAndConsentingAgainCannotVerifyWithoutDocuments() {
+        UUID id = consentedOrder();
+        uploadAll(id, "K07");
+        assertThat(kyc.submit(id).overall()).isEqualTo("REJECTED");
+
+        kyc.withdrawConsent(id);
+        kyc.giveConsent(id, new KycService.ConsentRequest("2026-07-v1", "en", ALL_REQUIRED));
+        KycService.SubmitResult r = kyc.submit(id);
+
+        assertThat(r.overall()).isEqualTo("ACTION_REQUIRED");
+        assertThat(r.blockingChecks()).containsExactly("C01");
+        assertThat(r.estimatedActivationDate()).isNull();
+    }
+
+    /** Regression: check messages quote names, so they must not survive a withdrawal. */
+    @Test
+    void withdrawalLeavesNoNamesInCheckMessages() {
+        UUID id = consentedOrder();
+        uploadAll(id, "K07");
+        KycService.SubmitResult before = kyc.submit(id);
+        assertThat(before.checks()).anyMatch(c -> c.messageEn().contains("Shri Physio Clinic"));
+
+        kyc.withdrawConsent(id);
+
+        assertThat(kyc.view(id).checks()).isEmpty();
     }
 }

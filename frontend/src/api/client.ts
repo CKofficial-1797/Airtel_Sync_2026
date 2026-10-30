@@ -34,6 +34,22 @@ export class QuoteChangedError extends ApiError {
   }
 }
 
+/** 403 CONSENT_REQUIRED: KYC needs an active consent; send the user back to the consent step. */
+export class ConsentRequiredError extends ApiError {
+  constructor(message: string) {
+    super(403, message, "CONSENT_REQUIRED");
+    this.name = "ConsentRequiredError";
+  }
+}
+
+/** 503 EXTRACTION_UNAVAILABLE: the document could not be read right now; nothing was saved, retry. */
+export class ExtractionUnavailableError extends ApiError {
+  constructor(message: string) {
+    super(503, message, "EXTRACTION_UNAVAILABLE");
+    this.name = "ExtractionUnavailableError";
+  }
+}
+
 /** Spring not reachable (network down, dev proxy cannot connect). */
 export class NetworkError extends ApiError {
   constructor() {
@@ -49,12 +65,14 @@ interface RequestOptions {
 }
 
 export async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  // FormData sets its own multipart Content-Type (with the boundary).
+  const form = options.body instanceof FormData ? options.body : undefined;
   let res: Response;
   try {
     res = await fetch(path, {
       method: options.method ?? "GET",
-      headers: options.body === undefined ? undefined : { "Content-Type": "application/json" },
-      body: options.body === undefined ? undefined : JSON.stringify(options.body),
+      headers: options.body === undefined || form ? undefined : { "Content-Type": "application/json" },
+      body: options.body === undefined ? undefined : (form ?? JSON.stringify(options.body)),
       signal: options.signal,
     });
   } catch (e) {
@@ -77,6 +95,12 @@ export async function request<T>(path: string, options: RequestOptions = {}): Pr
   const message = body?.message ?? res.statusText ?? "Request failed";
   if (res.status === 503 && body?.code === "AI_UNAVAILABLE") {
     throw new AiUnavailableError(message);
+  }
+  if (res.status === 403 && body?.code === "CONSENT_REQUIRED") {
+    throw new ConsentRequiredError(message);
+  }
+  if (res.status === 503 && body?.code === "EXTRACTION_UNAVAILABLE") {
+    throw new ExtractionUnavailableError(message);
   }
   if (res.status === 409 && body?.code === "QUOTE_CHANGED" && body.quote) {
     throw new QuoteChangedError(message, body.quote);

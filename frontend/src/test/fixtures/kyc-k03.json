@@ -1,0 +1,368 @@
+{
+  "orderId": "9b01ca9f-73b4-40e4-a9c4-43c1c64eecab",
+  "orderRef": "UD-260715-0025",
+  "orderStatus": "KYC_VERIFIED",
+  "kycStatus": "KYC_VERIFIED",
+  "consent": {
+    "active": true,
+    "noticeVersion": "2026-07-v1",
+    "language": "en",
+    "purposes": {
+      "KYC_VERIFICATION": true,
+      "SERVICE_INSTALLATION": true,
+      "WHATSAPP_UPDATES": false
+    },
+    "givenAt": "2026-10-30T13:39:31.540705Z"
+  },
+  "documents": [
+    {
+      "docType": "GST_CERTIFICATE",
+      "status": "OK",
+      "detectedDocType": "GST_CERTIFICATE",
+      "quality": {
+        "blurScore": 1221.3,
+        "skewDeg": 0.0,
+        "deskewed": false
+      },
+      "fields": {
+        "gstin": "27XUI*****1ZP",
+        "legalName": "Joseph Singh (Prop. Ganesh Woodcraft)",
+        "tradeName": "Ganesh Woodcraft",
+        "constitution": "Proprietorship",
+        "dateOfLiability": "2020-02-10",
+        "principalAddress": "Shop/Unit 80, Civil Lines, Nagpur, Maharashtra - 411231",
+        "registrationType": "Regular"
+      },
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "model": "hand-transcribed",
+      "fromFixtureCache": false,
+      "uploadedAt": "2026-10-30T13:39:37.535947Z"
+    },
+    {
+      "docType": "UDYAM_CERTIFICATE",
+      "status": "OK",
+      "detectedDocType": "UDYAM_CERTIFICATE",
+      "quality": {
+        "blurScore": 980.5,
+        "skewDeg": 0.0,
+        "deskewed": false
+      },
+      "fields": {
+        "city": "Nagpur",
+        "state": "Maharashtra",
+        "udyamNumber": "UDYAM-MH-00-****696",
+        "majorActivity": "Manufacturing",
+        "enterpriseName": "Ganesh Woodcraft",
+        "dateOfRegistration": "2024-11-21"
+      },
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "model": "hand-transcribed",
+      "fromFixtureCache": false,
+      "uploadedAt": "2026-10-30T13:39:38.858444Z"
+    },
+    {
+      "docType": "SIGNATORY_ID",
+      "status": "OK",
+      "detectedDocType": "SIGNATORY_ID",
+      "quality": {
+        "blurScore": 798.7,
+        "skewDeg": 0.0,
+        "deskewed": false
+      },
+      "fields": {
+        "name": "Joseph Singh",
+        "idNumber": "**********889",
+        "validTill": "2028-07-04",
+        "designation": "Owner",
+        "forBusiness": "Ganesh Woodcraft"
+      },
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "model": "hand-transcribed",
+      "fromFixtureCache": false,
+      "uploadedAt": "2026-10-30T13:39:40.154934Z"
+    },
+    {
+      "docType": "ADDRESS_PROOF",
+      "status": "OK",
+      "detectedDocType": "ADDRESS_PROOF",
+      "quality": {
+        "blurScore": 973.4,
+        "skewDeg": 0.0,
+        "deskewed": false
+      },
+      "fields": {
+        "billDate": "2026-05-30",
+        "billedTo": "Ganesh Woodcraft",
+        "amountDueInr": 33615,
+        "documentKind": "Electricity bill",
+        "supplyAddress": "Shop/Unit 80, Civil Lines, Nagpur, Maharashtra - 411231",
+        "consumerNumber": "*******928"
+      },
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "model": "hand-transcribed",
+      "fromFixtureCache": false,
+      "uploadedAt": "2026-10-30T13:39:41.458117Z"
+    }
+  ],
+  "missingDocuments": [],
+  "overall": "VERIFIED",
+  "checks": [
+    {
+      "code": "C01",
+      "name": "ALL_DOCUMENTS_PRESENT",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": true,
+      "messageEn": "All 4 documents are uploaded.",
+      "messageHi": "सभी 4 दस्तावेज़ अपलोड हो गए हैं।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "documents": 4
+      }
+    },
+    {
+      "code": "C02",
+      "name": "IMAGES_READABLE",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": true,
+      "messageEn": "All photos are clear enough to read.",
+      "messageHi": "सभी फ़ोटो पढ़ने लायक साफ़ हैं।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {}
+    },
+    {
+      "code": "C03",
+      "name": "DOC_TYPES_MATCH",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": true,
+      "messageEn": "Each document is in the right slot.",
+      "messageHi": "हर दस्तावेज़ सही जगह पर अपलोड है।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {}
+    },
+    {
+      "code": "C04",
+      "name": "GSTIN_VALID",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": false,
+      "messageEn": "GSTIN 27XUI*****1ZP has a valid format and checksum.",
+      "messageHi": "GSTIN 27XUI*****1ZP का फ़ॉर्मेट और चेकसम सही है।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "gstin": "27XUI*****1ZP"
+      }
+    },
+    {
+      "code": "C05",
+      "name": "GSTIN_IN_REGISTRY",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": false,
+      "messageEn": "GSTIN 27XUI*****1ZP is in the GST registry.",
+      "messageHi": "GSTIN 27XUI*****1ZP GST रजिस्ट्री में मौजूद है।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "gstin": "27XUI*****1ZP"
+      }
+    },
+    {
+      "code": "C06",
+      "name": "GSTIN_ACTIVE",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": false,
+      "messageEn": "GST registration is Active.",
+      "messageHi": "GST पंजीकरण सक्रिय (Active) है।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "registryStatus": "Active"
+      }
+    },
+    {
+      "code": "C07",
+      "name": "GST_DOC_MATCHES_REGISTRY",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": false,
+      "messageEn": "Legal and trade names on the certificate match the GST registry.",
+      "messageHi": "प्रमाणपत्र पर कानूनी और व्यापारिक नाम GST रजिस्ट्री से मेल खाते हैं।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {}
+    },
+    {
+      "code": "C08",
+      "name": "UDYAM_NUMBER_VALID",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": true,
+      "messageEn": "Udyam number UDYAM-MH-00-****696 has a valid format.",
+      "messageHi": "उद्यम नंबर UDYAM-MH-00-****696 का फ़ॉर्मेट सही है।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "udyamNumber": "UDYAM-MH-00-****696"
+      }
+    },
+    {
+      "code": "C09",
+      "name": "UDYAM_IN_REGISTRY",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": false,
+      "messageEn": "Udyam number is in the Udyam registry and the enterprise name matches.",
+      "messageHi": "उद्यम नंबर उद्यम रजिस्ट्री में है और उद्यम का नाम मेल खाता है।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "udyamNumber": "UDYAM-MH-00-****696",
+        "enterpriseName": "Ganesh Woodcraft"
+      }
+    },
+    {
+      "code": "C10",
+      "name": "BUSINESS_NAME_CONSISTENT",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": false,
+      "messageEn": "The business name is the same on all documents.",
+      "messageHi": "सभी दस्तावेज़ों पर व्यवसाय का नाम एक जैसा है।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "names": {
+          "billBilledTo": "Ganesh Woodcraft",
+          "gstLegalName": "Ganesh Woodcraft",
+          "gstTradeName": "Ganesh Woodcraft",
+          "idForBusiness": "Ganesh Woodcraft",
+          "udyamEnterpriseName": "Ganesh Woodcraft"
+        }
+      }
+    },
+    {
+      "code": "C11",
+      "name": "PROPRIETOR_IS_SIGNATORY",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": false,
+      "messageEn": "The proprietor named on the GST certificate is the signatory.",
+      "messageHi": "GST प्रमाणपत्र पर लिखे मालिक ही हस्ताक्षरकर्ता हैं।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "signatory": "Joseph Singh",
+        "proprietor": "Joseph Singh"
+      }
+    },
+    {
+      "code": "C12",
+      "name": "ADDRESS_CONSISTENT",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": false,
+      "messageEn": "The GST address matches the address proof.",
+      "messageHi": "GST पता पते के प्रमाण से मेल खाता है।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "gstPincode": "411231",
+        "billPincode": "411231",
+        "tokenOverlap": 1.0
+      }
+    },
+    {
+      "code": "C13",
+      "name": "STATE_CONSISTENT",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": false,
+      "messageEn": "The GSTIN state matches the address state.",
+      "messageHi": "GSTIN का राज्य पते के राज्य से मेल खाता है।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "stateCode": "27",
+        "gstinState": "Maharashtra",
+        "udyamState": "Maharashtra",
+        "addressState": "Maharashtra"
+      }
+    },
+    {
+      "code": "C14",
+      "name": "ADDRESS_PROOF_RECENT",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": true,
+      "messageEn": "The address proof is dated 2026-05-30 (46 days old).",
+      "messageHi": "पते का प्रमाण 2026-05-30 का है (46 दिन पुराना)।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "ageDays": 46,
+        "billDate": "2026-05-30",
+        "maxAgeDays": 90,
+        "referenceDate": "2026-07-15"
+      }
+    },
+    {
+      "code": "C15",
+      "name": "ID_VALID",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": true,
+      "messageEn": "The signatory ID is valid till 2028-07-04.",
+      "messageHi": "हस्ताक्षरकर्ता पहचान पत्र 2028-07-04 तक मान्य है।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "validTill": "2028-07-04",
+        "referenceDate": "2026-07-15"
+      }
+    },
+    {
+      "code": "C16",
+      "name": "UDYAM_DETAILS_SOFT",
+      "status": "WARN",
+      "severity": "SOFT",
+      "fixable": true,
+      "messageEn": "Udyam certificate registration date differs from the registry (known registry lag; not blocking).",
+      "messageHi": "उद्यम प्रमाणपत्र की पंजीकरण तिथि रजिस्ट्री से अलग है (रजिस्ट्री में ज्ञात देरी; रुकावट नहीं)।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "dateOfRegistration": {
+          "inRegistry": "2024-10-01",
+          "onDocument": "2024-11-21"
+        }
+      }
+    },
+    {
+      "code": "C17",
+      "name": "ORDER_PROFILE_MATCH",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": true,
+      "messageEn": "The KYC matches the order.",
+      "messageHi": "KYC ऑर्डर से मेल खाता है।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "gstRequiredProducts": []
+      }
+    }
+  ],
+  "estimatedActivationDate": "2026-07-20"
+}

@@ -37,20 +37,32 @@ public class FixtureCache {
         return props.fixtureCache();
     }
 
-    /** The fixture for this image, only when the cache is on, the hash is a specimen and the slot matches. */
+    /**
+     * The result the ai-service would give for this specimen in this slot: its fixture in its own slot,
+     * WRONG_DOC_TYPE in another slot (a blurry specimen stays UNREADABLE in any slot, as the quality gate runs
+     * first). Empty when the cache is off or the image is not a specimen.
+     */
     public Optional<ExtractResult> find(String sha256, DocType docType) {
         if (!enabled()) {
             return Optional.empty();
         }
         Path fixture = index().get(sha256);
-        if (fixture == null || !fixture.getFileName().toString().endsWith("_" + docType.fileSuffix() + ".json")) {
+        if (fixture == null) {
             return Optional.empty();
         }
+        ExtractResult r;
         try {
-            return Optional.of(json.readValue(fixture.toFile(), ExtractResult.class));
+            r = json.readValue(fixture.toFile(), ExtractResult.class);
         } catch (IOException e) {
             throw new UncheckedIOException("Unreadable fixture " + fixture.getFileName(), e);
         }
+        if (fixture.getFileName().toString().endsWith("_" + docType.fileSuffix() + ".json")) {
+            return Optional.of(r);
+        }
+        String status = ExtractResult.UNREADABLE.equals(r.status()) ? ExtractResult.UNREADABLE
+                : ExtractResult.WRONG_DOC_TYPE;
+        return Optional.of(new ExtractResult(status, docType.name(), r.detectedDocType(), r.quality(), null, r.model(),
+                r.ms()));
     }
 
     private synchronized Map<String, Path> index() {

@@ -64,11 +64,9 @@ class InMemoryKycStore implements KycStore {
     }
 
     @Override
-    public void purgeExtractedData(UUID orderId) {
-        Map<DocType, KycDocument> docs = documents.getOrDefault(orderId, new LinkedHashMap<>());
-        docs.replaceAll((t, d) -> new KycDocument(d.docType(), d.status(), d.detectedDocType(), d.sha256(),
-                d.blurScore(), d.skewDeg(), d.deskewed(), null, d.model(), d.uploadedAt()));
-        checks.computeIfPresent(orderId, (k, list) -> list.stream().map(CheckResult::withoutEvidence).toList());
+    public void deleteDocumentsAndChecks(UUID orderId) {
+        documents.remove(orderId);
+        checks.remove(orderId);
     }
 
     @Override

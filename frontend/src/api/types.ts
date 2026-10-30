@@ -231,3 +231,102 @@ export interface ApiErrorBody {
   errors?: string[];
   quote?: Quote;
 }
+
+// ---- KYC (Phase 7): mirrors the Spring JSON of /api/kyc and /api/orders/{id}/kyc ----
+
+export type DocType = "GST_CERTIFICATE" | "UDYAM_CERTIFICATE" | "SIGNATORY_ID" | "ADDRESS_PROOF";
+export type DocStatus = "OK" | "UNREADABLE" | "WRONG_DOC_TYPE";
+export type KycOverall = "VERIFIED" | "ACTION_REQUIRED" | "REJECTED";
+export type CheckStatus = "PASS" | "WARN" | "FAIL" | "SKIPPED";
+
+export interface ConsentPurpose {
+  code: string;
+  required: boolean;
+  title: string;
+  description: string;
+}
+
+export interface ConsentNotice {
+  version: string;
+  language: string;
+  title: string;
+  dataFiduciary: string;
+  purposes: ConsentPurpose[];
+  dataCollected: string;
+  retention: string;
+  retentionDays: number;
+  rights: string[];
+  contact: string;
+}
+
+export interface ConsentRequest {
+  noticeVersion: string;
+  language: string;
+  purposes: Record<string, boolean>;
+}
+
+export interface ConsentView {
+  active: boolean;
+  noticeVersion: string | null;
+  language: string | null;
+  purposes: Record<string, boolean>;
+  givenAt: string | null;
+}
+
+export interface KycQuality {
+  blurScore: number | null;
+  skewDeg: number | null;
+  deskewed: boolean;
+}
+
+/** Identifiers in fields are already masked by the server. */
+export interface DocumentView {
+  docType: DocType;
+  status: DocStatus;
+  detectedDocType: string | null;
+  quality: KycQuality;
+  fields: Record<string, string | number | null> | null;
+  fixHintEn: string | null;
+  fixHintHi: string | null;
+  model: string | null;
+  fromFixtureCache: boolean;
+  uploadedAt: string | null;
+}
+
+export interface CheckResult {
+  code: string;
+  name: string;
+  status: CheckStatus;
+  severity: "BLOCKING" | "SOFT";
+  fixable: boolean;
+  messageEn: string;
+  messageHi: string;
+  fixHintEn: string | null;
+  fixHintHi: string | null;
+  evidence: Record<string, unknown> | null;
+}
+
+export interface KycView {
+  orderId: string;
+  orderRef: string;
+  orderStatus: string;
+  kycStatus: string;
+  consent: ConsentView;
+  documents: DocumentView[];
+  missingDocuments: DocType[];
+  overall: KycOverall | null;
+  checks: CheckResult[];
+  estimatedActivationDate: string | null;
+}
+
+export interface KycSubmitResult {
+  orderId: string;
+  orderRef: string;
+  overall: KycOverall;
+  orderStatus: string;
+  blockingChecks: string[];
+  warnings: string[];
+  checks: CheckResult[];
+  estimatedActivationDate: string | null;
+  runId: string;
+}

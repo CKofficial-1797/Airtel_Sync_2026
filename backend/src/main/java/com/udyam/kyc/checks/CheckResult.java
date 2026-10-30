@@ -58,9 +58,4 @@ public record CheckResult(
     public boolean warning() {
         return WARN.equals(status);
     }
-
-    public CheckResult withoutEvidence() {
-        return new CheckResult(code, name, status, severity, fixable, messageEn, messageHi, fixHintEn, fixHintHi,
-                null);
-    }
 }

@@ -9,6 +9,7 @@ import type { Product, Profile, Quote as QuoteJson, Recommendation, SessionView 
 import { AddOnToggle } from "../components/AddOnToggle";
 import { ErrorBanner } from "../components/ErrorBanner";
 import { IneligibleList } from "../components/IneligibleList";
+import { JourneyStepper } from "../components/kyc/JourneyStepper";
 import { Header } from "../components/Layout";
 import { ProfileSummary } from "../components/ProfileSummary";
 import { QuoteLineItem } from "../components/QuoteLineItem";
@@ -138,6 +139,7 @@ function QuoteEditor({ session }: { session: SessionView }) {
   return (
     <>
       <Header title={t("quote.title")} backTo="/advisor" />
+      <JourneyStepper current="quote" />
       <ProfileSummary
         profile={profile}
         resolved={recommendation?.resolvedProfile}

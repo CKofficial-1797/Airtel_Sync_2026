@@ -1,0 +1,16 @@
+{
+  "docType": "GST_CERTIFICATE",
+  "status": "UNREADABLE",
+  "detectedDocType": null,
+  "quality": {
+    "blurScore": 1.0,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": null,
+  "fixHintEn": "Photo is blurry. Retake it in good light, flat on a table, and upload it again.",
+  "fixHintHi": "फ़ोटो धुंधली है। अच्छी रोशनी में, दस्तावेज़ को मेज़ पर सीधा रखकर दोबारा फ़ोटो लें और अपलोड करें।",
+  "model": null,
+  "fromFixtureCache": true,
+  "uploadedAt": null
+}

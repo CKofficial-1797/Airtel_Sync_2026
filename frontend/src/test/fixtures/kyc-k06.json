@@ -1,0 +1,370 @@
+{
+  "orderId": "788782ae-e0e5-4bef-a9a0-f2da7108821d",
+  "orderRef": "UD-260715-0026",
+  "orderStatus": "KYC_REJECTED",
+  "kycStatus": "KYC_REJECTED",
+  "consent": {
+    "active": true,
+    "noticeVersion": "2026-07-v1",
+    "language": "en",
+    "purposes": {
+      "KYC_VERIFICATION": true,
+      "SERVICE_INSTALLATION": true,
+      "WHATSAPP_UPDATES": false
+    },
+    "givenAt": "2026-10-30T13:39:49.607865Z"
+  },
+  "documents": [
+    {
+      "docType": "GST_CERTIFICATE",
+      "status": "OK",
+      "detectedDocType": "GST_CERTIFICATE",
+      "quality": {
+        "blurScore": 1221.6,
+        "skewDeg": 0.0,
+        "deskewed": false
+      },
+      "fields": {
+        "gstin": "08YKZ*****1Z0",
+        "legalName": "Pooja Shah (Prop. Saffron Unisex Salon)",
+        "tradeName": "Saffron Unisex Salon",
+        "constitution": "Proprietorship",
+        "dateOfLiability": "2019-09-25",
+        "principalAddress": "Shop/Unit 71, Market Yard, Jaipur, Rajasthan - 194057",
+        "registrationType": "Regular"
+      },
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "model": "hand-transcribed",
+      "fromFixtureCache": false,
+      "uploadedAt": "2026-10-30T13:39:55.760487Z"
+    },
+    {
+      "docType": "UDYAM_CERTIFICATE",
+      "status": "OK",
+      "detectedDocType": "UDYAM_CERTIFICATE",
+      "quality": {
+        "blurScore": 951.4,
+        "skewDeg": 0.0,
+        "deskewed": false
+      },
+      "fields": {
+        "city": "Jaipur",
+        "state": "Rajasthan",
+        "udyamNumber": "UDYAM-RJ-00-****157",
+        "majorActivity": "Services",
+        "enterpriseName": "Saffron Unisex Salon",
+        "dateOfRegistration": "2023-01-24"
+      },
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "model": "hand-transcribed",
+      "fromFixtureCache": false,
+      "uploadedAt": "2026-10-30T13:39:57.08919Z"
+    },
+    {
+      "docType": "SIGNATORY_ID",
+      "status": "OK",
+      "detectedDocType": "SIGNATORY_ID",
+      "quality": {
+        "blurScore": 796.3,
+        "skewDeg": 0.0,
+        "deskewed": false
+      },
+      "fields": {
+        "name": "Pooja Shah",
+        "idNumber": "**********354",
+        "validTill": "2028-09-15",
+        "designation": "Owner",
+        "forBusiness": "Saffron Unisex Salon"
+      },
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "model": "hand-transcribed",
+      "fromFixtureCache": false,
+      "uploadedAt": "2026-10-30T13:39:58.392936Z"
+    },
+    {
+      "docType": "ADDRESS_PROOF",
+      "status": "OK",
+      "detectedDocType": "ADDRESS_PROOF",
+      "quality": {
+        "blurScore": 976.0,
+        "skewDeg": 0.0,
+        "deskewed": false
+      },
+      "fields": {
+        "billDate": "2026-06-11",
+        "billedTo": "Saffron Unisex Salon",
+        "amountDueInr": 27352,
+        "documentKind": "Electricity bill",
+        "supplyAddress": "Shop/Unit 71, Market Yard, Jaipur, Rajasthan - 194057",
+        "consumerNumber": "*******101"
+      },
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "model": "hand-transcribed",
+      "fromFixtureCache": false,
+      "uploadedAt": "2026-10-30T13:39:59.676536Z"
+    }
+  ],
+  "missingDocuments": [],
+  "overall": "REJECTED",
+  "checks": [
+    {
+      "code": "C01",
+      "name": "ALL_DOCUMENTS_PRESENT",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": true,
+      "messageEn": "All 4 documents are uploaded.",
+      "messageHi": "सभी 4 दस्तावेज़ अपलोड हो गए हैं।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "documents": 4
+      }
+    },
+    {
+      "code": "C02",
+      "name": "IMAGES_READABLE",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": true,
+      "messageEn": "All photos are clear enough to read.",
+      "messageHi": "सभी फ़ोटो पढ़ने लायक साफ़ हैं।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {}
+    },
+    {
+      "code": "C03",
+      "name": "DOC_TYPES_MATCH",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": true,
+      "messageEn": "Each document is in the right slot.",
+      "messageHi": "हर दस्तावेज़ सही जगह पर अपलोड है।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {}
+    },
+    {
+      "code": "C04",
+      "name": "GSTIN_VALID",
+      "status": "FAIL",
+      "severity": "BLOCKING",
+      "fixable": false,
+      "messageEn": "GSTIN 08YKZ*****1Z0 fails the format/checksum test and no safe OCR correction exists. The document may have been altered.",
+      "messageHi": "GSTIN 08YKZ*****1Z0 फ़ॉर्मेट/चेकसम जाँच में विफल है और कोई सुरक्षित OCR सुधार नहीं है। दस्तावेज़ में बदलाव किया गया हो सकता है।",
+      "fixHintEn": "Please contact Accel Business support with your original documents.",
+      "fixHintHi": "कृपया अपने मूल दस्तावेज़ों के साथ Accel Business सहायता से संपर्क करें।",
+      "evidence": {
+        "gstin": "08YKZ*****1Z0",
+        "formatValid": true,
+        "checksumValid": false
+      }
+    },
+    {
+      "code": "C05",
+      "name": "GSTIN_IN_REGISTRY",
+      "status": "SKIPPED",
+      "severity": "BLOCKING",
+      "fixable": false,
+      "messageEn": "Skipped: needs a valid GSTIN (see C04).",
+      "messageHi": "छोड़ा गया: मान्य GSTIN चाहिए (C04 देखें)।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {}
+    },
+    {
+      "code": "C06",
+      "name": "GSTIN_ACTIVE",
+      "status": "SKIPPED",
+      "severity": "BLOCKING",
+      "fixable": false,
+      "messageEn": "Skipped: needs a GSTIN found in the GST registry (see C05).",
+      "messageHi": "छोड़ा गया: GST रजिस्ट्री में मिला GSTIN चाहिए (C05 देखें)।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {}
+    },
+    {
+      "code": "C07",
+      "name": "GST_DOC_MATCHES_REGISTRY",
+      "status": "SKIPPED",
+      "severity": "BLOCKING",
+      "fixable": false,
+      "messageEn": "Skipped: needs a GSTIN found in the GST registry (see C05).",
+      "messageHi": "छोड़ा गया: GST रजिस्ट्री में मिला GSTIN चाहिए (C05 देखें)।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {}
+    },
+    {
+      "code": "C08",
+      "name": "UDYAM_NUMBER_VALID",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": true,
+      "messageEn": "Udyam number UDYAM-RJ-00-****157 has a valid format.",
+      "messageHi": "उद्यम नंबर UDYAM-RJ-00-****157 का फ़ॉर्मेट सही है।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "udyamNumber": "UDYAM-RJ-00-****157"
+      }
+    },
+    {
+      "code": "C09",
+      "name": "UDYAM_IN_REGISTRY",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": false,
+      "messageEn": "Udyam number is in the Udyam registry and the enterprise name matches.",
+      "messageHi": "उद्यम नंबर उद्यम रजिस्ट्री में है और उद्यम का नाम मेल खाता है।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "udyamNumber": "UDYAM-RJ-00-****157",
+        "enterpriseName": "Saffron Unisex Salon"
+      }
+    },
+    {
+      "code": "C10",
+      "name": "BUSINESS_NAME_CONSISTENT",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": false,
+      "messageEn": "The business name is the same on all documents.",
+      "messageHi": "सभी दस्तावेज़ों पर व्यवसाय का नाम एक जैसा है।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "names": {
+          "billBilledTo": "Saffron Unisex Salon",
+          "gstLegalName": "Saffron Unisex Salon",
+          "gstTradeName": "Saffron Unisex Salon",
+          "idForBusiness": "Saffron Unisex Salon",
+          "udyamEnterpriseName": "Saffron Unisex Salon"
+        }
+      }
+    },
+    {
+      "code": "C11",
+      "name": "PROPRIETOR_IS_SIGNATORY",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": false,
+      "messageEn": "The proprietor named on the GST certificate is the signatory.",
+      "messageHi": "GST प्रमाणपत्र पर लिखे मालिक ही हस्ताक्षरकर्ता हैं।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "signatory": "Pooja Shah",
+        "proprietor": "Pooja Shah"
+      }
+    },
+    {
+      "code": "C12",
+      "name": "ADDRESS_CONSISTENT",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": false,
+      "messageEn": "The GST address matches the address proof.",
+      "messageHi": "GST पता पते के प्रमाण से मेल खाता है।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "gstPincode": "194057",
+        "billPincode": "194057",
+        "tokenOverlap": 1.0
+      }
+    },
+    {
+      "code": "C13",
+      "name": "STATE_CONSISTENT",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": false,
+      "messageEn": "The GSTIN state matches the address state.",
+      "messageHi": "GSTIN का राज्य पते के राज्य से मेल खाता है।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "stateCode": "08",
+        "gstinState": "Rajasthan",
+        "udyamState": "Rajasthan",
+        "addressState": "Rajasthan"
+      }
+    },
+    {
+      "code": "C14",
+      "name": "ADDRESS_PROOF_RECENT",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": true,
+      "messageEn": "The address proof is dated 2026-06-11 (34 days old).",
+      "messageHi": "पते का प्रमाण 2026-06-11 का है (34 दिन पुराना)।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "ageDays": 34,
+        "billDate": "2026-06-11",
+        "maxAgeDays": 90,
+        "referenceDate": "2026-07-15"
+      }
+    },
+    {
+      "code": "C15",
+      "name": "ID_VALID",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": true,
+      "messageEn": "The signatory ID is valid till 2028-09-15.",
+      "messageHi": "हस्ताक्षरकर्ता पहचान पत्र 2028-09-15 तक मान्य है।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "validTill": "2028-09-15",
+        "referenceDate": "2026-07-15"
+      }
+    },
+    {
+      "code": "C16",
+      "name": "UDYAM_DETAILS_SOFT",
+      "status": "WARN",
+      "severity": "SOFT",
+      "fixable": true,
+      "messageEn": "Udyam certificate registration date and major activity differ from the registry (known registry lag; not blocking).",
+      "messageHi": "उद्यम प्रमाणपत्र की पंजीकरण तिथि और मुख्य गतिविधि रजिस्ट्री से अलग है (रजिस्ट्री में ज्ञात देरी; रुकावट नहीं)।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "majorActivity": {
+          "inRegistry": "Trading",
+          "onDocument": "Services"
+        },
+        "dateOfRegistration": {
+          "inRegistry": "2025-12-30",
+          "onDocument": "2023-01-24"
+        }
+      }
+    },
+    {
+      "code": "C17",
+      "name": "ORDER_PROFILE_MATCH",
+      "status": "PASS",
+      "severity": "BLOCKING",
+      "fixable": true,
+      "messageEn": "The KYC matches the order.",
+      "messageHi": "KYC ऑर्डर से मेल खाता है।",
+      "fixHintEn": null,
+      "fixHintHi": null,
+      "evidence": {
+        "gstRequiredProducts": []
+      }
+    }
+  ],
+  "estimatedActivationDate": null
+}
