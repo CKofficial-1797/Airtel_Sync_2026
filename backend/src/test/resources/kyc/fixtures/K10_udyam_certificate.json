@@ -1,0 +1,22 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "UDYAM_CERTIFICATE",
+  "detectedDocType": "UDYAM_CERTIFICATE",
+  "quality": {
+    "blurScore": 955.3,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "udyamNumber": "UDYAM-MH-00-7183141",
+    "enterpriseName": "Kaveri Stays LLP",
+    "majorActivity": "Services",
+    "city": "Mumbai",
+    "state": "Maharashtra",
+    "dateOfRegistration": "2024-01-09"
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

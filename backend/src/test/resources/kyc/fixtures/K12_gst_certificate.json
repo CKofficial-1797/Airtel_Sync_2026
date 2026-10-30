@@ -1,0 +1,23 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "GST_CERTIFICATE",
+  "detectedDocType": "GST_CERTIFICATE",
+  "quality": {
+    "blurScore": 1242.3,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "gstin": "37NBLXS1145E1ZU",
+    "legalName": "Pooja Agarwal (Prop. Star Electronics)",
+    "tradeName": "Star Electronics",
+    "constitution": "Proprietorship",
+    "principalAddress": "Shop/Unit 216, Nehru Nagar, Visakhapatnam, Andhra Pradesh - 762071",
+    "dateOfLiability": "2017-01-08",
+    "registrationType": "Regular"
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

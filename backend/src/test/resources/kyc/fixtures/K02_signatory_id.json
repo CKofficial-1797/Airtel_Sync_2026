@@ -1,0 +1,21 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "SIGNATORY_ID",
+  "detectedDocType": "SIGNATORY_ID",
+  "quality": {
+    "blurScore": 818.9,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "name": "Joseph Shah",
+    "designation": "Manager",
+    "forBusiness": "Harmony Dental Care",
+    "idNumber": "SYN-ID-816907",
+    "validTill": "2028-09-10"
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

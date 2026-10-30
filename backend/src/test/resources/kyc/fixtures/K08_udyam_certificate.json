@@ -1,0 +1,22 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "UDYAM_CERTIFICATE",
+  "detectedDocType": "UDYAM_CERTIFICATE",
+  "quality": {
+    "blurScore": 979.0,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "udyamNumber": "UDYAM-GJ-00-8477445",
+    "enterpriseName": "Green Leaf Legal Associates",
+    "majorActivity": "Services",
+    "city": "Vadodara",
+    "state": "Gujarat",
+    "dateOfRegistration": "2022-11-12"
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

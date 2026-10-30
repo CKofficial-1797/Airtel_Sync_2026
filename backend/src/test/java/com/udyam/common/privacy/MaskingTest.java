@@ -22,9 +22,17 @@ class MaskingTest {
     }
 
     @Test
+    void idAndConsumerNumbersKeepOnlyTheLastThree() {
+        assertThat(Masking.keepLast3("SYN-ID-346190")).isEqualTo("**********190");
+        assertThat(Masking.keepLast3("9485717625")).isEqualTo("*******625");
+    }
+
+    @Test
     void shortOrOddValuesAreFullyMasked() {
         assertThat(Masking.gstin("ABC")).isEqualTo("*****");
         assertThat(Masking.udyam("12345")).isEqualTo("*****");
+        assertThat(Masking.keepLast3("123")).isEqualTo("*****");
         assertThat(Masking.gstin(null)).isNull();
+        assertThat(Masking.keepLast3(null)).isNull();
     }
 }

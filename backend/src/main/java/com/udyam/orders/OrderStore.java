@@ -16,6 +16,8 @@ public interface OrderStore {
 
     void addEvent(UUID orderId, String status, String note);
 
+    void updateStatus(UUID orderId, String status);
+
     Optional<Order> find(UUID orderId);
 
     List<Event> events(UUID orderId);

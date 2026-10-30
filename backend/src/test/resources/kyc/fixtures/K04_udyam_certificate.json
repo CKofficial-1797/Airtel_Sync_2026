@@ -1,0 +1,22 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "UDYAM_CERTIFICATE",
+  "detectedDocType": "UDYAM_CERTIFICATE",
+  "quality": {
+    "blurScore": 972.2,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "udyamNumber": "UDYAM-MH-00-6131836",
+    "enterpriseName": "Saffron Dental Care LLP",
+    "majorActivity": "Services",
+    "city": "Nagpur",
+    "state": "Maharashtra",
+    "dateOfRegistration": "2025-05-17"
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

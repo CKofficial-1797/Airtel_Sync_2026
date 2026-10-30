@@ -1,0 +1,23 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "GST_CERTIFICATE",
+  "detectedDocType": "GST_CERTIFICATE",
+  "quality": {
+    "blurScore": 1267.4,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "gstin": "37IHKXV5167L1ZS",
+    "legalName": "Neha Kaur (Prop. Vindhya Tours & Travels)",
+    "tradeName": "Vindhya Tours & Travels",
+    "constitution": "Proprietorship",
+    "principalAddress": "Shop/Unit 1, Tech Park Road, Visakhapatnam, Andhra Pradesh - 118383",
+    "dateOfLiability": "2025-06-07",
+    "registrationType": "Regular"
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

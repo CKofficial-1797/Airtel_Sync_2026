@@ -1,0 +1,22 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "ADDRESS_PROOF",
+  "detectedDocType": "ADDRESS_PROOF",
+  "quality": {
+    "blurScore": 1022.3,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "documentKind": "Electricity bill",
+    "consumerNumber": "9375012581",
+    "billedTo": "Kaveri Insurance Advisors",
+    "supplyAddress": "Shop/Unit 217, Civil Lines, Visakhapatnam, Andhra Pradesh - 405337",
+    "billDate": "2026-07-10",
+    "amountDueInr": 28569
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

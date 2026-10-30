@@ -1,0 +1,23 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "GST_CERTIFICATE",
+  "detectedDocType": "GST_CERTIFICATE",
+  "quality": {
+    "blurScore": 1221.3,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "gstin": "27XUIXG0767D1ZP",
+    "legalName": "Joseph Singh (Prop. Ganesh Woodcraft)",
+    "tradeName": "Ganesh Woodcraft",
+    "constitution": "Proprietorship",
+    "principalAddress": "Shop/Unit 80, Civil Lines, Nagpur, Maharashtra - 411231",
+    "dateOfLiability": "2020-02-10",
+    "registrationType": "Regular"
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

@@ -1,0 +1,22 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "ADDRESS_PROOF",
+  "detectedDocType": "ADDRESS_PROOF",
+  "quality": {
+    "blurScore": 966.8,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "documentKind": "Electricity bill",
+    "consumerNumber": "6910330901",
+    "billedTo": "Kaveri Stays LLP",
+    "supplyAddress": "Shop/Unit 21, Sector 14, Mumbai, Maharashtra - 570043",
+    "billDate": "2026-06-18",
+    "amountDueInr": 23713
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

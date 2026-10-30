@@ -20,6 +20,13 @@ class Settings(BaseSettings):
     max_tool_iterations: int = 6
     gemini_max_attempts: int = 3
 
+    # KYC extraction (Phase 6). Thresholds calibrated on the 47 specimen images (scripts/calibrate_quality.py):
+    # blur: K04 GST = 1.0, every readable image >= 732; skew: K02 GST = 6.96 deg, all others 0.00 deg.
+    gemini_extract_model: str = "gemini-2.5-flash-lite"
+    blur_threshold: float = 100.0
+    skew_threshold_deg: float = 1.5
+    max_upload_bytes: int = 5 * 1024 * 1024
+
 
 @lru_cache
 def get_settings() -> Settings:

@@ -1,0 +1,21 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "SIGNATORY_ID",
+  "detectedDocType": "SIGNATORY_ID",
+  "quality": {
+    "blurScore": 785.1,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "name": "Nisha Arora",
+    "designation": "Owner",
+    "forBusiness": "Kaveri Stays LLP",
+    "idNumber": "SYN-ID-247542",
+    "validTill": "2029-06-01"
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

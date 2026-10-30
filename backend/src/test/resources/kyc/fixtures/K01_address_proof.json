@@ -1,0 +1,22 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "ADDRESS_PROOF",
+  "detectedDocType": "ADDRESS_PROOF",
+  "quality": {
+    "blurScore": 1023.4,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "documentKind": "Electricity bill",
+    "consumerNumber": "9485717625",
+    "billedTo": "Vindhya Tours & Travels",
+    "supplyAddress": "Shop/Unit 1, Tech Park Road, Visakhapatnam, Andhra Pradesh - 118383",
+    "billDate": "2026-06-26",
+    "amountDueInr": 27071
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

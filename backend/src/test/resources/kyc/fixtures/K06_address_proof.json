@@ -1,0 +1,22 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "ADDRESS_PROOF",
+  "detectedDocType": "ADDRESS_PROOF",
+  "quality": {
+    "blurScore": 976.0,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "documentKind": "Electricity bill",
+    "consumerNumber": "9566781101",
+    "billedTo": "Saffron Unisex Salon",
+    "supplyAddress": "Shop/Unit 71, Market Yard, Jaipur, Rajasthan - 194057",
+    "billDate": "2026-06-11",
+    "amountDueInr": 27352
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

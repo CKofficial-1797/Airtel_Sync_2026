@@ -1,0 +1,22 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "ADDRESS_PROOF",
+  "detectedDocType": "ADDRESS_PROOF",
+  "quality": {
+    "blurScore": 973.4,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "documentKind": "Electricity bill",
+    "consumerNumber": "3438517928",
+    "billedTo": "Ganesh Woodcraft",
+    "supplyAddress": "Shop/Unit 80, Civil Lines, Nagpur, Maharashtra - 411231",
+    "billDate": "2026-05-30",
+    "amountDueInr": 33615
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

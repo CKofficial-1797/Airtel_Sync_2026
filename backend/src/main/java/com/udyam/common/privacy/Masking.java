@@ -19,6 +19,17 @@ public final class Masking {
         return value.substring(0, 5) + STARS + value.substring(value.length() - 3);
     }
 
+    /** ID / consumer numbers: everything but the last 3 characters replaced by '*' ("SYN-ID-346190" → "**********190"). */
+    public static String keepLast3(String value) {
+        if (value == null) {
+            return null;
+        }
+        if (value.length() <= 3) {
+            return STARS;
+        }
+        return "*".repeat(value.length() - 3) + value.substring(value.length() - 3);
+    }
+
     /** "UDYAM-KL-00-3078801" → "UDYAM-KL-00-****801" (prefix + last 3). */
     public static String udyam(String value) {
         if (value == null) {

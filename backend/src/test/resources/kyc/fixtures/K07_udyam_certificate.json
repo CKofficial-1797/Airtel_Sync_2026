@@ -1,0 +1,22 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "UDYAM_CERTIFICATE",
+  "detectedDocType": "UDYAM_CERTIFICATE",
+  "quality": {
+    "blurScore": 937.1,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "udyamNumber": "UDYAM-DL-00-9565547",
+    "enterpriseName": "Neelgiri Physio Clinic",
+    "majorActivity": "Services",
+    "city": "Delhi",
+    "state": "Delhi",
+    "dateOfRegistration": "2024-07-14"
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

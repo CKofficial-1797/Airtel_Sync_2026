@@ -1,0 +1,21 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "SIGNATORY_ID",
+  "detectedDocType": "SIGNATORY_ID",
+  "quality": {
+    "blurScore": 826.0,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "name": "Neha Banerjee",
+    "designation": "Manager",
+    "forBusiness": "Neelgiri Physio Clinic",
+    "idNumber": "SYN-ID-178237",
+    "validTill": "2030-05-05"
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

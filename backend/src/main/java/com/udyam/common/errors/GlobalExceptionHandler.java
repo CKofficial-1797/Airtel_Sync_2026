@@ -10,7 +10,11 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
@@ -47,6 +51,21 @@ public class GlobalExceptionHandler {
         List<String> errors = detail == null ? null : List.of(detail.lines().findFirst().orElse(detail));
         ApiError body = new ApiError(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase(),
                 "INVALID_REQUEST", "Request body is missing or is not valid JSON", req.getRequestURI(), errors);
+        return ResponseEntity.badRequest().body(body);
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ApiError> handleTooLarge(MaxUploadSizeExceededException ex, HttpServletRequest req) {
+        HttpStatus status = HttpStatus.PAYLOAD_TOO_LARGE;
+        return ResponseEntity.status(status).body(new ApiError(status.value(), status.getReasonPhrase(),
+                "FILE_TOO_LARGE", "The file is too large", req.getRequestURI(), null));
+    }
+
+    @ExceptionHandler({MissingServletRequestPartException.class, MissingServletRequestParameterException.class,
+            MultipartException.class})
+    public ResponseEntity<ApiError> handleMissingPart(Exception ex, HttpServletRequest req) {
+        ApiError body = new ApiError(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                "INVALID_REQUEST", ex.getMessage(), req.getRequestURI(), null);
         return ResponseEntity.badRequest().body(body);
     }
 

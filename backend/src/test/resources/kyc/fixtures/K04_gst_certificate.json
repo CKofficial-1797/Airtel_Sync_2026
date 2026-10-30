@@ -1,0 +1,15 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "UNREADABLE",
+  "docType": "GST_CERTIFICATE",
+  "detectedDocType": null,
+  "quality": {
+    "blurScore": 1.0,
+    "isBlurry": true,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": null,
+  "model": null,
+  "ms": 0
+}

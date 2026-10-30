@@ -1,0 +1,22 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "UDYAM_CERTIFICATE",
+  "detectedDocType": "UDYAM_CERTIFICATE",
+  "quality": {
+    "blurScore": 943.1,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "udyamNumber": null,
+    "enterpriseName": "Vindhya Tours & Travels",
+    "majorActivity": "Services",
+    "city": "Visakhapatnam",
+    "state": "Andhra Pradesh",
+    "dateOfRegistration": "2024-03-24"
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

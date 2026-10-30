@@ -1,0 +1,22 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "UDYAM_CERTIFICATE",
+  "detectedDocType": "UDYAM_CERTIFICATE",
+  "quality": {
+    "blurScore": 966.7,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "udyamNumber": "UDYAM-PB-00-9719478",
+    "enterpriseName": "Trinity Bake House Pvt Ltd",
+    "majorActivity": "Services",
+    "city": "Ludhiana",
+    "state": "Punjab",
+    "dateOfRegistration": "2025-09-15"
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

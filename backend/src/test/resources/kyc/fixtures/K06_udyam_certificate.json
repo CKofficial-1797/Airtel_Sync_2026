@@ -1,0 +1,22 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "UDYAM_CERTIFICATE",
+  "detectedDocType": "UDYAM_CERTIFICATE",
+  "quality": {
+    "blurScore": 951.4,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "udyamNumber": "UDYAM-RJ-00-6577157",
+    "enterpriseName": "Saffron Unisex Salon",
+    "majorActivity": "Services",
+    "city": "Jaipur",
+    "state": "Rajasthan",
+    "dateOfRegistration": "2023-01-24"
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

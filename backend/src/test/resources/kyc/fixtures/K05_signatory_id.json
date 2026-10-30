@@ -1,0 +1,21 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "SIGNATORY_ID",
+  "detectedDocType": "SIGNATORY_ID",
+  "quality": {
+    "blurScore": 785.6,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "name": "Anita Shah",
+    "designation": "Owner",
+    "forBusiness": "Balaji Realty LLP",
+    "idNumber": "SYN-ID-587234",
+    "validTill": "2029-09-11"
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

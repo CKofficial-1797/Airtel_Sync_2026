@@ -1,0 +1,23 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "GST_CERTIFICATE",
+  "detectedDocType": "GST_CERTIFICATE",
+  "quality": {
+    "blurScore": 1282.9,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "gstin": "37LDYXK0296F1ZB",
+    "legalName": "Anita Kulkarni (Prop. Kaveri Insurance Advisors)",
+    "tradeName": "Kaveri Insurance Advisors",
+    "constitution": "Proprietorship",
+    "principalAddress": "Shop/Unit 217, Civil Lines, Visakhapatnam, Andhra Pradesh - 405337",
+    "dateOfLiability": "2023-09-20",
+    "registrationType": "Regular"
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

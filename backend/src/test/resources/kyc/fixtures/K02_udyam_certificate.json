@@ -1,0 +1,22 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "UDYAM_CERTIFICATE",
+  "detectedDocType": "UDYAM_CERTIFICATE",
+  "quality": {
+    "blurScore": 970.4,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "udyamNumber": "UDYAM-WB-00-5053330",
+    "enterpriseName": "Harmony Dental Care",
+    "majorActivity": "Services",
+    "city": "Kolkata",
+    "state": "West Bengal",
+    "dateOfRegistration": "2023-01-11"
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

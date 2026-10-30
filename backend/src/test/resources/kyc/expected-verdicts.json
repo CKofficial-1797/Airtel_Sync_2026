@@ -1,0 +1,30 @@
+{
+  "referenceDate": "2026-07-15",
+  "note": "Answer key for the 12 specimen applicants (data/kyc_documents). blocking = the FAIL check codes expected; warnings are not part of the match.",
+  "applicants": [
+    {"applicant": "K01", "business": "Vindhya Tours & Travels", "expected": "REJECTED", "blocking": ["C06", "C08"],
+     "reason": "GSTIN status Cancelled; Udyam number blank on the certificate"},
+    {"applicant": "K02", "business": "Harmony Dental Care", "expected": "VERIFIED", "blocking": [],
+     "reason": "Tilted GST image deskewed; GSTIN OCR 0->O corrected"},
+    {"applicant": "K03", "business": "Ganesh Woodcraft", "expected": "VERIFIED", "blocking": [],
+     "reason": "Clean"},
+    {"applicant": "K04", "business": "Saffron Dental Care LLP", "expected": "ACTION_REQUIRED", "blocking": ["C02"],
+     "reason": "GST certificate unreadable (blurred): re-upload; no fields guessed"},
+    {"applicant": "K05", "business": "Balaji Realty LLP", "expected": "ACTION_REQUIRED", "blocking": ["C01"],
+     "reason": "Udyam certificate missing"},
+    {"applicant": "K06", "business": "Saffron Unisex Salon", "expected": "REJECTED", "blocking": ["C04"],
+     "reason": "GSTIN fails checksum (tampered 5->8); not correctable"},
+    {"applicant": "K07", "business": "Neelgiri Physio Clinic", "expected": "REJECTED", "blocking": ["C07", "C10"],
+     "reason": "Legal name says 'Prop. Shri Physio Clinic'; trade name, other documents and registry say Neelgiri"},
+    {"applicant": "K08", "business": "Green Leaf Legal Associates", "expected": "VERIFIED", "blocking": [],
+     "reason": "GSTIN OCR 0->O corrected"},
+    {"applicant": "K09", "business": "Kaveri Insurance Advisors", "expected": "VERIFIED", "blocking": [],
+     "reason": "Clean"},
+    {"applicant": "K10", "business": "Kaveri Stays LLP", "expected": "VERIFIED", "blocking": [],
+     "reason": "Soft warning: LLP signatory authority not provable from these documents"},
+    {"applicant": "K11", "business": "Trinity Bake House Pvt Ltd", "expected": "ACTION_REQUIRED", "blocking": ["C14"],
+     "reason": "Address proof dated 2025-10-31 (more than 90 days before 2026-07-15)"},
+    {"applicant": "K12", "business": "Star Electronics", "expected": "VERIFIED", "blocking": [],
+     "reason": "Clean"}
+  ]
+}

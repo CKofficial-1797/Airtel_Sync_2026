@@ -1,0 +1,22 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "ADDRESS_PROOF",
+  "detectedDocType": "ADDRESS_PROOF",
+  "quality": {
+    "blurScore": 988.1,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "documentKind": "Electricity bill",
+    "consumerNumber": "9790713533",
+    "billedTo": "Harmony Dental Care",
+    "supplyAddress": "Shop/Unit 199, Station Road, Kolkata, West Bengal - 347550",
+    "billDate": "2026-05-22",
+    "amountDueInr": 7077
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

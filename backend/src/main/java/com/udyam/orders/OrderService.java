@@ -66,6 +66,16 @@ public class OrderService {
         return new OrderCreated(id, ref, OrderStatus.QUOTE_ACCEPTED, quote);
     }
 
+    /** Throwaway order with no profile and an empty quote, for the KYC specimen harness (so C17 is skipped). */
+    @Transactional
+    public UUID createBlank(String note) {
+        UUID id = UUID.randomUUID();
+        store.insert(new OrderStore.Order(id, orderRef(store.nextRefNumber()), null, json.nullNode(),
+                json.createObjectNode(), 0, 0, 0, OrderStatus.QUOTE_ACCEPTED, null));
+        store.addEvent(id, OrderStatus.QUOTE_ACCEPTED, note);
+        return id;
+    }
+
     public OrderView get(UUID orderId) {
         OrderStore.Order o = store.find(orderId)
                 .orElseThrow(() -> new NotFoundException("Order not found: " + orderId));

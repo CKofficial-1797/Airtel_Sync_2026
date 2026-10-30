@@ -1,0 +1,22 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "ADDRESS_PROOF",
+  "detectedDocType": "ADDRESS_PROOF",
+  "quality": {
+    "blurScore": 973.4,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "documentKind": "Electricity bill",
+    "consumerNumber": "7545812405",
+    "billedTo": "Neelgiri Physio Clinic",
+    "supplyAddress": "Shop/Unit 52, Transport Nagar, Delhi, Delhi - 334596",
+    "billDate": "2026-07-05",
+    "amountDueInr": 10690
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

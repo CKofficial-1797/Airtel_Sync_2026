@@ -1,0 +1,21 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "SIGNATORY_ID",
+  "detectedDocType": "SIGNATORY_ID",
+  "quality": {
+    "blurScore": 847.9,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "name": "Anita Kulkarni",
+    "designation": "Office admin",
+    "forBusiness": "Kaveri Insurance Advisors",
+    "idNumber": "SYN-ID-126040",
+    "validTill": "2027-12-22"
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

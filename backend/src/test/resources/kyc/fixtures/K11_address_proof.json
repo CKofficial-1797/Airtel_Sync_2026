@@ -1,0 +1,22 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "ADDRESS_PROOF",
+  "detectedDocType": "ADDRESS_PROOF",
+  "quality": {
+    "blurScore": 1011.3,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "documentKind": "Electricity bill",
+    "consumerNumber": "2710511786",
+    "billedTo": "Trinity Bake House Pvt Ltd",
+    "supplyAddress": "Shop/Unit 188, Industrial Area Phase 2, Ludhiana, Punjab - 541498",
+    "billDate": "2025-10-31",
+    "amountDueInr": 2768
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

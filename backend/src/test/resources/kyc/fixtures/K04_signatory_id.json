@@ -1,0 +1,21 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "SIGNATORY_ID",
+  "detectedDocType": "SIGNATORY_ID",
+  "quality": {
+    "blurScore": 823.7,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "name": "Fatima Pillai",
+    "designation": "Partner",
+    "forBusiness": "Saffron Dental Care LLP",
+    "idNumber": "SYN-ID-609396",
+    "validTill": "2028-08-03"
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

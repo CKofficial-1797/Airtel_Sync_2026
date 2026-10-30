@@ -1,0 +1,23 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "GST_CERTIFICATE",
+  "detectedDocType": "GST_CERTIFICATE",
+  "quality": {
+    "blurScore": 1178.2,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "gstin": "32TZAXB5481U1Z1",
+    "legalName": "Balaji Realty LLP",
+    "tradeName": "Balaji Realty LLP",
+    "constitution": "Limited Liability Partnership",
+    "principalAddress": "Shop/Unit 38, Civil Lines, Kochi, Kerala - 752083",
+    "dateOfLiability": "2020-07-26",
+    "registrationType": "Regular"
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

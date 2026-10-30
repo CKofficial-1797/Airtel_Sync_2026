@@ -1,0 +1,23 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "GST_CERTIFICATE",
+  "detectedDocType": "GST_CERTIFICATE",
+  "quality": {
+    "blurScore": 1258.5,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "gstin": "03KGZXT1320R1ZZ",
+    "legalName": "Trinity Bake House Pvt Ltd",
+    "tradeName": "Trinity Bake House Pvt Ltd",
+    "constitution": "Private Limited Company",
+    "principalAddress": "Shop/Unit 188, Industrial Area Phase 2, Ludhiana, Punjab - 541498",
+    "dateOfLiability": "2019-08-19",
+    "registrationType": "Regular"
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

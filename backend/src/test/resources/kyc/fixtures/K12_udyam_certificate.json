@@ -1,0 +1,22 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "UDYAM_CERTIFICATE",
+  "detectedDocType": "UDYAM_CERTIFICATE",
+  "quality": {
+    "blurScore": 981.5,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "udyamNumber": "UDYAM-AP-00-5186772",
+    "enterpriseName": "Star Electronics",
+    "majorActivity": "Services",
+    "city": "Visakhapatnam",
+    "state": "Andhra Pradesh",
+    "dateOfRegistration": "2024-02-03"
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

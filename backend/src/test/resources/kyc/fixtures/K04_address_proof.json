@@ -1,0 +1,22 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "ADDRESS_PROOF",
+  "detectedDocType": "ADDRESS_PROOF",
+  "quality": {
+    "blurScore": 1004.9,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "documentKind": "Electricity bill",
+    "consumerNumber": "7397844759",
+    "billedTo": "Saffron Dental Care LLP",
+    "supplyAddress": "Shop/Unit 75, Lake View Colony, Nagpur, Maharashtra - 137452",
+    "billDate": "2026-05-28",
+    "amountDueInr": 20713
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

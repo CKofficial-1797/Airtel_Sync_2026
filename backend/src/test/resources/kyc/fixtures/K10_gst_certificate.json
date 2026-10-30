@@ -1,0 +1,23 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "GST_CERTIFICATE",
+  "detectedDocType": "GST_CERTIFICATE",
+  "quality": {
+    "blurScore": 1193.3,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "gstin": "27QHJXK0658U1ZL",
+    "legalName": "Kaveri Stays LLP",
+    "tradeName": "Kaveri Stays LLP",
+    "constitution": "Limited Liability Partnership",
+    "principalAddress": "Shop/Unit 21, Sector 14, Mumbai, Maharashtra - 570043",
+    "dateOfLiability": "2022-07-13",
+    "registrationType": "Regular"
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

@@ -1,0 +1,22 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "ADDRESS_PROOF",
+  "detectedDocType": "ADDRESS_PROOF",
+  "quality": {
+    "blurScore": 1006.3,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "documentKind": "Electricity bill",
+    "consumerNumber": "2568472785",
+    "billedTo": "Green Leaf Legal Associates",
+    "supplyAddress": "Shop/Unit 238, Ring Road, Vadodara, Gujarat - 348176",
+    "billDate": "2026-05-26",
+    "amountDueInr": 33859
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

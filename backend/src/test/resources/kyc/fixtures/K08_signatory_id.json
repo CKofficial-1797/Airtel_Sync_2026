@@ -1,0 +1,21 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "SIGNATORY_ID",
+  "detectedDocType": "SIGNATORY_ID",
+  "quality": {
+    "blurScore": 848.7,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "name": "Joseph Rao",
+    "designation": "Office admin",
+    "forBusiness": "Green Leaf Legal Associates",
+    "idNumber": "SYN-ID-393148",
+    "validTill": "2027-09-18"
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

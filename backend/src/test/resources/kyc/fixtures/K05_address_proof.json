@@ -1,0 +1,22 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "ADDRESS_PROOF",
+  "detectedDocType": "ADDRESS_PROOF",
+  "quality": {
+    "blurScore": 952.5,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "documentKind": "Electricity bill",
+    "consumerNumber": "4294969054",
+    "billedTo": "Balaji Realty LLP",
+    "supplyAddress": "Shop/Unit 38, Civil Lines, Kochi, Kerala - 752083",
+    "billDate": "2026-06-11",
+    "amountDueInr": 22425
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

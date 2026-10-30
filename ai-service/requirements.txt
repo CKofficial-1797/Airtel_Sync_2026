@@ -7,3 +7,6 @@ pydantic-settings
 python-dotenv
 pytest
 respx
+opencv-python-headless
+numpy
+python-multipart

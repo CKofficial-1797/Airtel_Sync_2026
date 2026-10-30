@@ -1,0 +1,21 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "SIGNATORY_ID",
+  "detectedDocType": "SIGNATORY_ID",
+  "quality": {
+    "blurScore": 821.3,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "name": "Vikram Pillai",
+    "designation": "Owner",
+    "forBusiness": "Trinity Bake House Pvt Ltd",
+    "idNumber": "SYN-ID-440312",
+    "validTill": "2028-12-23"
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

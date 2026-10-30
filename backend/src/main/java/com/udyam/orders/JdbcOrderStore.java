@@ -44,6 +44,11 @@ public class JdbcOrderStore implements OrderStore {
     }
 
     @Override
+    public void updateStatus(UUID orderId, String status) {
+        jdbc.update("UPDATE customer_order SET status = ?, updated_at = now() WHERE id = ?", status, orderId);
+    }
+
+    @Override
     public Optional<Order> find(UUID orderId) {
         return jdbc.query("""
                 SELECT id, order_ref, session_id, profile_json::text AS profile, quote_json::text AS quote,

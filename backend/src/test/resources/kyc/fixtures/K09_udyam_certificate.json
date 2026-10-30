@@ -1,0 +1,22 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "UDYAM_CERTIFICATE",
+  "detectedDocType": "UDYAM_CERTIFICATE",
+  "quality": {
+    "blurScore": 1005.1,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "udyamNumber": "UDYAM-AP-00-9751562",
+    "enterpriseName": "Kaveri Insurance Advisors",
+    "majorActivity": "Services",
+    "city": "Visakhapatnam",
+    "state": "Andhra Pradesh",
+    "dateOfRegistration": "2023-07-04"
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

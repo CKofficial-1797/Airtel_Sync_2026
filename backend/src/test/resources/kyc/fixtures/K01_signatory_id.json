@@ -1,0 +1,21 @@
+{
+  "source": "hand-transcribed from the specimen image (no Gemini); run-specimens overwrites it",
+  "status": "OK",
+  "docType": "SIGNATORY_ID",
+  "detectedDocType": "SIGNATORY_ID",
+  "quality": {
+    "blurScore": 825.8,
+    "isBlurry": false,
+    "skewDeg": 0.0,
+    "deskewed": false
+  },
+  "fields": {
+    "name": "Neha Kaur",
+    "designation": "Office admin",
+    "forBusiness": "Vindhya Tours & Travels",
+    "idNumber": "SYN-ID-346190",
+    "validTill": "2028-03-26"
+  },
+  "model": "hand-transcribed",
+  "ms": 0
+}

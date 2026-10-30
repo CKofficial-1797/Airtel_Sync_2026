@@ -11,11 +11,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-/** OrderStore for unit tests (no DB). */
-class InMemoryOrderStore implements OrderStore {
+/** OrderStore for unit tests (no DB). Public: the KYC tests reuse it. */
+public class InMemoryOrderStore implements OrderStore {
 
-    final Map<UUID, Order> orders = new LinkedHashMap<>();
-    final Map<UUID, List<Event>> events = new HashMap<>();
+    public final Map<UUID, Order> orders = new LinkedHashMap<>();
+    public final Map<UUID, List<Event>> events = new HashMap<>();
     final Set<UUID> sessions = new HashSet<>();
     final Map<UUID, UUID> checkedOut = new HashMap<>();
     private long seq = 41;
@@ -37,6 +37,13 @@ class InMemoryOrderStore implements OrderStore {
     @Override
     public void addEvent(UUID orderId, String status, String note) {
         events.computeIfAbsent(orderId, k -> new ArrayList<>()).add(new Event(status, note, OffsetDateTime.now()));
+    }
+
+    @Override
+    public void updateStatus(UUID orderId, String status) {
+        Order o = orders.get(orderId);
+        orders.put(orderId, new Order(o.id(), o.orderRef(), o.sessionId(), o.profile(), o.quote(),
+                o.monthlyTotalInr(), o.oneTimeTotalInr(), o.contractMonths(), status, o.createdAt()));
     }
 
     @Override
