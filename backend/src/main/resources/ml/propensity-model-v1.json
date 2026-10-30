@@ -1,0 +1,534 @@
+{
+  "version": "v1",
+  "trainedAt": "2026-10-30",
+  "variant": "b",
+  "variantName": "advisor-compatible",
+  "classWeight": null,
+  "seed": 42,
+  "trainedOn": {
+    "leads": 5000,
+    "activations": 368
+  },
+  "liveLeadSource": "Website form",
+  "features": [
+    {
+      "name": "lead_source",
+      "kind": "category",
+      "levels": [
+        "Website form",
+        "Referral",
+        "Inbound call",
+        "Channel partner",
+        "Field sales",
+        "WhatsApp campaign"
+      ],
+      "reference": "Website form"
+    },
+    {
+      "name": "segment",
+      "kind": "category",
+      "levels": [
+        "Professional offices",
+        "Micro retail & services",
+        "Small multi-site businesses",
+        "Small manufacturers"
+      ],
+      "reference": "Professional offices"
+    },
+    {
+      "name": "city_tier",
+      "kind": "category",
+      "levels": [
+        "2",
+        "1"
+      ],
+      "reference": "2"
+    },
+    {
+      "name": "gstin_status",
+      "kind": "category",
+      "levels": [
+        "NONE",
+        "ACTIVE",
+        "INACTIVE"
+      ],
+      "reference": "NONE"
+    },
+    {
+      "name": "has_udyam",
+      "kind": "category",
+      "levels": [
+        "N",
+        "Y"
+      ],
+      "reference": "N"
+    },
+    {
+      "name": "employees",
+      "kind": "bucket",
+      "levels": [
+        "1-5",
+        "6-20",
+        "21-50",
+        "51+"
+      ],
+      "reference": "1-5",
+      "inputField": "employee_count",
+      "edges": [
+        5,
+        20,
+        50
+      ]
+    },
+    {
+      "name": "sites",
+      "kind": "bucket",
+      "levels": [
+        "1",
+        "2-4",
+        "5+"
+      ],
+      "reference": "1",
+      "inputField": "num_sites",
+      "edges": [
+        1,
+        4
+      ]
+    },
+    {
+      "name": "telecom_spend",
+      "kind": "bucket",
+      "levels": [
+        "up to 850",
+        "851-1350",
+        "1351-3300",
+        "above 3300"
+      ],
+      "reference": "851-1350",
+      "inputField": "monthly_telecom_spend_inr",
+      "edges": [
+        850,
+        1350,
+        3300
+      ]
+    },
+    {
+      "name": "current_internet",
+      "kind": "category",
+      "levels": [
+        "Mobile hotspot",
+        "Home broadband",
+        "Business broadband",
+        "Leased line",
+        "Mixed per site",
+        "None"
+      ],
+      "reference": "Mobile hotspot"
+    },
+    {
+      "name": "products_of_interest",
+      "kind": "bucket",
+      "levels": [
+        "1",
+        "2",
+        "3+"
+      ],
+      "reference": "2",
+      "inputField": "products_of_interest_count",
+      "edges": [
+        1,
+        2
+      ]
+    },
+    {
+      "name": "gst_product_interest",
+      "kind": "category",
+      "levels": [
+        "N",
+        "Y"
+      ],
+      "reference": "N"
+    }
+  ],
+  "intercept": -4.352314552721569,
+  "coefficients": {
+    "lead_source=Referral": 1.3400546343640922,
+    "lead_source=Inbound call": 0.8042101930646998,
+    "lead_source=Channel partner": 0.630938884192648,
+    "lead_source=Field sales": 0.5049435225258215,
+    "lead_source=WhatsApp campaign": -0.46734642215565353,
+    "segment=Micro retail & services": -0.6691616160755401,
+    "segment=Small multi-site businesses": 0.21177642114351772,
+    "segment=Small manufacturers": 0.2523439020541599,
+    "city_tier=1": 0.4002527473334907,
+    "gstin_status=ACTIVE": 1.2348705671713123,
+    "gstin_status=INACTIVE": 0.9870270246041933,
+    "has_udyam=Y": 0.17982965710291376,
+    "employees=6-20": 0.02441728966708126,
+    "employees=21-50": -0.1549065214778481,
+    "employees=51+": -0.26259843228809243,
+    "sites=2-4": -0.027193718939794918,
+    "sites=5+": -0.14061554112255106,
+    "telecom_spend=up to 850": 0.1337030394592678,
+    "telecom_spend=1351-3300": 0.1683650900174363,
+    "telecom_spend=above 3300": -0.013476730237376425,
+    "current_internet=Home broadband": 0.16898656002149476,
+    "current_internet=Business broadband": 0.058475591865112996,
+    "current_internet=Leased line": 0.4256074487196315,
+    "current_internet=Mixed per site": 0.3654762179008182,
+    "current_internet=None": 0.05967352346302678,
+    "products_of_interest=1": 0.16623204380452924,
+    "products_of_interest=3+": -0.06979275869581938,
+    "gst_product_interest=Y": 0.10734608564718216
+  },
+  "bands": {
+    "HOT": 0.11632923842334912,
+    "WARM": 0.060841110009448994
+  },
+  "scorePercentiles": [
+    0.004115698221988486,
+    0.006518318192837381,
+    0.007831307501295971,
+    0.009092992664605764,
+    0.010359965421933577,
+    0.011453953318537427,
+    0.012163510819804737,
+    0.013038009092009618,
+    0.013640460833471552,
+    0.014453925663972947,
+    0.014887306676673692,
+    0.015285506954979898,
+    0.016203765226023164,
+    0.016944404464009778,
+    0.017348168890655657,
+    0.018097147908933978,
+    0.018890075005945358,
+    0.019631895667925666,
+    0.020705535003736016,
+    0.021512038636329438,
+    0.0220925056051448,
+    0.022800215155250648,
+    0.023900453480688005,
+    0.024891094555967483,
+    0.025724948543963917,
+    0.02659620744586872,
+    0.027822083302042083,
+    0.028934716195418802,
+    0.030025106407586405,
+    0.03145674751595697,
+    0.03356137276914984,
+    0.03533725166264545,
+    0.03672620467120306,
+    0.0384436021248862,
+    0.039734683894530075,
+    0.04095192543754315,
+    0.042475249212338854,
+    0.04349589488310932,
+    0.044925258066045706,
+    0.0459169177333839,
+    0.04739855870434817,
+    0.04848933892157691,
+    0.05017388450640175,
+    0.051074086506874845,
+    0.05281531867533115,
+    0.05434503888151184,
+    0.05597178148668314,
+    0.05722173336349955,
+    0.05874194795729869,
+    0.059795376182266234,
+    0.060841110009448994,
+    0.062235085503431965,
+    0.06372094136142635,
+    0.06527932846695078,
+    0.06658564451660934,
+    0.06846245860774827,
+    0.07016499583493684,
+    0.07123465866301984,
+    0.0730175052459946,
+    0.07420827247303641,
+    0.0759458467208545,
+    0.07786152950486179,
+    0.07955273153370404,
+    0.0811775543924516,
+    0.08230194516594538,
+    0.0844577392335977,
+    0.0862191985307866,
+    0.08815405025851727,
+    0.09035266687886016,
+    0.09170010230957482,
+    0.09345938550517735,
+    0.09547458791981495,
+    0.09685588089055255,
+    0.09984785605186045,
+    0.10167435538808185,
+    0.10464787966149675,
+    0.10665772115174167,
+    0.10890287554974976,
+    0.11189682692373443,
+    0.11430289305066675,
+    0.11632923842334912,
+    0.11880977810722351,
+    0.12170796417898792,
+    0.12531097726577625,
+    0.12925363804893328,
+    0.13166980786325977,
+    0.13553616102617805,
+    0.13801029522881653,
+    0.14249040549323186,
+    0.1462263887816863,
+    0.15129955291375352,
+    0.1553922107516449,
+    0.15926412904042722,
+    0.1647054525988209,
+    0.17011600925289427,
+    0.1789448619108709,
+    0.18997746202462912,
+    0.2018861501521535,
+    0.2210515231164704,
+    0.25918935115661124,
+    0.38316138370940506
+  ],
+  "noNegativeReason": [
+    "employees",
+    "sites"
+  ],
+  "humanLabels": {
+    "lead_source=Referral": {
+      "en": "Came through a referral",
+      "hi": "रेफ़रल से आया"
+    },
+    "lead_source=Inbound call": {
+      "en": "Called us directly",
+      "hi": "खुद कॉल किया"
+    },
+    "lead_source=Channel partner": {
+      "en": "Came through a channel partner",
+      "hi": "चैनल पार्टनर से आया"
+    },
+    "lead_source=Field sales": {
+      "en": "Found by field sales",
+      "hi": "फ़ील्ड सेल्स से मिला"
+    },
+    "lead_source=WhatsApp campaign": {
+      "en": "Came from a WhatsApp campaign",
+      "hi": "WhatsApp अभियान से आया"
+    },
+    "segment=Micro retail & services": {
+      "en": "Micro retail or services business",
+      "hi": "सूक्ष्म खुदरा या सेवा व्यवसाय"
+    },
+    "segment=Small multi-site businesses": {
+      "en": "Small multi-site business",
+      "hi": "कई जगहों वाला छोटा व्यवसाय"
+    },
+    "segment=Small manufacturers": {
+      "en": "Small manufacturer",
+      "hi": "छोटा निर्माता"
+    },
+    "city_tier=1": {
+      "en": "Tier 1 city",
+      "hi": "टियर 1 शहर"
+    },
+    "gstin_status=ACTIVE": {
+      "en": "Active GSTIN",
+      "hi": "सक्रिय GSTIN"
+    },
+    "gstin_status=INACTIVE": {
+      "en": "GSTIN on record, but not active",
+      "hi": "GSTIN है, पर सक्रिय नहीं"
+    },
+    "has_udyam=Y": {
+      "en": "Has Udyam registration",
+      "hi": "उद्यम पंजीकरण है"
+    },
+    "employees=6-20": {
+      "en": "6-20 staff",
+      "hi": "6-20 कर्मचारी"
+    },
+    "employees=21-50": {
+      "en": "21-50 staff",
+      "hi": "21-50 कर्मचारी"
+    },
+    "employees=51+": {
+      "en": "51+ staff",
+      "hi": "51+ कर्मचारी"
+    },
+    "sites=2-4": {
+      "en": "2-4 sites",
+      "hi": "2-4 जगहें"
+    },
+    "sites=5+": {
+      "en": "5+ sites",
+      "hi": "5+ जगहें"
+    },
+    "telecom_spend=up to 850": {
+      "en": "Telecom spend up to ₹850/month",
+      "hi": "टेलीकॉम खर्च ₹850/माह तक"
+    },
+    "telecom_spend=1351-3300": {
+      "en": "Telecom spend ₹1,351-3,300/month",
+      "hi": "टेलीकॉम खर्च ₹1,351-3,300/माह"
+    },
+    "telecom_spend=above 3300": {
+      "en": "Telecom spend above ₹3,300/month",
+      "hi": "टेलीकॉम खर्च ₹3,300/माह से ज़्यादा"
+    },
+    "current_internet=Home broadband": {
+      "en": "Uses home broadband",
+      "hi": "होम ब्रॉडबैंड इस्तेमाल करते हैं"
+    },
+    "current_internet=Business broadband": {
+      "en": "Uses business broadband",
+      "hi": "बिज़नेस ब्रॉडबैंड इस्तेमाल करते हैं"
+    },
+    "current_internet=Leased line": {
+      "en": "Already has a leased line",
+      "hi": "पहले से लीज़्ड लाइन है"
+    },
+    "current_internet=Mixed per site": {
+      "en": "Mixed internet across sites",
+      "hi": "अलग-अलग जगहों पर अलग इंटरनेट"
+    },
+    "current_internet=None": {
+      "en": "No internet today",
+      "hi": "अभी इंटरनेट नहीं है"
+    },
+    "products_of_interest=1": {
+      "en": "Interested in one product",
+      "hi": "एक प्रोडक्ट में रुचि"
+    },
+    "products_of_interest=3+": {
+      "en": "Interested in 3+ products",
+      "hi": "3 या ज़्यादा प्रोडक्ट में रुचि"
+    },
+    "gst_product_interest=Y": {
+      "en": "Interested in a GST-only product",
+      "hi": "GST वाले प्रोडक्ट में रुचि"
+    }
+  },
+  "metrics": {
+    "temporal": {
+      "auc": 0.7135,
+      "prAuc": 0.1425,
+      "topDecileLift": 2.119,
+      "top20Capture": 0.3937,
+      "baseRate": 0.0745,
+      "aucCi95": [
+        0.6723,
+        0.7483
+      ],
+      "testLeads": 1704,
+      "testActivations": 127
+    },
+    "cv": {
+      "auc": 0.6989,
+      "prAuc": 0.1384,
+      "topDecileLift": 2.038,
+      "top20Capture": 0.375,
+      "baseRate": 0.0736,
+      "foldAucs": [
+        0.7066,
+        0.6504,
+        0.6946,
+        0.7424,
+        0.7026
+      ]
+    },
+    "liftTable": [
+      {
+        "decile": 1,
+        "leads": 500,
+        "activations": 75,
+        "predicted": 0.1988,
+        "actual": 0.15,
+        "lift": 2.038,
+        "cumulativeCapture": 0.2038
+      },
+      {
+        "decile": 2,
+        "leads": 500,
+        "activations": 63,
+        "predicted": 0.1319,
+        "actual": 0.126,
+        "lift": 1.712,
+        "cumulativeCapture": 0.375
+      },
+      {
+        "decile": 3,
+        "leads": 500,
+        "activations": 58,
+        "predicted": 0.1041,
+        "actual": 0.116,
+        "lift": 1.576,
+        "cumulativeCapture": 0.5326
+      },
+      {
+        "decile": 4,
+        "leads": 500,
+        "activations": 56,
+        "predicted": 0.0841,
+        "actual": 0.112,
+        "lift": 1.522,
+        "cumulativeCapture": 0.6848
+      },
+      {
+        "decile": 5,
+        "leads": 500,
+        "activations": 36,
+        "predicted": 0.0682,
+        "actual": 0.072,
+        "lift": 0.978,
+        "cumulativeCapture": 0.7826
+      },
+      {
+        "decile": 6,
+        "leads": 500,
+        "activations": 33,
+        "predicted": 0.0539,
+        "actual": 0.066,
+        "lift": 0.897,
+        "cumulativeCapture": 0.8723
+      },
+      {
+        "decile": 7,
+        "leads": 500,
+        "activations": 17,
+        "predicted": 0.0403,
+        "actual": 0.034,
+        "lift": 0.462,
+        "cumulativeCapture": 0.9185
+      },
+      {
+        "decile": 8,
+        "leads": 500,
+        "activations": 15,
+        "predicted": 0.027,
+        "actual": 0.03,
+        "lift": 0.408,
+        "cumulativeCapture": 0.9592
+      },
+      {
+        "decile": 9,
+        "leads": 500,
+        "activations": 11,
+        "predicted": 0.0182,
+        "actual": 0.022,
+        "lift": 0.299,
+        "cumulativeCapture": 0.9891
+      },
+      {
+        "decile": 10,
+        "leads": 500,
+        "activations": 4,
+        "predicted": 0.0105,
+        "actual": 0.008,
+        "lift": 0.109,
+        "cumulativeCapture": 1.0
+      }
+    ],
+    "languageCheck": {
+      "withLanguageJuneAuc": 0.7195,
+      "withLanguageCvAuc": 0.7023
+    }
+  }
+}

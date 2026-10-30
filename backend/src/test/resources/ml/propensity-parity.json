@@ -1,0 +1,3402 @@
+[
+ {
+  "leadId": "L00037",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Small multi-site businesses",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 66,
+   "num_sites": 5,
+   "monthly_telecom_spend_inr": 7300,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.045368832552957754
+ },
+ {
+  "leadId": "L00113",
+  "inputFeatures": {
+   "lead_source": "Referral",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "NONE",
+   "has_udyam": "N",
+   "employee_count": 3,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1250,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.02706100203877852
+ },
+ {
+  "leadId": "L00153",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 6,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1000,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.04120143614659218
+ },
+ {
+  "leadId": "L00172",
+  "inputFeatures": {
+   "lead_source": "Inbound call",
+   "segment": "Professional offices",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 9,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 3000,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.23056025559029775
+ },
+ {
+  "leadId": "L00184",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 4,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1250,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.030586111614029292
+ },
+ {
+  "leadId": "L00213",
+  "inputFeatures": {
+   "lead_source": "Channel partner",
+   "segment": "Small multi-site businesses",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 101,
+   "num_sites": 11,
+   "monthly_telecom_spend_inr": 7400,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.11760501965294544
+ },
+ {
+  "leadId": "L00289",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "NONE",
+   "has_udyam": "N",
+   "employee_count": 1,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 500,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.011785325616773059
+ },
+ {
+  "leadId": "L00309",
+  "inputFeatures": {
+   "lead_source": "Channel partner",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 3,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1050,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.04086857349236511
+ },
+ {
+  "leadId": "L00330",
+  "inputFeatures": {
+   "lead_source": "Referral",
+   "segment": "Professional offices",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 13,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 2350,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.30247536265520303
+ },
+ {
+  "leadId": "L00372",
+  "inputFeatures": {
+   "lead_source": "WhatsApp campaign",
+   "segment": "Small multi-site businesses",
+   "city_tier": "2",
+   "gstin_status": "NONE",
+   "has_udyam": "Y",
+   "employee_count": 54,
+   "num_sites": 9,
+   "monthly_telecom_spend_inr": 7500,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.009203512728505248
+ },
+ {
+  "leadId": "L00391",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "NONE",
+   "has_udyam": "N",
+   "employee_count": 3,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1100,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.0077272565295736844
+ },
+ {
+  "leadId": "L00414",
+  "inputFeatures": {
+   "lead_source": "Channel partner",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 4,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 400,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.07016499583493684
+ },
+ {
+  "leadId": "L00429",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Professional offices",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 12,
+   "num_sites": 2,
+   "monthly_telecom_spend_inr": 1500,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.13889269652051414
+ },
+ {
+  "leadId": "L00438",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Professional offices",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 6,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 3550,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.11552722886285002
+ },
+ {
+  "leadId": "L00446",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Small multi-site businesses",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 74,
+   "num_sites": 3,
+   "monthly_telecom_spend_inr": 6750,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.0784907259623955
+ },
+ {
+  "leadId": "L00447",
+  "inputFeatures": {
+   "lead_source": "Channel partner",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 5,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1500,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.06248664383889063
+ },
+ {
+  "leadId": "L00448",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 2,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1100,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.06951046005764555
+ },
+ {
+  "leadId": "L00453",
+  "inputFeatures": {
+   "lead_source": "Inbound call",
+   "segment": "Professional offices",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 23,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 2050,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.15681237260569444
+ },
+ {
+  "leadId": "L00476",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 6,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1050,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.0353650392919282
+ },
+ {
+  "leadId": "L00528",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Small multi-site businesses",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 114,
+   "num_sites": 3,
+   "monthly_telecom_spend_inr": 13800,
+   "current_internet": "Mixed per site",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.1318031539067733
+ },
+ {
+  "leadId": "L00564",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Small multi-site businesses",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 58,
+   "num_sites": 12,
+   "monthly_telecom_spend_inr": 14400,
+   "current_internet": "Mixed per site",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.1462263887816863
+ },
+ {
+  "leadId": "L00590",
+  "inputFeatures": {
+   "lead_source": "Channel partner",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 6,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 400,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.08185063790123145
+ },
+ {
+  "leadId": "L00618",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "NONE",
+   "has_udyam": "N",
+   "employee_count": 6,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 550,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.014888286694780794
+ },
+ {
+  "leadId": "L00626",
+  "inputFeatures": {
+   "lead_source": "Inbound call",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "NONE",
+   "has_udyam": "Y",
+   "employee_count": 6,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1450,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.04273006732342338
+ },
+ {
+  "leadId": "L00634",
+  "inputFeatures": {
+   "lead_source": "Channel partner",
+   "segment": "Professional offices",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 18,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 4200,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.09372102268151636
+ },
+ {
+  "leadId": "L00685",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Professional offices",
+   "city_tier": "1",
+   "gstin_status": "INACTIVE",
+   "has_udyam": "N",
+   "employee_count": 10,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 3150,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.1026505300895183
+ },
+ {
+  "leadId": "L00688",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Small manufacturers",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 129,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 7650,
+   "current_internet": "Leased line",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.18780903335865726
+ },
+ {
+  "leadId": "L00750",
+  "inputFeatures": {
+   "lead_source": "Channel partner",
+   "segment": "Professional offices",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 10,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1900,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.10024287086053561
+ },
+ {
+  "leadId": "L00759",
+  "inputFeatures": {
+   "lead_source": "Referral",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "NONE",
+   "has_udyam": "Y",
+   "employee_count": 2,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 800,
+   "current_internet": "None",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.06055538167013473
+ },
+ {
+  "leadId": "L00785",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Professional offices",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 11,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1800,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.15791633567292315
+ },
+ {
+  "leadId": "L00800",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 6,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1450,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.04607106384997883
+ },
+ {
+  "leadId": "L00803",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "INACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 4,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 900,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.054669459627738254
+ },
+ {
+  "leadId": "L00829",
+  "inputFeatures": {
+   "lead_source": "Inbound call",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 4,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1700,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.11227449378735087
+ },
+ {
+  "leadId": "L00830",
+  "inputFeatures": {
+   "lead_source": "Channel partner",
+   "segment": "Professional offices",
+   "city_tier": "2",
+   "gstin_status": "NONE",
+   "has_udyam": "N",
+   "employee_count": 17,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1950,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.03543812881156777
+ },
+ {
+  "leadId": "L00881",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 1,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 500,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.04367099828051193
+ },
+ {
+  "leadId": "L00924",
+  "inputFeatures": {
+   "lead_source": "Channel partner",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 4,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 950,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.05978161671063475
+ },
+ {
+  "leadId": "L00945",
+  "inputFeatures": {
+   "lead_source": "Inbound call",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 4,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 850,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.06483589076060466
+ },
+ {
+  "leadId": "L00969",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Small multi-site businesses",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 112,
+   "num_sites": 8,
+   "monthly_telecom_spend_inr": 12900,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.07786152950486179
+ },
+ {
+  "leadId": "L00980",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "NONE",
+   "has_udyam": "Y",
+   "employee_count": 2,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1350,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.022588569362272
+ },
+ {
+  "leadId": "L01061",
+  "inputFeatures": {
+   "lead_source": "Referral",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 1,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1050,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.11486184574619986
+ },
+ {
+  "leadId": "L01099",
+  "inputFeatures": {
+   "lead_source": "Channel partner",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "INACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 5,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1600,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.06802000868828766
+ },
+ {
+  "leadId": "L01107",
+  "inputFeatures": {
+   "lead_source": "Inbound call",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 6,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1050,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.07941081716259271
+ },
+ {
+  "leadId": "L01158",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Professional offices",
+   "city_tier": "1",
+   "gstin_status": "NONE",
+   "has_udyam": "Y",
+   "employee_count": 18,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 3200,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.06711079346812475
+ },
+ {
+  "leadId": "L01174",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Small multi-site businesses",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 54,
+   "num_sites": 12,
+   "monthly_telecom_spend_inr": 11600,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.05127960689492101
+ },
+ {
+  "leadId": "L01192",
+  "inputFeatures": {
+   "lead_source": "WhatsApp campaign",
+   "segment": "Professional offices",
+   "city_tier": "1",
+   "gstin_status": "INACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 22,
+   "num_sites": 2,
+   "monthly_telecom_spend_inr": 3150,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.04308807744951009
+ },
+ {
+  "leadId": "L01208",
+  "inputFeatures": {
+   "lead_source": "Channel partner",
+   "segment": "Professional offices",
+   "city_tier": "2",
+   "gstin_status": "NONE",
+   "has_udyam": "N",
+   "employee_count": 12,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 2450,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.02956824894285868
+ },
+ {
+  "leadId": "L01340",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Professional offices",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 16,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 3600,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.0628574386653615
+ },
+ {
+  "leadId": "L01361",
+  "inputFeatures": {
+   "lead_source": "Channel partner",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 3,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1000,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.05597715374206974
+ },
+ {
+  "leadId": "L01367",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Professional offices",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 5,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 650,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.11684678855809591
+ },
+ {
+  "leadId": "L01394",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Small manufacturers",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 103,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 16700,
+   "current_internet": "Leased line",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.16896384517103583
+ },
+ {
+  "leadId": "L01412",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 4,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1000,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.0290213431929195
+ },
+ {
+  "leadId": "L01455",
+  "inputFeatures": {
+   "lead_source": "Channel partner",
+   "segment": "Small manufacturers",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 108,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 8350,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.16824730057901136
+ },
+ {
+  "leadId": "L01501",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 6,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1000,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.022455560657598326
+ },
+ {
+  "leadId": "L01505",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "NONE",
+   "has_udyam": "N",
+   "employee_count": 5,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 900,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.01011399086745503
+ },
+ {
+  "leadId": "L01527",
+  "inputFeatures": {
+   "lead_source": "Inbound call",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 1,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 250,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.09279908754624662
+ },
+ {
+  "leadId": "L01586",
+  "inputFeatures": {
+   "lead_source": "Channel partner",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "NONE",
+   "has_udyam": "N",
+   "employee_count": 3,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1100,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.014424391158924774
+ },
+ {
+  "leadId": "L01596",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Professional offices",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 5,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 2900,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.07157728595954929
+ },
+ {
+  "leadId": "L01611",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Professional offices",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 9,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 2150,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.13576106081788705
+ },
+ {
+  "leadId": "L01662",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Professional offices",
+   "city_tier": "2",
+   "gstin_status": "NONE",
+   "has_udyam": "N",
+   "employee_count": 9,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 2000,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.01809763707007521
+ },
+ {
+  "leadId": "L01695",
+  "inputFeatures": {
+   "lead_source": "WhatsApp campaign",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 4,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 650,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.026381267041138138
+ },
+ {
+  "leadId": "L01712",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Small multi-site businesses",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 35,
+   "num_sites": 11,
+   "monthly_telecom_spend_inr": 10650,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.11571885013462299
+ },
+ {
+  "leadId": "L01717",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Professional offices",
+   "city_tier": "2",
+   "gstin_status": "NONE",
+   "has_udyam": "Y",
+   "employee_count": 15,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1750,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.03667769970670423
+ },
+ {
+  "leadId": "L01718",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 3,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 900,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.02607458707682022
+ },
+ {
+  "leadId": "L01767",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "NONE",
+   "has_udyam": "Y",
+   "employee_count": 5,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 850,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.02566779666450415
+ },
+ {
+  "leadId": "L01783",
+  "inputFeatures": {
+   "lead_source": "WhatsApp campaign",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 5,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1100,
+   "current_internet": "None",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.01749747280631595
+ },
+ {
+  "leadId": "L01788",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 3,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 300,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.07769191181635464
+ },
+ {
+  "leadId": "L01804",
+  "inputFeatures": {
+   "lead_source": "Inbound call",
+   "segment": "Professional offices",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 23,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 3150,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.11676348987559777
+ },
+ {
+  "leadId": "L01807",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 4,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 550,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.056385852749554974
+ },
+ {
+  "leadId": "L01897",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Professional offices",
+   "city_tier": "1",
+   "gstin_status": "INACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 24,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 2700,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.10930922971368759
+ },
+ {
+  "leadId": "L01901",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 4,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1000,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.06512974804059792
+ },
+ {
+  "leadId": "L01943",
+  "inputFeatures": {
+   "lead_source": "Channel partner",
+   "segment": "Professional offices",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 13,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 2850,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.15129457249998485
+ },
+ {
+  "leadId": "L01999",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Professional offices",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 19,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 2750,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.10072541642639164
+ },
+ {
+  "leadId": "L02018",
+  "inputFeatures": {
+   "lead_source": "Inbound call",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "NONE",
+   "has_udyam": "N",
+   "employee_count": 5,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 600,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.023014568040623806
+ },
+ {
+  "leadId": "L02020",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Small manufacturers",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 129,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 11550,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.08815405025851727
+ },
+ {
+  "leadId": "L02031",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Professional offices",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 20,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1000,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.13003439508215597
+ },
+ {
+  "leadId": "L02076",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "NONE",
+   "has_udyam": "Y",
+   "employee_count": 5,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1450,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.02108510356894267
+ },
+ {
+  "leadId": "L02081",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Small manufacturers",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 89,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 16550,
+   "current_internet": "Leased line",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.12246910710019679
+ },
+ {
+  "leadId": "L02109",
+  "inputFeatures": {
+   "lead_source": "Inbound call",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 5,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1150,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.05643510598913139
+ },
+ {
+  "leadId": "L02129",
+  "inputFeatures": {
+   "lead_source": "Inbound call",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "NONE",
+   "has_udyam": "N",
+   "employee_count": 2,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1100,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.029743221274775307
+ },
+ {
+  "leadId": "L02135",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Professional offices",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 13,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 2150,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.10167435538808185
+ },
+ {
+  "leadId": "L02142",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 6,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 250,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.036275284220800195
+ },
+ {
+  "leadId": "L02153",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 4,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 800,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.0634591507205339
+ },
+ {
+  "leadId": "L02158",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Professional offices",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 9,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 4050,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.08948974416277213
+ },
+ {
+  "leadId": "L02161",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Professional offices",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 18,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 2500,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.11789408677510864
+ },
+ {
+  "leadId": "L02164",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Professional offices",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 6,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 2850,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.09010348766121208
+ },
+ {
+  "leadId": "L02171",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Professional offices",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 12,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 4250,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.08901663880204967
+ },
+ {
+  "leadId": "L02177",
+  "inputFeatures": {
+   "lead_source": "Referral",
+   "segment": "Small multi-site businesses",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 51,
+   "num_sites": 10,
+   "monthly_telecom_spend_inr": 9850,
+   "current_internet": "Mixed per site",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.29514757533675795
+ },
+ {
+  "leadId": "L02225",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Small multi-site businesses",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 65,
+   "num_sites": 9,
+   "monthly_telecom_spend_inr": 8200,
+   "current_internet": "Mixed per site",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.060682450310416136
+ },
+ {
+  "leadId": "L02256",
+  "inputFeatures": {
+   "lead_source": "Referral",
+   "segment": "Small multi-site businesses",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 80,
+   "num_sites": 5,
+   "monthly_telecom_spend_inr": 7550,
+   "current_internet": "Mixed per site",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.17089831331384836
+ },
+ {
+  "leadId": "L02266",
+  "inputFeatures": {
+   "lead_source": "Inbound call",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 2,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1500,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.06696949607935955
+ },
+ {
+  "leadId": "L02287",
+  "inputFeatures": {
+   "lead_source": "Referral",
+   "segment": "Small multi-site businesses",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 22,
+   "num_sites": 6,
+   "monthly_telecom_spend_inr": 10050,
+   "current_internet": "Mixed per site",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.2381092076710345
+ },
+ {
+  "leadId": "L02299",
+  "inputFeatures": {
+   "lead_source": "Channel partner",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 5,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1250,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.08246231366531839
+ },
+ {
+  "leadId": "L02315",
+  "inputFeatures": {
+   "lead_source": "Referral",
+   "segment": "Small multi-site businesses",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 80,
+   "num_sites": 10,
+   "monthly_telecom_spend_inr": 6800,
+   "current_internet": "Mixed per site",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.19201069341118482
+ },
+ {
+  "leadId": "L02320",
+  "inputFeatures": {
+   "lead_source": "Referral",
+   "segment": "Small manufacturers",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 74,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 21300,
+   "current_internet": "Leased line",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.2519314822790096
+ },
+ {
+  "leadId": "L02413",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 5,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1650,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.05235591840065315
+ },
+ {
+  "leadId": "L02417",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "NONE",
+   "has_udyam": "Y",
+   "employee_count": 2,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1300,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.026483406043451854
+ },
+ {
+  "leadId": "L02471",
+  "inputFeatures": {
+   "lead_source": "Inbound call",
+   "segment": "Professional offices",
+   "city_tier": "2",
+   "gstin_status": "NONE",
+   "has_udyam": "Y",
+   "employee_count": 12,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 2300,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.042410763375846074
+ },
+ {
+  "leadId": "L02473",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "NONE",
+   "has_udyam": "N",
+   "employee_count": 2,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1050,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.011217721947981076
+ },
+ {
+  "leadId": "L02479",
+  "inputFeatures": {
+   "lead_source": "Channel partner",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 2,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 950,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.04803125962366671
+ },
+ {
+  "leadId": "L02486",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Small multi-site businesses",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 21,
+   "num_sites": 6,
+   "monthly_telecom_spend_inr": 7650,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.09994467450249074
+ },
+ {
+  "leadId": "L02496",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Professional offices",
+   "city_tier": "1",
+   "gstin_status": "NONE",
+   "has_udyam": "Y",
+   "employee_count": 12,
+   "num_sites": 2,
+   "monthly_telecom_spend_inr": 1550,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.05239333694601448
+ },
+ {
+  "leadId": "L02505",
+  "inputFeatures": {
+   "lead_source": "Referral",
+   "segment": "Professional offices",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 16,
+   "num_sites": 2,
+   "monthly_telecom_spend_inr": 1750,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.24895342105750382
+ },
+ {
+  "leadId": "L02533",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "INACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 1,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 200,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.03856903817462884
+ },
+ {
+  "leadId": "L02634",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "NONE",
+   "has_udyam": "Y",
+   "employee_count": 1,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 900,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.02252783416301474
+ },
+ {
+  "leadId": "L02655",
+  "inputFeatures": {
+   "lead_source": "WhatsApp campaign",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "NONE",
+   "has_udyam": "Y",
+   "employee_count": 2,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1400,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.009554133771546987
+ },
+ {
+  "leadId": "L02681",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Small multi-site businesses",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 117,
+   "num_sites": 11,
+   "monthly_telecom_spend_inr": 5200,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.10514668626562682
+ },
+ {
+  "leadId": "L02730",
+  "inputFeatures": {
+   "lead_source": "WhatsApp campaign",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 5,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 800,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.016582339704923954
+ },
+ {
+  "leadId": "L02731",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "INACTIVE",
+   "has_udyam": "N",
+   "employee_count": 3,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 900,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.05764740532663866
+ },
+ {
+  "leadId": "L02755",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 6,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1500,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.04839088898041846
+ },
+ {
+  "leadId": "L02760",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "NONE",
+   "has_udyam": "Y",
+   "employee_count": 2,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 250,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.015285506954979898
+ },
+ {
+  "leadId": "L02762",
+  "inputFeatures": {
+   "lead_source": "Inbound call",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "NONE",
+   "has_udyam": "N",
+   "employee_count": 5,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 900,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.023711003393184188
+ },
+ {
+  "leadId": "L02785",
+  "inputFeatures": {
+   "lead_source": "Inbound call",
+   "segment": "Professional offices",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 15,
+   "num_sites": 2,
+   "monthly_telecom_spend_inr": 2800,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.17906651667347362
+ },
+ {
+  "leadId": "L02788",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Small multi-site businesses",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 23,
+   "num_sites": 9,
+   "monthly_telecom_spend_inr": 8650,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.04526737817138457
+ },
+ {
+  "leadId": "L02796",
+  "inputFeatures": {
+   "lead_source": "Channel partner",
+   "segment": "Professional offices",
+   "city_tier": "1",
+   "gstin_status": "NONE",
+   "has_udyam": "Y",
+   "employee_count": 19,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1700,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.05264835813869513
+ },
+ {
+  "leadId": "L02833",
+  "inputFeatures": {
+   "lead_source": "WhatsApp campaign",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "NONE",
+   "has_udyam": "Y",
+   "employee_count": 5,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 400,
+   "current_internet": "None",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.0116378611307393
+ },
+ {
+  "leadId": "L02977",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Small multi-site businesses",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 70,
+   "num_sites": 9,
+   "monthly_telecom_spend_inr": 10900,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.10514668626562682
+ },
+ {
+  "leadId": "L03032",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "NONE",
+   "has_udyam": "N",
+   "employee_count": 2,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 800,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.01236828547498926
+ },
+ {
+  "leadId": "L03058",
+  "inputFeatures": {
+   "lead_source": "WhatsApp campaign",
+   "segment": "Small multi-site businesses",
+   "city_tier": "1",
+   "gstin_status": "NONE",
+   "has_udyam": "Y",
+   "employee_count": 43,
+   "num_sites": 8,
+   "monthly_telecom_spend_inr": 16600,
+   "current_internet": "Mixed per site",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.020553051784059265
+ },
+ {
+  "leadId": "L03077",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Small multi-site businesses",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 114,
+   "num_sites": 6,
+   "monthly_telecom_spend_inr": 7400,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.07786152950486179
+ },
+ {
+  "leadId": "L03108",
+  "inputFeatures": {
+   "lead_source": "Inbound call",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "NONE",
+   "has_udyam": "Y",
+   "employee_count": 2,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 750,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.029213361168179415
+ },
+ {
+  "leadId": "L03120",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Professional offices",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 6,
+   "num_sites": 2,
+   "monthly_telecom_spend_inr": 3950,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.06127447023162999
+ },
+ {
+  "leadId": "L03130",
+  "inputFeatures": {
+   "lead_source": "WhatsApp campaign",
+   "segment": "Professional offices",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 13,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 2500,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.05898845389734903
+ },
+ {
+  "leadId": "L03144",
+  "inputFeatures": {
+   "lead_source": "Channel partner",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 3,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 750,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.07537480331202827
+ },
+ {
+  "leadId": "L03147",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "NONE",
+   "has_udyam": "N",
+   "employee_count": 6,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 650,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.020819754126887052
+ },
+ {
+  "leadId": "L03222",
+  "inputFeatures": {
+   "lead_source": "Channel partner",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 1,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 200,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.06347656937517389
+ },
+ {
+  "leadId": "L03264",
+  "inputFeatures": {
+   "lead_source": "Inbound call",
+   "segment": "Professional offices",
+   "city_tier": "1",
+   "gstin_status": "NONE",
+   "has_udyam": "Y",
+   "employee_count": 22,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 2600,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.06790375238703748
+ },
+ {
+  "leadId": "L03269",
+  "inputFeatures": {
+   "lead_source": "Channel partner",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 3,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1550,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.08180568352044353
+ },
+ {
+  "leadId": "L03281",
+  "inputFeatures": {
+   "lead_source": "WhatsApp campaign",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "NONE",
+   "has_udyam": "Y",
+   "employee_count": 4,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 700,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.005622782984199141
+ },
+ {
+  "leadId": "L03288",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Small multi-site businesses",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 70,
+   "num_sites": 12,
+   "monthly_telecom_spend_inr": 14800,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.09066589048449344
+ },
+ {
+  "leadId": "L03290",
+  "inputFeatures": {
+   "lead_source": "Channel partner",
+   "segment": "Small manufacturers",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 91,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 12900,
+   "current_internet": "Leased line",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.13386071322577003
+ },
+ {
+  "leadId": "L03297",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Professional offices",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 5,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1600,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.06457217991820843
+ },
+ {
+  "leadId": "L03320",
+  "inputFeatures": {
+   "lead_source": "Inbound call",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 1,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 700,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.07955273153370404
+ },
+ {
+  "leadId": "L03343",
+  "inputFeatures": {
+   "lead_source": "Channel partner",
+   "segment": "Small manufacturers",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 99,
+   "num_sites": 2,
+   "monthly_telecom_spend_inr": 19750,
+   "current_internet": "Leased line",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.18329412802553743
+ },
+ {
+  "leadId": "L03347",
+  "inputFeatures": {
+   "lead_source": "WhatsApp campaign",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "NONE",
+   "has_udyam": "Y",
+   "employee_count": 3,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1200,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.009157044739576249
+ },
+ {
+  "leadId": "L03353",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "NONE",
+   "has_udyam": "N",
+   "employee_count": 6,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 750,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.009039025391152868
+ },
+ {
+  "leadId": "L03393",
+  "inputFeatures": {
+   "lead_source": "Referral",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 2,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 600,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.1412132964927408
+ },
+ {
+  "leadId": "L03413",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Professional offices",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 3,
+   "num_sites": 2,
+   "monthly_telecom_spend_inr": 4100,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.07694070442098166
+ },
+ {
+  "leadId": "L03422",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 4,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 400,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.08198687074270863
+ },
+ {
+  "leadId": "L03455",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 3,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1850,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.027101592248653085
+ },
+ {
+  "leadId": "L03463",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 5,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 800,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.02526113484182669
+ },
+ {
+  "leadId": "L03467",
+  "inputFeatures": {
+   "lead_source": "Channel partner",
+   "segment": "Professional offices",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 20,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 3550,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.09645413230648155
+ },
+ {
+  "leadId": "L03471",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 4,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1450,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.04727881028208495
+ },
+ {
+  "leadId": "L03542",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Small multi-site businesses",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 80,
+   "num_sites": 8,
+   "monthly_telecom_spend_inr": 13650,
+   "current_internet": "Mixed per site",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.08749655481246382
+ },
+ {
+  "leadId": "L03569",
+  "inputFeatures": {
+   "lead_source": "Channel partner",
+   "segment": "Small multi-site businesses",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 82,
+   "num_sites": 8,
+   "monthly_telecom_spend_inr": 14700,
+   "current_internet": "Mixed per site",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.15338337817191633
+ },
+ {
+  "leadId": "L03594",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Small multi-site businesses",
+   "city_tier": "1",
+   "gstin_status": "INACTIVE",
+   "has_udyam": "N",
+   "employee_count": 17,
+   "num_sites": 5,
+   "monthly_telecom_spend_inr": 2750,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.06881330972429985
+ },
+ {
+  "leadId": "L03613",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "NONE",
+   "has_udyam": "N",
+   "employee_count": 4,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 800,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.021534171557115827
+ },
+ {
+  "leadId": "L03622",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "NONE",
+   "has_udyam": "N",
+   "employee_count": 2,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1350,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.011217721947981076
+ },
+ {
+  "leadId": "L03665",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Professional offices",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 21,
+   "num_sites": 2,
+   "monthly_telecom_spend_inr": 2200,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.08325870165285862
+ },
+ {
+  "leadId": "L03671",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 1,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1300,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.045638487741627536
+ },
+ {
+  "leadId": "L03687",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "NONE",
+   "has_udyam": "Y",
+   "employee_count": 6,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 950,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.016502908152635477
+ },
+ {
+  "leadId": "L03717",
+  "inputFeatures": {
+   "lead_source": "Channel partner",
+   "segment": "Small manufacturers",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 53,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 9000,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.10854413462336975
+ },
+ {
+  "leadId": "L03754",
+  "inputFeatures": {
+   "lead_source": "Referral",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "NONE",
+   "has_udyam": "N",
+   "employee_count": 6,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 850,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.029720478446243183
+ },
+ {
+  "leadId": "L03770",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Professional offices",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 19,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 3850,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.13521020531143846
+ },
+ {
+  "leadId": "L03772",
+  "inputFeatures": {
+   "lead_source": "Referral",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "NONE",
+   "has_udyam": "Y",
+   "employee_count": 1,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1500,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.05912522719441442
+ },
+ {
+  "leadId": "L03776",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Small manufacturers",
+   "city_tier": "1",
+   "gstin_status": "INACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 67,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 17950,
+   "current_internet": "Leased line",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.15288462245767903
+ },
+ {
+  "leadId": "L03786",
+  "inputFeatures": {
+   "lead_source": "Referral",
+   "segment": "Small multi-site businesses",
+   "city_tier": "1",
+   "gstin_status": "NONE",
+   "has_udyam": "Y",
+   "employee_count": 83,
+   "num_sites": 12,
+   "monthly_telecom_spend_inr": 7250,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.08223320404742016
+ },
+ {
+  "leadId": "L03830",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "NONE",
+   "has_udyam": "Y",
+   "employee_count": 1,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 550,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.015285506954979898
+ },
+ {
+  "leadId": "L03835",
+  "inputFeatures": {
+   "lead_source": "Channel partner",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "NONE",
+   "has_udyam": "N",
+   "employee_count": 2,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1000,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.012704865857898354
+ },
+ {
+  "leadId": "L03837",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 6,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 650,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.039517991621799385
+ },
+ {
+  "leadId": "L03861",
+  "inputFeatures": {
+   "lead_source": "Channel partner",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "NONE",
+   "has_udyam": "Y",
+   "employee_count": 5,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1000,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.02835678798877373
+ },
+ {
+  "leadId": "L03876",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Professional offices",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 19,
+   "num_sites": 2,
+   "monthly_telecom_spend_inr": 3900,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.05238182877382399
+ },
+ {
+  "leadId": "L03889",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Professional offices",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 16,
+   "num_sites": 2,
+   "monthly_telecom_spend_inr": 2400,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.11299147116334918
+ },
+ {
+  "leadId": "L03909",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Small multi-site businesses",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 108,
+   "num_sites": 5,
+   "monthly_telecom_spend_inr": 13700,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.07049505926812102
+ },
+ {
+  "leadId": "L03923",
+  "inputFeatures": {
+   "lead_source": "Referral",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 6,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 950,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.11549875877700741
+ },
+ {
+  "leadId": "L03937",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Small multi-site businesses",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 49,
+   "num_sites": 9,
+   "monthly_telecom_spend_inr": 9800,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.056779268316147366
+ },
+ {
+  "leadId": "L03947",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Professional offices",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 16,
+   "num_sites": 2,
+   "monthly_telecom_spend_inr": 2000,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.09898027576161739
+ },
+ {
+  "leadId": "L03973",
+  "inputFeatures": {
+   "lead_source": "Referral",
+   "segment": "Small manufacturers",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 130,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 18050,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.19835884696192632
+ },
+ {
+  "leadId": "L04005",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "NONE",
+   "has_udyam": "Y",
+   "employee_count": 4,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1450,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.01994246757345712
+ },
+ {
+  "leadId": "L04043",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Professional offices",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 21,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 3450,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.07550664909652911
+ },
+ {
+  "leadId": "L04047",
+  "inputFeatures": {
+   "lead_source": "Inbound call",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 2,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 750,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.0707573001503095
+ },
+ {
+  "leadId": "L04067",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "NONE",
+   "has_udyam": "N",
+   "employee_count": 3,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 250,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.013108640898639785
+ },
+ {
+  "leadId": "L04070",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "NONE",
+   "has_udyam": "N",
+   "employee_count": 2,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 750,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.013604781326789068
+ },
+ {
+  "leadId": "L04082",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "NONE",
+   "has_udyam": "N",
+   "employee_count": 6,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1050,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.014506621215929247
+ },
+ {
+  "leadId": "L04119",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 3,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1050,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.037539159013488026
+ },
+ {
+  "leadId": "L04127",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "NONE",
+   "has_udyam": "N",
+   "employee_count": 1,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 550,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.014572458552077986
+ },
+ {
+  "leadId": "L04152",
+  "inputFeatures": {
+   "lead_source": "Referral",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 6,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1250,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.18140866583450277
+ },
+ {
+  "leadId": "L04212",
+  "inputFeatures": {
+   "lead_source": "Channel partner",
+   "segment": "Small multi-site businesses",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 99,
+   "num_sites": 10,
+   "monthly_telecom_spend_inr": 11050,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.08740273876739045
+ },
+ {
+  "leadId": "L04221",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 6,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 750,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.05482576158818258
+ },
+ {
+  "leadId": "L04237",
+  "inputFeatures": {
+   "lead_source": "Inbound call",
+   "segment": "Small multi-site businesses",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 18,
+   "num_sites": 3,
+   "monthly_telecom_spend_inr": 12650,
+   "current_internet": "Mixed per site",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.21174678299500305
+ },
+ {
+  "leadId": "L04293",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 6,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 900,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.05467861970735219
+ },
+ {
+  "leadId": "L04330",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Small manufacturers",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 24,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 11950,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.13558801659026654
+ },
+ {
+  "leadId": "L04397",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Professional offices",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 11,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 3150,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.18129742341768468
+ },
+ {
+  "leadId": "L04408",
+  "inputFeatures": {
+   "lead_source": "Channel partner",
+   "segment": "Small manufacturers",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 118,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 14000,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.10854413462336975
+ },
+ {
+  "leadId": "L04471",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Small multi-site businesses",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 66,
+   "num_sites": 4,
+   "monthly_telecom_spend_inr": 7400,
+   "current_internet": "Mixed per site",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.15175772343478108
+ },
+ {
+  "leadId": "L04485",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Professional offices",
+   "city_tier": "2",
+   "gstin_status": "NONE",
+   "has_udyam": "Y",
+   "employee_count": 10,
+   "num_sites": 2,
+   "monthly_telecom_spend_inr": 2950,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.030342328205415013
+ },
+ {
+  "leadId": "L04546",
+  "inputFeatures": {
+   "lead_source": "WhatsApp campaign",
+   "segment": "Professional offices",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 18,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 3000,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.050409761572865266
+ },
+ {
+  "leadId": "L04590",
+  "inputFeatures": {
+   "lead_source": "WhatsApp campaign",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "NONE",
+   "has_udyam": "Y",
+   "employee_count": 4,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1050,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.007605969330265489
+ },
+ {
+  "leadId": "L04673",
+  "inputFeatures": {
+   "lead_source": "Channel partner",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "NONE",
+   "has_udyam": "N",
+   "employee_count": 2,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1950,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.017070498930355858
+ },
+ {
+  "leadId": "L04695",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 6,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 900,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.03843138570124128
+ },
+ {
+  "leadId": "L04705",
+  "inputFeatures": {
+   "lead_source": "WhatsApp campaign",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 6,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 800,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.021696776785056406
+ },
+ {
+  "leadId": "L04706",
+  "inputFeatures": {
+   "lead_source": "Channel partner",
+   "segment": "Small manufacturers",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 40,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 16750,
+   "current_internet": "Leased line",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.1335890639810049
+ },
+ {
+  "leadId": "L04794",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Professional offices",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 20,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 3450,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.08948974416277213
+ },
+ {
+  "leadId": "L04810",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Small manufacturers",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 118,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 16750,
+   "current_internet": "Leased line",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.08552776109353681
+ },
+ {
+  "leadId": "L04856",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "N",
+   "employee_count": 3,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 700,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.06608075051714711
+ },
+ {
+  "leadId": "L04909",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 4,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 1400,
+   "current_internet": "Home broadband",
+   "products_of_interest_count": 3,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.05549995468499006
+ },
+ {
+  "leadId": "L04914",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "INACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 2,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 450,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.06602056508738165
+ },
+ {
+  "leadId": "L04924",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "2",
+   "gstin_status": "INACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 5,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 900,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "Y"
+  },
+  "expectedProbability": 0.03977785581277108
+ },
+ {
+  "leadId": "L04942",
+  "inputFeatures": {
+   "lead_source": "Website form",
+   "segment": "Small manufacturers",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 27,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 19350,
+   "current_internet": "Leased line",
+   "products_of_interest_count": 2,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.11631552978449196
+ },
+ {
+  "leadId": "L04949",
+  "inputFeatures": {
+   "lead_source": "Inbound call",
+   "segment": "Professional offices",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 24,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 3200,
+   "current_internet": "Business broadband",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.1831746573277367
+ },
+ {
+  "leadId": "L04979",
+  "inputFeatures": {
+   "lead_source": "Field sales",
+   "segment": "Micro retail & services",
+   "city_tier": "1",
+   "gstin_status": "ACTIVE",
+   "has_udyam": "Y",
+   "employee_count": 2,
+   "num_sites": 1,
+   "monthly_telecom_spend_inr": 850,
+   "current_internet": "Mobile hotspot",
+   "products_of_interest_count": 1,
+   "gst_product_interest": "N"
+  },
+  "expectedProbability": 0.08304737411635642
+ }
+]

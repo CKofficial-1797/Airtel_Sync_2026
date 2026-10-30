@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -29,6 +30,7 @@ public class DbRulesDataProvider implements RulesDataProvider {
     }
 
     @EventListener(ApplicationReadyEvent.class)
+    @Order(0) // before anything else that waits for ready and needs the rules
     public void load() {
         Catalogue catalogue = new Catalogue(products.findAll().stream().map(CatalogueProduct::from).toList());
         var cities = jdbc.query("SELECT DISTINCT city, city_tier, state FROM smb_lead",

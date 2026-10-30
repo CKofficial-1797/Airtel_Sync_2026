@@ -62,16 +62,19 @@ interface RequestOptions {
   method?: "GET" | "POST";
   body?: unknown;
   signal?: AbortSignal;
+  headers?: Record<string, string>;
 }
 
 export async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
   // FormData sets its own multipart Content-Type (with the boundary).
   const form = options.body instanceof FormData ? options.body : undefined;
+  const contentType: Record<string, string> = options.body === undefined || form ? {} : { "Content-Type": "application/json" };
+  const headers = { ...contentType, ...options.headers };
   let res: Response;
   try {
     res = await fetch(path, {
       method: options.method ?? "GET",
-      headers: options.body === undefined || form ? undefined : { "Content-Type": "application/json" },
+      headers: Object.keys(headers).length > 0 ? headers : undefined,
       body: options.body === undefined ? undefined : (form ?? JSON.stringify(options.body)),
       signal: options.signal,
     });

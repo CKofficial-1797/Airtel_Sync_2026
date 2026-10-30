@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-/** AdvisorStore for unit tests (no DB). */
-class InMemoryAdvisorStore implements AdvisorStore {
+/** AdvisorStore for unit tests (no DB). Public: the back-office tests reuse it. */
+public class InMemoryAdvisorStore implements AdvisorStore {
 
     final Map<UUID, Session> sessions = new LinkedHashMap<>();
     final Map<UUID, List<Message>> messages = new LinkedHashMap<>();

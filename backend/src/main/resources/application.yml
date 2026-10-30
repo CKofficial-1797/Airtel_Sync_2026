@@ -34,6 +34,10 @@ app:
   data-dir: ../data               # resolved relative to the working directory (backend/)
   reference-date: 2026-07-15      # treat as "today" for all date checks (data/README.md)
   demo-mode: false                # true enables /api/demo/** (video only); set it in application-local.yml
+  backoffice:
+    key: ${BACKOFFICE_KEY:}       # prototype passcode: set it in application-local.yml or env; unset = no access
+    session-idle-minutes: ${BACKOFFICE_SESSION_IDLE_MINUTES:30}   # 0 for the demo
+    order-stuck-hours: ${BACKOFFICE_ORDER_STUCK_HOURS:24}         # 0 for the demo
   cors:
     allowed-origins:
       - http://localhost:5173

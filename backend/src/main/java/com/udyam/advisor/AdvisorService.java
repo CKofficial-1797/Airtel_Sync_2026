@@ -22,9 +22,11 @@ public class AdvisorService {
 
     public static final String GREETING = """
             Namaste! I'm your Accel Business advisor. Tell me about your business: what you do, your city, \
-            how many people work there and how many shops or offices you have. I'll suggest the right plan.
+            how many people work there and how many shops or offices you have. I'll suggest the right plan. \
+            A member of our team may contact you about your enquiry, and may read this chat to help you.
             नमस्ते! मैं आपका Accel Business सलाहकार हूँ। अपने व्यवसाय के बारे में बताइए: आप क्या करते हैं, \
-            किस शहर में हैं, कितने लोग काम करते हैं और कितनी दुकानें या ऑफ़िस हैं। मैं आपके लिए सही प्लान सुझाऊँगा।""";
+            किस शहर में हैं, कितने लोग काम करते हैं और कितनी दुकानें या ऑफ़िस हैं। मैं आपके लिए सही प्लान सुझाऊँगा। \
+            हमारी टीम का कोई सदस्य आपकी पूछताछ के बारे में आपसे संपर्क कर सकता है, और आपकी मदद के लिए यह चैट पढ़ सकता है।""";
 
     /** Set by OrderService when the quote is accepted; sticky for the rest of the session. */
     public static final String CHECKOUT_DONE = "CHECKOUT_DONE";

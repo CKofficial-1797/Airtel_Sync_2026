@@ -14,6 +14,7 @@ Living handoff file. Every phase reads this first and updates it at the end (app
 | 6 | 2026-10-30 | Smart KYC backend: DPDP consent (EN/HI notice, withdraw + purge), upload (magic bytes, temp file always deleted), ai-service `POST /extract` (OpenCV blur/skew + Gemini structured output), 17 checks C01–C17 with EN/HI messages + fix hints, KYC order statuses (Flyway V4), specimen harness + 47 golden fixtures (12/12 verdicts match). Live Gemini specimen run deferred (no API quota) |
 | 7 | 2026-10-30 | KYC frontend: `/kyc/:orderId` (consent → upload → results, resumable, EN/HI), journey stepper, client-side photo resize, withdraw flow, `/track/:orderId` placeholder. Backend: fixed a Phase 6 withdrawal bug (withdraw + re-consent could give a false VERIFIED, and names survived in check messages), fixture cache answers WRONG_DOC_TYPE for a specimen in another slot, readable wrong-document hint |
 | 8 | 2026-10-30 | Order tracker: `OrderStatusMachine` (one place for all transitions, Flyway V5), per-item ETAs from a business date, self-service install slots, `/track` lookup with rate limit, `/track/:orderId` (timeline, slot picker, hold banner, 30 s auto-refresh, EN/HI), view-count metric, demo controls behind `app.demo-mode`. Core prototype done |
+| 9 | 2026-10-30 | Back office: offline-trained propensity model (AUC 0.70, top 20% = 37.5% of activations) scored in Java, deterministic routing with a why, `/api/backoffice` behind a prototype passcode (Flyway V6), `/backoffice` queue, lead detail and insights |
 
 ## 2. How to run
 
@@ -866,3 +867,85 @@ The advisor NEVER decides eligibility, products or prices itself. It collects fa
 - In-process Java: `RecommendationService.recommend`, `QuoteService.quote`, `EligibilityService.check/checkAll/resolveBundle`, `ProfileResolver.resolve`, `GstinVerificationService.verify` (OCR documents, KYC), `UdyamLookupService`.
 - Tests without DB: `RulesFixture` (rules), `CsvGstinRegistryLookup` + `TestData` (registries).
 - Errors: `ApiException(status, CODE, message, errors)`; privacy: `Masking.*` in logs; "today" = `AppProperties.referenceDate()` (2026-07-15), never `LocalDate.now()`.
+
+## 13. Phase 9: back office and lead propensity
+
+Package `com.udyam.backoffice`, Flyway `V6__lead_assignment.sql` (`lead_assignment`, `lead_assignment_event`), frontend `/backoffice`. No WhatsApp, voice or deployment. The only change to the customer journey is one sentence added to the advisor greeting (below).
+
+### Model
+
+- Trained offline by `ai-service/ml/train_propensity.py`; Java reads `backend/src/main/resources/ml/propensity-model-v1.json`. No Python at runtime. `PropensityScorerTest` holds Java to Python within 1e-6 on 200 leads (`backend/src/test/resources/ml/propensity-parity.json`).
+- Variant (b), unweighted logistic regression: only fields the advisor can collect. `preferred_language` is deliberately left out (0.005 AUC gain, and regional-language leads fall from 22.2% to 13.4% of HOT).
+- Retrain, from `ai-service/`, after `pip install -r ml/requirements.txt`:
+  - bash: `PYTHONIOENCODING=utf-8 .venv/Scripts/python ml/train_propensity.py`
+  - PowerShell: `$env:PYTHONIOENCODING='utf-8'; .venv\Scripts\python ml\train_propensity.py`
+  - Fixed seed 42: same metrics on every run. It rewrites the model, the parity fixture and `ai-service/ml/REPORT.md`.
+- Leakage policy: nothing known only after the outcome may feed the model (stage, dates, bundle, cost, NPS, churn and so on) and no identifiers. `assert_no_leakage` stops the run; `--add-feature acquisition_cost_inr` shows it failing. A single feature above 0.90 AUC also stops it.
+- Missing or unknown values use the reference level, which adds nothing to the score: an unanswered question neither helps nor hurts. Live leads count as lead source "Website form". A GSTIN that is only declared, or not in the registry, counts as none.
+- `score` is a percentile among the historical leads (80+ is HOT); `probability` is the model's estimate. Negative employee and site reasons are hidden; the score keeps them.
+
+| Test | Leads | ROC-AUC | Top-decile lift | Top 20% capture |
+|---|---|---|---|---|
+| Train April-May, test June | 1,704 | 0.714 (95% CI 0.672-0.748) | 2.12 | 39.4% |
+| 5-fold cross-validation | 5,000 | 0.699 | 2.04 | 37.5% |
+
+Bands, out-of-fold: HOT 1,000 leads, 13.8% activate, 37.5% of activations. WARM 1,500, 10.0%, 40.8%. COLD 2,500, 3.2%, 21.7%.
+
+### Which leads are in the queue
+
+- HISTORICAL: `smb_lead`, minus activated leads and three reasons not worth a call ("Not interested on first call", "Wrong or invalid number", "Locked in with current provider"): 3,518 leads.
+- SESSION: no order yet, segment or business type collected, idle at least `app.backoffice.session-idle-minutes`.
+- ORDER: QUOTE_ACCEPTED, KYC_PENDING_CONSENT, KYC_IN_PROGRESS, KYC_ACTION_REQUIRED or ON_HOLD, unchanged for at least `app.backoffice.order-stuck-hours`. KYC_REJECTED is closed.
+- The "All" tab lists live leads first, then by score. `sort=score` is the pure ranking.
+
+### Routing (`LeadRouter`, first match wins)
+
+1. KYC_ACTION_REQUIRED: KYC_HELP, inside sales, with the failed check as the why.
+2. ON_HOLD + SITE_NOT_FEASIBLE: TECH_FEASIBILITY, inside sales; the rules engine says whether 5G AirFiber fits.
+3. Other ON_HOLD: RESOLVE_HOLD, inside sales.
+4. Other stuck orders: FINISH_ORDER, inside sales.
+5. Inactive GSTIN: FIX_GST_FIRST, inside sales.
+6. Session that saw a quote: FOLLOW_UP_QUOTE, inside sales, even if Micro.
+7. Micro: HOT gets a call, otherwise a digital nudge. Never field sales, and `/assign` refuses it with 400 `MICRO_NO_FIELD_SALES`.
+8. Others: HOT goes to a channel partner if the city has one, else field sales (unknown segment: a call). WARM gets a call, COLD a nudge.
+
+A city "has" a partner with at least 3 partner activations in the data (14 of 22 cities). This is an approximation: the dataset has no partner list.
+
+### Endpoints (all need `X-Backoffice-Key`)
+
+`GET /api/backoffice/queue?kind=&segment=&tier=&band=&channel=&status=&page=&size=&sort=score`, `GET /leads/{kind}/{ref}`, `POST /leads/{kind}/{ref}/assign {channel, assigneeLabel?, note?}`, `POST /leads/{kind}/{ref}/status {status, note?}`, `GET /reengagement`, `GET /insights`.
+
+**The gate is a prototype, not authentication:** one shared passcode, no users, no record of who did what. Set `app.backoffice.key` in `application-local.yml` or `BACKOFFICE_KEY`, and never commit it. With no key set, nothing gets in and the warm-up is skipped. For the demo set `BACKOFFICE_SESSION_IDLE_MINUTES=0` and `BACKOFFICE_ORDER_STUCK_HOURS=0`.
+
+### Privacy
+
+- GSTIN, Udyam, PAN, Aadhaar-style and phone numbers are masked in the queue, detail and chat text. Names read from KYC are masked ("Ganesh W********"), including in check messages. The contact name is never sent. Logs carry no message text.
+- Staff read the last 6 messages of a chat, so the advisor greeting now says (with a Hindi version): "A member of our team may contact you about your enquiry, and may read this chat to help you."
+
+### Insights
+
+Funnel 5000/3406/1974/861/588/368. Activations per segment 110/138/83/37. Micro cost per activation ₹20,007, payback 8.0 months. Mis-selling 48 of 368 (56 under the stricter registry reading). The live funnel follows advisor sessions only, so orders placed without a session are not in it.
+
+### Slide-ready numbers (from `ai-service/ml/REPORT.md`)
+
+1. Calling the top 20% of leads by score finds 37.5% of all activations, about twice what random calling finds (39.4% on unseen June leads).
+2. The bottom half of leads by score holds only 21.7% of activations, so they can start digital-first and leave sales time for the rest.
+3. An active GSTIN makes a lead 3.4× as likely to activate as having none, and a referral 3.8× as likely as a website form, all else being equal.
+4. 1,291 leads were lost to process problems such as no visit or a slow quote, about twice the 621 lost on price.
+5. Field visits cost about ₹53,026 per Micro activation against a bundle of about ₹2,500/month, so Micro should be digital-first.
+
+Sentences 1-3 describe who is likely to activate, not extra sales caused by calling them.
+
+### Test counts
+
+JUnit 480 (68 new), pytest 146, Vitest 163 (41 new). `npm run build` passes.
+
+### Known issues
+
+- **No contact data:** the journey never collects a phone number, so staff can see who to call but not how. Detail pages say so. Collecting one is the obvious next step.
+- Live leads rarely reach HOT, since they have only what the advisor collected and the "Website form" source. Sessions with a quote go to inside sales regardless.
+- Live checks used a local stub in place of ai-service to save Gemini quota, so unclosed chats have not been run through real Gemini. They left test sessions and orders in Neon.
+- Not checked in the browser: the Insights charts by eye (their text and numbers were checked, the screenshot timed out) and 375 px width (checked at about 600 px and 1280 px). The queue timing after the GSTIN lookup cache was not re-measured; before it, the All tab took 4-5 s per click, mostly Neon round trips.
+- Right after boot, Insights can answer 503 `RULES_DATA_NOT_READY` for a few seconds.
+- `hi.json` has no back-office text, so staff pages fall back to English. Recharts was not needed: the charts are plain bars, with a table view of the lift chart.
+- `README.md` is still the Phase 1 text.
