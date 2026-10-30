@@ -10,6 +10,7 @@ Living handoff file. Every phase reads this first and updates it at the end (app
 | 2 | 2026-10-29 | GSTIN/Udyam validators (format, mod-36 checksum, state codes), registry-aware OCR correction, `GstinVerificationService`, mock lookup APIs under `/api/mock`, masked logging, `code`/`errors` on error JSON |
 | 3 | 2026-10-30 | Rules engine: profile resolution (city → tier, type → segment, GSTIN status), fixed-point eligibility, YAML-driven recommendation, quote (MIN pricing), reference APIs, mis-selling audit (48/368 = 13.0%) |
 | 4 | 2026-10-30 | AI advisor: stateless Python `ai-service` (FastAPI + Gemini 2.5 Flash, manual tool calling, grounding guard) + Spring advisor sessions/messages (Flyway V2), `/api/advisor/sessions` endpoints, internal-token filter |
+| 5 | 2026-10-30 | React frontend (Landing, Advisor chat, Quote & checkout, KYC/Track placeholders, EN/HI) + orders backend (Flyway V3, `POST/GET /api/orders`, server-side quote recompute, 409 QUOTE_CHANGED) |
 
 ## 2. How to run
 
@@ -29,6 +30,8 @@ Living handoff file. Every phase reads this first and updates it at the end (app
   - Run (from `ai-service/`): `.venv\Scripts\python -m uvicorn app.main:app --reload --port 8000` (bash: `.venv/bin/python ...`)
   - Start order: Spring (:8080) first, then ai-service (:8000). The advisor UI talks only to Spring.
   - Gemini check (1 call): `.venv\Scripts\python scripts\check_gemini.py` → `OK gemini-2.5-flash`
+- **frontend (Phase 5)**: Node 24.16 / npm 11.13. From `frontend/`: `npm install` (first time), `npm run dev` → http://localhost:5173 (`npm run dev -- --host` to test on a phone over LAN), `npm run test` (Vitest), `npm run build` (`tsc --noEmit && vite build` → `dist/`). The Vite dev server proxies `/api` → `http://localhost:8080`, so the browser never calls Spring cross-origin and never calls the ai-service.
+  - Full stack for a demo: Spring (:8080) → ai-service (:8000) → `npm run dev` (:5173).
 - Terminals opened before Java/Maven were installed don't have them on PATH: refresh with `$env:JAVA_HOME = [Environment]::GetEnvironmentVariable("JAVA_HOME","User"); $env:Path = [Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [Environment]::GetEnvironmentVariable("Path","User")`.
 
 ## 3. Package structure (`backend/src/main/java/com/udyam`)
@@ -51,6 +54,20 @@ rules/recommend/          Template-driven recommendation + quantity rules, /api/
 rules/quote/              Pricing + quote, /api/quote
 rules/audit/              Mis-selling audit over activated leads, /api/admin/audit/mis-selling
 advisor/                  Advisor sessions (JDBC store), ai-service RestClient, /api/advisor/sessions, InternalTokenFilter
+orders/                   Orders from accepted quotes (server recompute), /api/orders, order events
+```
+
+`frontend/src` (React 18 + TypeScript strict + Vite 8 + Tailwind 4, Phase 5):
+```
+main.tsx, App.tsx      BrowserRouter + routes inside ErrorBoundary + Layout
+api/                   client.ts (fetch wrapper + typed errors), types.ts (mirrors Spring JSON), advisor.ts, quote.ts, orders.ts
+i18n/                  index.ts (react-i18next init, language persisted), en.json, hi.json
+lib/                   format.ts (formatInr ₹1,23,456, formatDate), mask.ts (maskGstin), storage.ts (safe localStorage)
+hooks/                 useAdvisorSession.ts, useQuote.ts (+ pure helpers), useSessionSnapshot.ts
+components/            Layout (+Header), LanguageToggle, ChatBubble, TypingIndicator, QuickReplies, RecommendationCard,
+                       ProfileSummary, QuoteLineItem, AddOnToggle, IneligibleList, TotalsBar, ErrorBanner, ConfirmDialog, ErrorBoundary
+pages/                 Landing, Advisor, Quote, KycPlaceholder, TrackPlaceholder, NotFound
+test/                  setup.ts (jest-dom + i18n + cleanup), fixtures.ts (kirana quote/recommendation)
 ```
 
 `ai-service/` (Python, Phase 4):
@@ -152,6 +169,31 @@ scripts/check_gemini.py   one-call connectivity check
 | `InternalTokenFilter` | Sets request attribute `udyam.caller` = `ai-service` (valid token) or `public`; never blocks; logs `API <method> <path> caller=...` with GSTIN-like path segments masked |
 | `AiServiceProperties` | `app.ai-service.*` |
 
+**Phase 5 (Spring, `com.udyam.orders`)**
+
+| Class | What it does |
+|---|---|
+| `OrderService` | `create(sessionId?, profile, items)` (`@Transactional`): recomputes the quote with `QuoteService` (client totals never used); any `removed[]` → `QuoteChangedException` (nothing saved); else inserts `customer_order` + `order_event(QUOTE_ACCEPTED)` and, with a session, sets it to `CHECKOUT_DONE` + `order_id`. `get(orderId)` → `OrderView` with GSTIN masked. `orderRef(n)` = `UD-` + reference date `yyMMdd` + `-` + n padded to 4 (e.g. `UD-260715-0042`) |
+| `OrderController` | `POST /api/orders` (201), `GET /api/orders/{id}`; request record `CreateOrderRequest(sessionId, profile, items)` has no totals on purpose |
+| `OrderStore` / `JdbcOrderStore` | Interface + Postgres impl (`nextval('order_ref_seq')`, inserts, events, `markSessionCheckedOut`) |
+| `QuoteChangedException` + `OrderExceptionHandler` | 409 `{status, error, code: QUOTE_CHANGED, message, path, quote}` (`@Order(HIGHEST_PRECEDENCE)` so it wins over `GlobalExceptionHandler`) |
+| `OrderStatus` | `QUOTE_ACCEPTED` (only status so far) |
+| `AdvisorService` (changed) | A retry re-sending the last unanswered user message is not stored twice; a `CHECKOUT_DONE` session stays `CHECKOUT_DONE` (sent to the ai-service as `READY_FOR_CHECKOUT`) |
+
+**Phase 5 (frontend)**
+
+| Name | What it does |
+|---|---|
+| `api/client.ts` | `request<T>()`; maps 503 `AI_UNAVAILABLE` → `AiUnavailableError`, 409 `QUOTE_CHANGED` → `QuoteChangedError` (carries `quote`), connection failure / 502 / 504 → `NetworkError`, other → `ApiError(status, code, fieldErrors)`; `isAbort()` |
+| `api/types.ts` | TS mirrors of all Spring JSON used by the UI (Quote, Recommendation, ResolvedProfile, SessionView, AdvisorReply, OrderCreated/OrderView, ApiErrorBody, Stage incl. `CHECKOUT_DONE`) |
+| `hooks/useAdvisorSession` | Restores the session from localStorage (`udyam.sessionId`) via GET, else POST creates one (with `uiLanguage`); `send`, `retry` (re-sends the failed bubble, no duplicate), `startOver`, `dismissError`; tracks `cardAfter` = the reply that last changed the bundle (card rendered there) |
+| `hooks/useQuote` | Quote editing: `setQuantity` / `removeItem` / `toggleAddOn` → POST `/api/quote` (300 ms debounce, AbortController drops stale requests, removed ids sent as `removedProductIds`); engine `removed[]` → `notices`; `replaceQuote` (used on 409). Pure helpers: `itemsFromQuote`, `withQuantity` (1..500), `withoutItem`, `withAddOn` (upgrade swap via `replaces`), `applyQuoteResponse` |
+| `hooks/useSessionSnapshot` | One-time GET of the saved session for pages opened directly (`/quote`) |
+| `RecommendationCard` | Bundle from JSON only: monthly (big), one-time, contract, lines (name × qty + `why`), conditional badge; CTA "View & customise quote" / prominent "Review quote & continue" at `READY_FOR_CHECKOUT`; "Order placed" at `CHECKOUT_DONE` |
+| `ProfileSummary` | Chips: type · city (Tier n) · staff · sites · GSTIN masked + ✓ Active / ✕ Cancelled/Suspended / Not verified, or "GST: to verify" / "No GST" |
+| `TotalsBar` | Sticky: monthly, one-time, contract, estimated activation date, price note, "Accept & continue to KYC" (disabled while repricing) |
+| i18n | `react-i18next`, resources `en.json` / `hi.json` (all UI strings; product names stay English), language in localStorage `udyam.language`, sets `<html lang>`; Hindi uses Noto Sans Devanagari (Google Fonts in `index.html`) |
+
 **Phase 4 (Python, `ai-service/app`)**
 
 | Name | What it does |
@@ -184,11 +226,15 @@ No JPA entity exists for `smb_lead` / `lead_bundle_item` (read via JdbcTemplate 
 | POST | `/api/advisor/sessions` | body `{"uiLanguage": "en"|"hi"|null}` (optional) → `{sessionId (UUID), greeting}` | 400 |
 | POST | `/api/advisor/sessions/{id}/messages` | `{"text": 1..1000 chars}` → `{sessionId, reply, stage, profile, recommendation (latest /api/recommend JSON or null), quote (latest Quote JSON or null), detectedLanguage}` | 400 `INVALID_REQUEST`, 404, **503 `AI_UNAVAILABLE`** (user message still saved) |
 | GET | `/api/advisor/sessions/{id}` | `{sessionId, createdAt, updatedAt, uiLanguage, detectedLanguage, stage, profile, recommendation, quote, messages[{role, content, createdAt}]}` | 400 (bad UUID), 404 |
+| POST | `/api/orders` | `{sessionId?: UUID, profile: BusinessProfile, items: [{productId, quantity 1..500}] (non-empty)}` (any totals in the body are ignored) → **201** `{orderId, orderRef, status: "QUOTE_ACCEPTED", quote}` | 400 `INVALID_REQUEST`/`UNKNOWN_PRODUCT`/`DUPLICATE_PRODUCT`, 404 (unknown session), **409 `QUOTE_CHANGED`** `{…, quote}` (recompute removed items; nothing saved) |
+| GET | `/api/orders/{id}` | `{orderId, orderRef, status, createdAt, quote, profile (gstin masked), events[{status, note, createdAt}]}` | 400 (bad UUID), 404 |
 | GET | `/api/admin/audit/mis-selling` | `{hasGstinFlag: Variant, registryActive: Variant}`; Variant = `{gstinSemantics, description, activatedChecked, bundlesWithViolations, misSoldPercent, totalViolations, violationsByProductAndReason[{productId, productName, reason, count}], sampleLeadIds[≤10]}` | - |
 
 **ai-service (internal, called only by Spring)**: `GET /health` → `{status: "OK", model}`; `POST /chat` (header `X-Internal-Token`, else 401 `{detail: {code: UNAUTHORIZED}}`) body `{sessionId, messages[{role: user|assistant, content}], profile, uiLanguage, state{stage, recommendation, quote}}` → `{reply, detectedLanguage, profile, stage, recommendation, quote, toolTrace[{tool, args (GSTIN masked), ok, ms}], guard{passed, retries, fallbackUsed, violations[]}}`; 503 `LLM_UNAVAILABLE` when Gemini fails after retries; 422 on a malformed body.
 
-**Stage values**: `COLLECTING`, `RECOMMENDED`, `CUSTOMISING`, `READY_FOR_CHECKOUT`, `OUT_OF_SCOPE`.
+**Stage values**: `COLLECTING`, `RECOMMENDED`, `CUSTOMISING`, `READY_FOR_CHECKOUT`, `OUT_OF_SCOPE` (from the ai-service), plus `CHECKOUT_DONE` (Phase 5, set by `POST /api/orders` with a sessionId; Spring-only, sticky).
+
+**Frontend routes (Phase 5)**: `/` Landing · `/advisor` chat · `/quote` quote & checkout · `/kyc/:orderId` placeholder (shows order ref; Phase 7 replaces it) · `/track` placeholder · `*` NotFound.
 
 **Phase 3 shapes**
 - `BusinessProfile`: `businessType?, segment?, city?, cityTier? (1|2), employees (1..100000, required), sites (1..500, required), gstin?, gstinDeclared?, currentInternet?, monthlyTelecomSpendInr? (≥0), fibreUnavailable?, needs? [Need], officeUsers?, mobileLines?, cameras?, vehicles?, machines? (1..500)`. Needs city OR cityTier.
@@ -251,7 +297,15 @@ Flyway versions applied: **V1** `V1__init_reference_data.sql` (Phases 2 and 3 ad
 | `advisor_session` | `id UUID` PK, `created_at`/`updated_at TIMESTAMPTZ`, `ui_language`, `detected_language`, `stage` (CHECK: the 5 stage values, default COLLECTING), `profile_json JSONB NOT NULL DEFAULT '{}'`, `last_recommendation_json JSONB`, `last_quote_json JSONB`; index on `stage` |
 | `advisor_message` | `id BIGSERIAL` PK, `session_id UUID` FK → advisor_session ON DELETE CASCADE, `role` (CHECK user/assistant), `content TEXT`, `tool_trace_json JSONB`, `guard_json JSONB`, `created_at`; index `(session_id, id)` |
 
-Back-office query for "leads the advisor could not close": `SELECT id, stage, profile_json, updated_at FROM advisor_session WHERE stage <> 'READY_FOR_CHECKOUT' ORDER BY updated_at DESC;`
+**V3** `V3__orders.sql` (Phase 5):
+
+| Table / change | Key columns / types |
+|---|---|
+| `customer_order` | `id UUID` PK, `order_ref VARCHAR(24) UNIQUE` (from sequence `order_ref_seq`), `session_id UUID` FK → advisor_session (ON DELETE SET NULL), `profile_json JSONB`, `quote_json JSONB` (server-recomputed snapshot), `monthly_total_inr`, `one_time_total_inr`, `contract_months INT`, `status VARCHAR(40)` default `QUOTE_ACCEPTED`, `created_at`/`updated_at`; indexes on `session_id`, `status` |
+| `order_event` | `id BIGSERIAL` PK, `order_id UUID` FK → customer_order ON DELETE CASCADE, `status`, `note TEXT`, `created_at`; index `(order_id, id)` |
+| `advisor_session` | stage CHECK now also allows `CHECKOUT_DONE`; new column `order_id UUID` FK → customer_order |
+
+Back-office query for "leads the advisor could not close": `SELECT id, stage, profile_json, updated_at FROM advisor_session WHERE stage NOT IN ('READY_FOR_CHECKOUT', 'CHECKOUT_DONE') ORDER BY updated_at DESC;`
 
 | Table | Key columns / types |
 |---|---|
@@ -286,11 +340,12 @@ Phase 3 facts (from smb_leads, verified by tests and live API):
 - **GST-required products (10):** P03, P05, P06, P10, P12, P13, P14, P15, P21, P24. Products with dependencies: P09/P10/P21 (P01|P02|P03|P05|P06), P11 (P01|P02|P03), P12/P23 (P01–P06), P22 (P01–P04).
 - **Mis-selling audit:** (a) has_gstin flag: 48/368 bundles (13.0%), 53 violations: P03 tier 24, P03 employees 7, P03 GSTIN 3, P06 employees 1, P10 GSTIN 1, P11 dependency 9, P12 GSTIN 2, P14 GSTIN 1, P15 GSTIN 5. (b) registry Active: 56/368 (15.2%), 63 violations (adds GSTIN_INACTIVE: P03 3, P05 1, P10 1, P13 1, P15 4). 22 activated leads have Cancelled/Suspended GSTINs.
 - **Phase 4 live evals** (`ai-service/evals/results/`, real Gemini 2.5 Flash): scenario **1 PASS** (EN one-shot kirana, exactly 2 Gemini calls, reply ₹1597 grounded), **2 PASS** (Hindi dental clinic Kochi, GSTIN autofill "Balaji", no P03), **3 PASS** (Hinglish restaurant chain "Bangalore" → Bengaluru, gstinDeclared, P10 conditional). Scenarios **4–15 NOT run**: the free-tier key hit `429 RESOURCE_EXHAUSTED` after ~18 calls (report `run-20261030-013236.json` shows them as 503 failures for that reason, not as advisor failures). Re-run later with `evals/run_scenarios.py --rerun-failed --delay 6`. Accepted by the user on 2026-10-30 to save quota.
+- **Phase 5 live checks (2026-10-30, user-confirmed)**: all 12 checklist items passed. First orders in Neon: `UD-260715-0001` (curl, client claimed ₹1 → saved ₹1,597), `UD-260715-0002` (UI). Tamper (P01 + P03 in tier 2) → 409 with P03 `TIER_NOT_AVAILABLE`. Quote UI math verified: CCTV on ₹1,995 / off ₹1,597; P07 ×3 ₹1,896; + Static IP ₹1,797; remove fibre → ₹598 + notice "Static IP removed because Biz Fibre 100 was removed".
 - **Reference scenarios (MIN pricing):** kirana tier 2 no GSTIN → P01 + P07×2 = ₹1,597/mo; dental tier 1 14 emp GSTIN → P02 + P16×10 + P08×3 + P20×7 + P17 = ₹5,738/mo; restaurant chain 8 sites 60 emp GSTIN → ₹46,955/mo + ₹1,00,800 one-time, 24 months, activation 2026-07-29; textile 85 emp GSTIN → P05 primary ₹12,912/mo; factory tier 2 8 emp → P05 (emp) → P03 (tier) → P02.
 
 ## 9. Testing
 
-All tests are pure unit tests (no Spring context, no DB). **JUnit total: 126** (41 after Phase 2, +76 in Phase 3, +9 in Phase 4). **pytest (ai-service): 42.**
+All tests are pure unit tests (no Spring context, no DB). **JUnit total: 135** (41 after Phase 2, +76 in Phase 3, +9 in Phase 4, +9 in Phase 5). **pytest (ai-service): 42.** **Vitest (frontend): 18.**
 
 | Test class | Tests | Covers |
 |---|---|---|
@@ -310,6 +365,10 @@ All tests are pure unit tests (no Spring context, no DB). **JUnit total: 126** (
 
 | `advisor.AdvisorServiceTest` | 7 | greeting, round trip persists both messages + stage/profile, state sent back next turn, 503 on 5xx/timeout with user msg saved, unknown stage, 404 (MockRestServiceServer + `InMemoryAdvisorStore`) |
 | `advisor.InternalTokenFilterTest` | 2 | caller detection (never blocks), GSTIN masking in logged paths |
+| `advisor.AdvisorServiceTest` (Phase 5 additions) | +2 (=9) | retry does not duplicate the user message; CHECKOUT_DONE stays sticky |
+| `orders.OrderServiceTest` | 7 | recompute ignores client totals (tampered JSON), ineligible → QUOTE_CHANGED (nothing saved), GST-only without GSTIN rejected, ref format/uniqueness `UD-260715-0042/0043`, event row + session checked out, unknown session, GET masks GSTIN (uses `RulesFixture.QUOTES` + `InMemoryOrderStore`) |
+
+Vitest (`frontend/src`, run `npm run test`): `lib/format.test.ts` (6: ₹1,23,456, dates, GSTIN mask), `hooks/useQuote.test.ts` (6: add-on payload, OFF, upgrade swap, clamp, remove, removed[] → notice), `components/RecommendationCard.test.tsx` (3: totals/items from JSON, customised JSON, CTA), `api/client.test.ts` (5: success, 503 → AiUnavailableError, 409 → QuoteChangedError with quote, 400 field errors, NetworkError).
 
 pytest (`ai-service/tests`, run `.venv\Scripts\python -m pytest -q`): `test_tools.py` (12: endpoint/JSON per tool, save_profile validation, auto lookup + auto recommend), `test_advisor_loop.py` (10: one-shot = 2 model calls, prompt state, loop limit 6, Spring 500/timeout → friendly reply + stage unchanged, stages, language), `test_guard.py` (13: amount formats incl. ₹1,23,456 and Devanagari, invented ₹499, products/reasons, retry, template fallback), `test_api.py` (7: health, 401 missing/wrong/empty token, camelCase contract, 503, 422). Fixtures in `tests/conftest.py` (`FakeLlm`, `kirana_recommendation()`, respx `spring`).
 
@@ -342,6 +401,12 @@ pytest (`ai-service/tests`, run `.venv\Scripts\python -m pytest -q`): `test_tool
 - Phase 4 (quota): `save_profile` automatically runs `lookup_gstin` for a new GSTIN and `recommend_bundle` when the required facts are complete or changed, in the same step. One-shot messages need 2 Gemini calls instead of 3–4.
 - Phase 4: evals talk to ai-service `/chat` directly (they need `toolTrace` and `guard`, which the Spring reply does not expose); 3/15 run live (see section 8).
 - Phase 4: the Spring advisor reply hides `toolTrace`/`guard` from the frontend; both are stored in `advisor_message`.
+- Phase 5: order refs use the **reference date** (2026-07-15) for the date part (`UD-260715-NNNN`), consistent with "treat 2026-07-15 as today"; the number is a global sequence (no daily reset).
+- Phase 5: closed sessions are marked with BOTH `stage = CHECKOUT_DONE` and `advisor_session.order_id`.
+- Phase 5: React Router 6.30 (not v7) and React 18.3.1 pinned; `@testing-library/jest-dom` pinned to 6.9.1 (6.10.0 is a broken release).
+- Phase 5: product descriptions on the Quote page come from `GET /api/products` (the quote JSON has none); prices never come from there.
+- Phase 5: add-ons the user switches on stay in the "Add-ons" section (as ON toggles) instead of moving to "Included"; recommended add-ons are listed first, the rest behind "Show N more".
+- Phase 5: edits on the Quote page call `/api/quote` directly and are NOT written back to the advisor session (the order is created from the page's items).
 
 ## 11. Known issues / TODOs
 
@@ -360,6 +425,11 @@ pytest (`ai-service/tests`, run `.venv\Scripts\python -m pytest -q`): `test_tool
 - Phase 4: Windows PowerShell 5.1 `Get-Content`/`Set-Content` corrupt UTF-8 (Devanagari) files; edit Python/Java files with an editor, not PowerShell text replacement.
 - Phase 4: the guard matches exact catalogue names/IDs; a paraphrased product name ("Business Fibre 300") is not checked (amounts always are).
 - Phase 4: no rate limiting on `/api/advisor/**`; a stuck ai-service holds a Spring thread up to 45 s.
+- Phase 5 UI: the add-on list can include an alternative connectivity plan (e.g. Biz Fibre 300 next to Biz Fibre 100) because the engine marks it eligible; harmless but can look odd.
+- Phase 5 UI: Quote-page edits are not reflected in the chat or the stored session quote; reopening `/quote` after a reload starts again from the advisor's last quote.
+- Phase 5 UI: no order lookup by reference yet (`/track` is a placeholder); the order id lives only in the `/kyc/:orderId` URL (and `advisor_session.order_id`).
+- Phase 5 UI: Lighthouse accessibility was run by the user (≥ 90 required); no automated a11y test in CI.
+- Phase 5: `.claude/launch.json` (dev-server config for the Claude desktop preview) is committed; harmless for others.
 
 ### Privacy (for the 1-page privacy note)
 - Conversation text (the full history of each advisor session) and the collected profile (business type, city, staff, GSTIN, needs) are sent to the **Google Gemini API** on every turn. Engine JSON returned by tools is also sent back to Gemini.
@@ -367,7 +437,21 @@ pytest (`ai-service/tests`, run `.venv\Scripts\python -m pytest -q`): `test_tool
 - Not logged in plain text: message text, names, full GSTINs (ai-service logs session id prefix, tool names, stage, guard result, latency; Spring logs ids/stages/timings and masks GSTINs in paths and tool traces).
 - Stored in Neon: full conversation text (`advisor_message.content`) and profile JSON. No retention job yet (TODO: define and implement a retention period).
 
-## 12. Notes for the next phase (Phase 5: React frontend - advisor chat + quote/checkout)
+## 12. Notes for the next phase (Phase 6: KYC backend - consent, upload, extraction, validation)
+
+**How KYC finds the order**
+- `POST /api/orders` returns `{orderId, orderRef, …}`; the UI navigates to **`/kyc/:orderId`** (route already exists: `frontend/src/pages/KycPlaceholder.tsx` reads `useParams().orderId` and calls `GET /api/orders/{orderId}`; Phase 7 replaces this page on the same route).
+- KYC endpoints should hang off the order, e.g. `/api/orders/{orderId}/kyc/...`, and validate that the order exists (`OrderService.get` throws `NotFoundException` → 404).
+- The order holds what KYC must match against: `customer_order.profile_json` (businessType, city, employees, sites, `gstin` or `gstinDeclared`) and `quote_json` (lines with `conditional: true` = products sold on a declared-but-unverified GSTIN; KYC must confirm an **Active** GSTIN or those lines become ineligible).
+- If KYC changes eligibility (e.g. the GSTIN is Cancelled), recompute with `QuoteService.quote(profile, items, List.of())` (same pattern as `OrderService.create`) instead of editing prices.
+
+**Order statuses so far**: `QUOTE_ACCEPTED` (initial; written to `customer_order.status` and as the first `order_event`). Phase 6 should add KYC statuses as new constants in `com.udyam.orders.OrderStatus` (e.g. `KYC_PENDING`, `KYC_SUBMITTED`, `KYC_VERIFIED`, `KYC_REJECTED`) and append an `order_event` row for every transition (`OrderStore.addEvent`); `status` is free text (no CHECK constraint), so no migration is needed just for new values. Phase 8 adds tracker statuses the same way.
+
+**Reuse for KYC validation**: `GstinVerificationService.verify(raw)` (applies OCR correction for document text: use `effectiveGstin`, `correction`, `active`), `UdyamLookupService.validate/find`, `GstinValidator` / `UdyamValidator` (pure), `Masking` for logs, `AppProperties.referenceDate()` for document-age checks (address proof ≤ 90 days old per data/README.md). KYC images: `data/kyc_documents/` (K01–K12; K05 has no Udyam certificate). Known planted case: tampered GSTIN `08YKZXS8189L1Z0` (registry `08YKZXS5189L1ZO`) must stay flagged.
+
+**Advisor session link**: an order created from the advisor has `customer_order.session_id` and the session has `stage = CHECKOUT_DONE`, `order_id`.
+
+### Frontend contract (Phase 5, implemented)
 
 The frontend talks ONLY to Spring (`http://localhost:8080`, CORS allows `http://localhost:5173`). Never call the ai-service or Gemini from the browser.
 

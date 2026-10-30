@@ -135,6 +135,36 @@ class AdvisorServiceTest {
     }
 
     @Test
+    void retryAfterOutageDoesNotDuplicateTheUserMessage() {
+        UUID id = service.createSession("en").sessionId();
+        server.expect(requestTo(AI + "/chat")).andRespond(withServerError());
+        server.expect(requestTo(AI + "/chat"))
+                .andExpect(jsonPath("$.messages.length()").value(2))
+                .andRespond(withSuccess(RECOMMENDED_RESPONSE, MediaType.APPLICATION_JSON));
+
+        assertThatThrownBy(() -> service.sendMessage(id, "hello")).isInstanceOf(ApiException.class);
+        service.sendMessage(id, "hello");
+
+        server.verify();
+        assertThat(store.messages.get(id)).extracting(AdvisorStore.Message::role)
+                .containsExactly("assistant", "user", "assistant");
+    }
+
+    @Test
+    void checkedOutSessionStaysCheckedOut() {
+        UUID id = service.createSession("en").sessionId();
+        store.updateSession(id, AdvisorService.CHECKOUT_DONE, "en", null, null, null);
+        server.expect(requestTo(AI + "/chat"))
+                .andExpect(jsonPath("$.state.stage").value("READY_FOR_CHECKOUT"))
+                .andRespond(withSuccess(RECOMMENDED_RESPONSE, MediaType.APPLICATION_JSON));
+
+        AdvisorService.AdvisorReply reply = service.sendMessage(id, "thanks");
+
+        assertThat(reply.stage()).isEqualTo(AdvisorService.CHECKOUT_DONE);
+        assertThat(store.sessions.get(id).stage()).isEqualTo(AdvisorService.CHECKOUT_DONE);
+    }
+
+    @Test
     void aiServiceTimeoutGives503() {
         UUID id = service.createSession("en").sessionId();
         server.expect(requestTo(AI + "/chat")).andRespond(withException(new SocketTimeoutException("read timed out")));

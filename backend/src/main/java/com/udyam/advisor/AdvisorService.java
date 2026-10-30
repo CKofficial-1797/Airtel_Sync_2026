@@ -26,6 +26,9 @@ public class AdvisorService {
             नमस्ते! मैं आपका Accel Business सलाहकार हूँ। अपने व्यवसाय के बारे में बताइए: आप क्या करते हैं, \
             किस शहर में हैं, कितने लोग काम करते हैं और कितनी दुकानें या ऑफ़िस हैं। मैं आपके लिए सही प्लान सुझाऊँगा।""";
 
+    /** Set by OrderService when the quote is accepted; sticky for the rest of the session. */
+    public static final String CHECKOUT_DONE = "CHECKOUT_DONE";
+
     static final Set<String> STAGES =
             Set.of("COLLECTING", "RECOMMENDED", "CUSTOMISING", "READY_FOR_CHECKOUT", "OUT_OF_SCOPE");
 
@@ -51,14 +54,23 @@ public class AdvisorService {
 
     public AdvisorReply sendMessage(UUID sessionId, String text) {
         AdvisorStore.Session session = require(sessionId);
-        store.addMessage(sessionId, "user", text, null, null);
+        // After checkout the session stays CHECKOUT_DONE; the ai-service only knows the 5 conversation stages.
+        boolean checkedOut = CHECKOUT_DONE.equals(session.stage());
+        String aiStage = checkedOut ? "READY_FOR_CHECKOUT" : session.stage();
+        // A retry after AI_UNAVAILABLE re-sends a message that is already stored and unanswered: don't duplicate it.
+        List<AdvisorStore.Message> stored = store.messages(sessionId);
+        AdvisorStore.Message last = stored.isEmpty() ? null : stored.get(stored.size() - 1);
+        boolean isRetry = last != null && "user".equals(last.role()) && last.content().equals(text);
+        if (!isRetry) {
+            store.addMessage(sessionId, "user", text, null, null);
+        }
 
         List<AiChatContract.Message> history = store.messages(sessionId).stream()
                 .map(m -> new AiChatContract.Message(m.role(), m.content()))
                 .toList();
         AiChatContract.Request request = new AiChatContract.Request(sessionId.toString(), history,
                 session.profile() == null ? json.createObjectNode() : session.profile(), session.uiLanguage(),
-                new AiChatContract.State(session.stage(), session.recommendation(), session.quote()));
+                new AiChatContract.State(aiStage, session.recommendation(), session.quote()));
 
         long start = System.currentTimeMillis();
         AiChatContract.Response response;
@@ -73,12 +85,13 @@ public class AdvisorService {
                     "The advisor is temporarily unavailable. Your message was saved; please try again.");
         }
 
+        String stage = checkedOut ? CHECKOUT_DONE : response.stage();
         store.addMessage(sessionId, "assistant", response.reply(), response.toolTrace(), response.guard());
-        store.updateSession(sessionId, response.stage(), response.detectedLanguage(), response.profile(),
+        store.updateSession(sessionId, stage, response.detectedLanguage(), response.profile(),
                 response.recommendation(), response.quote());
-        log.info("Advisor session {}: stage {} -> {} in {} ms", shortId(sessionId), session.stage(),
-                response.stage(), System.currentTimeMillis() - start);
-        return new AdvisorReply(sessionId, response.reply(), response.stage(), response.profile(),
+        log.info("Advisor session {}: stage {} -> {} in {} ms", shortId(sessionId), session.stage(), stage,
+                System.currentTimeMillis() - start);
+        return new AdvisorReply(sessionId, response.reply(), stage, response.profile(),
                 response.recommendation(), response.quote(), response.detectedLanguage());
     }
 

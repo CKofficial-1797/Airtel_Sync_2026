@@ -1,0 +1,143 @@
+{
+  "app": {
+    "name": "Accel Business",
+    "skipToContent": "मुख्य सामग्री पर जाएँ"
+  },
+  "common": {
+    "back": "वापस",
+    "retry": "फिर से कोशिश करें",
+    "cancel": "रद्द करें",
+    "close": "बंद करें",
+    "dismiss": "हटाएँ",
+    "loading": "लोड हो रहा है…",
+    "editDetails": "जानकारी बदलें",
+    "genericError": "कुछ गड़बड़ हो गई। कृपया फिर से कोशिश करें।",
+    "networkError": "सर्वर से जुड़ नहीं पा रहे। अपना इंटरनेट देखें और फिर कोशिश करें।"
+  },
+  "language": {
+    "label": "भाषा",
+    "en": "EN",
+    "hi": "हिंदी"
+  },
+  "landing": {
+    "valueProp": "आपके व्यवसाय के लिए इंटरनेट, फ़ोन लाइनें, CCTV और बहुत कुछ: एक बंडल, एक बिल, सब कुछ फ़ोन से सेट करें।",
+    "benefit1": "लगभग 2 मिनट में आपके व्यवसाय के लिए सही प्लान",
+    "benefit2": "कैटलॉग से सीधी, एक साफ़ मासिक कीमत",
+    "benefit3": "बिना कागज़ के KYC और फ़ोन पर ऑर्डर ट्रैकिंग",
+    "ctaAdvisor": "सलाहकार से बात करें",
+    "ctaTrack": "मेरा ऑर्डर ट्रैक करें",
+    "priceNote": "कीमतें Accel Business कैटलॉग के अनुसार"
+  },
+  "advisor": {
+    "title": "व्यवसाय सलाहकार",
+    "starting": "आपका सलाहकार तैयार हो रहा है…",
+    "startOver": "नई शुरुआत",
+    "startOverTitle": "नई बातचीत शुरू करें?",
+    "startOverBody": "इस डिवाइस से आपकी मौजूदा चैट और कोटेशन हटा दिए जाएँगे।",
+    "startOverConfirm": "हाँ, नई शुरुआत करें",
+    "inputLabel": "सलाहकार को संदेश लिखें",
+    "inputPlaceholder": "अपना संदेश लिखें…",
+    "send": "भेजें",
+    "typing": "सलाहकार लिख रहे हैं",
+    "charsLeft": "{{count}} अक्षर बाकी",
+    "aiUnavailable": "सलाहकार अभी व्यस्त हैं। आपका संदेश सेव हो गया है।",
+    "notDelivered": "अभी जवाब नहीं मिला",
+    "quick": {
+      "label": "सुझाव",
+      "other": "कुछ और",
+      "otherPrompt": "मेरा व्यवसाय है: ",
+      "looksGood": "ठीक है, आगे बढ़ें",
+      "looksGoodMessage": "ठीक है, आगे बढ़ते हैं",
+      "change": "कुछ बदलना है",
+      "changePrompt": "मैं यह बदलना चाहता हूँ: ",
+      "whyNot": "{{name}} क्यों नहीं?",
+      "whyNotMessage": "मुझे {{name}} क्यों नहीं मिल सकता?",
+      "gstYes": "हाँ, मेरे पास GST है",
+      "gstNo": "GST नहीं है",
+      "yes": "हाँ",
+      "no": "नहीं"
+    }
+  },
+  "card": {
+    "recommended": "आपके लिए सुझाया गया",
+    "updated": "आपका बदला हुआ बंडल",
+    "perMonth": "/माह",
+    "setup": "{{amount}} एक-बार सेटअप",
+    "contract_one": "{{count}} महीने का अनुबंध",
+    "contract_other": "{{count}} महीने का अनुबंध",
+    "included": "शामिल",
+    "viewQuote": "कोटेशन देखें और बदलें",
+    "reviewContinue": "कोटेशन देखें और आगे बढ़ें",
+    "conditional": "GSTIN की जाँच KYC में होगी",
+    "orderPlaced": "ऑर्डर हो गया"
+  },
+  "profile": {
+    "label": "आपका व्यवसाय",
+    "tier": "टियर {{tier}}",
+    "staff_one": "{{count}} कर्मचारी",
+    "staff_other": "{{count}} कर्मचारी",
+    "sites_one": "{{count}} जगह",
+    "sites_other": "{{count}} जगहें",
+    "gstActive": "सक्रिय",
+    "gstInactive": "{{status}}",
+    "gstNotVerified": "सत्यापित नहीं",
+    "gstDeclared": "GST: जाँच बाकी",
+    "noGst": "GST नहीं"
+  },
+  "quote": {
+    "title": "आपका कोटेशन",
+    "included": "शामिल",
+    "addOns": "अतिरिक्त सेवाएँ",
+    "emptyTitle": "अभी कोई कोटेशन नहीं",
+    "emptyBody": "सलाहकार को अपने व्यवसाय के बारे में बताइए, वे आपके लिए कोटेशन बनाएँगे।",
+    "emptyCta": "सलाहकार से बात करें",
+    "removedNotice": "{{name}} हटाया गया: {{reason}}",
+    "notAvailable": "आपके व्यवसाय के लिए उपलब्ध नहीं ({{count}})",
+    "comparison": "आज आप {{current}} देते हैं · नया बंडल {{next}}",
+    "remove": "{{name}} हटाएँ",
+    "decrease": "{{name}} की संख्या घटाएँ",
+    "increase": "{{name}} की संख्या बढ़ाएँ",
+    "quantity": "{{name}} की संख्या",
+    "perUnit": "{{price}} {{unit}}",
+    "perMonthTotal": "{{amount}}/माह",
+    "setupFee": "सेटअप {{amount}}",
+    "addOnPrice": "{{price}} {{unit}}",
+    "updating": "कीमतें अपडेट हो रही हैं…",
+    "quoteChanged": "कुछ सेवाएँ अब उपलब्ध नहीं हैं, इसलिए कोटेशन बदल गया है। कृपया देखकर फिर से स्वीकार करें।",
+    "lastItem": "बंडल में कम से कम एक सेवा रखें।",
+    "showMore": "{{count}} और सेवाएँ दिखाएँ",
+    "showLess": "कम सेवाएँ दिखाएँ"
+  },
+  "totals": {
+    "monthly": "मासिक",
+    "oneTime": "एक-बार सेटअप",
+    "contract_one": "{{count}} महीना",
+    "contract_other": "{{count}} महीने",
+    "activation": "अनुमानित शुरुआत {{date}} तक",
+    "priceNote": "कीमतें Accel Business कैटलॉग के अनुसार",
+    "accept": "स्वीकार करें और KYC पर जाएँ",
+    "placing": "आपका ऑर्डर हो रहा है…"
+  },
+  "kyc": {
+    "title": "ऑर्डर बन गया",
+    "orderRef": "ऑर्डर नंबर",
+    "monthly": "मासिक कुल",
+    "comingNext": "अगला कदम: KYC",
+    "body": "अब आप अपने व्यवसाय की पुष्टि के लिए GSTIN / उद्यम दस्तावेज़ अपलोड करेंगे। यह सुविधा अगले अपडेट में आ रही है।",
+    "notFound": "यह ऑर्डर नहीं मिला।"
+  },
+  "track": {
+    "title": "मेरा ऑर्डर ट्रैक करें",
+    "body": "ऑर्डर ट्रैकिंग जल्द आ रही है।"
+  },
+  "notFound": {
+    "title": "पेज नहीं मिला",
+    "body": "आप जो पेज ढूँढ रहे हैं, वह मौजूद नहीं है।",
+    "home": "होम पर जाएँ"
+  },
+  "errorBoundary": {
+    "title": "कुछ गड़बड़ हो गई",
+    "body": "कृपया पेज दोबारा लोड करें। आपकी चैट सेव है।",
+    "reload": "दोबारा लोड करें"
+  }
+}

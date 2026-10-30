@@ -1,0 +1,143 @@
+{
+  "app": {
+    "name": "Accel Business",
+    "skipToContent": "Skip to content"
+  },
+  "common": {
+    "back": "Back",
+    "retry": "Retry",
+    "cancel": "Cancel",
+    "close": "Close",
+    "dismiss": "Dismiss",
+    "loading": "Loading…",
+    "editDetails": "Edit details",
+    "genericError": "Something went wrong. Please try again.",
+    "networkError": "Can't reach the server. Check your connection and try again."
+  },
+  "language": {
+    "label": "Language",
+    "en": "EN",
+    "hi": "हिंदी"
+  },
+  "landing": {
+    "valueProp": "Internet, phone lines, CCTV & more for your business: one bundle, one bill, set up from your phone.",
+    "benefit1": "The right plan for your business in about 2 minutes",
+    "benefit2": "One clear monthly price, straight from the catalogue",
+    "benefit3": "Paperless KYC and order tracking on your phone",
+    "ctaAdvisor": "Talk to the advisor",
+    "ctaTrack": "Track my order",
+    "priceNote": "Prices as per Accel Business catalogue"
+  },
+  "advisor": {
+    "title": "Business advisor",
+    "starting": "Starting your advisor…",
+    "startOver": "Start over",
+    "startOverTitle": "Start a new conversation?",
+    "startOverBody": "Your current chat and quote will be cleared from this device.",
+    "startOverConfirm": "Yes, start over",
+    "inputLabel": "Message the advisor",
+    "inputPlaceholder": "Type your message…",
+    "send": "Send",
+    "typing": "Advisor is typing",
+    "charsLeft": "{{count}} characters left",
+    "aiUnavailable": "The advisor is busy right now. Your message was saved.",
+    "notDelivered": "Not answered yet",
+    "quick": {
+      "label": "Suggestions",
+      "other": "Other",
+      "otherPrompt": "My business is ",
+      "looksGood": "Looks good, continue",
+      "looksGoodMessage": "Looks good, let's go ahead",
+      "change": "Change something",
+      "changePrompt": "I'd like to change ",
+      "whyNot": "Why not {{name}}?",
+      "whyNotMessage": "Why can't I get {{name}}?",
+      "gstYes": "Yes, I have GST",
+      "gstNo": "No GST",
+      "yes": "Yes",
+      "no": "No"
+    }
+  },
+  "card": {
+    "recommended": "Recommended for you",
+    "updated": "Your updated bundle",
+    "perMonth": "/month",
+    "setup": "{{amount}} one-time setup",
+    "contract_one": "{{count}} month contract",
+    "contract_other": "{{count}} month contract",
+    "included": "Included",
+    "viewQuote": "View & customise quote",
+    "reviewContinue": "Review quote & continue",
+    "conditional": "GSTIN to be verified at KYC",
+    "orderPlaced": "Order placed"
+  },
+  "profile": {
+    "label": "Your business",
+    "tier": "Tier {{tier}}",
+    "staff_one": "{{count}} staff",
+    "staff_other": "{{count}} staff",
+    "sites_one": "{{count}} site",
+    "sites_other": "{{count}} sites",
+    "gstActive": "Active",
+    "gstInactive": "{{status}}",
+    "gstNotVerified": "Not verified",
+    "gstDeclared": "GST: to verify",
+    "noGst": "No GST"
+  },
+  "quote": {
+    "title": "Your quote",
+    "included": "Included",
+    "addOns": "Add-ons",
+    "emptyTitle": "No quote yet",
+    "emptyBody": "Tell the advisor about your business and it will build a quote for you.",
+    "emptyCta": "Talk to the advisor",
+    "removedNotice": "{{name}} removed: {{reason}}",
+    "notAvailable": "Not available for your business ({{count}})",
+    "comparison": "You pay {{current}} today · New bundle {{next}}",
+    "remove": "Remove {{name}}",
+    "decrease": "Decrease quantity of {{name}}",
+    "increase": "Increase quantity of {{name}}",
+    "quantity": "Quantity of {{name}}",
+    "perUnit": "{{price}} {{unit}}",
+    "perMonthTotal": "{{amount}}/month",
+    "setupFee": "Setup {{amount}}",
+    "addOnPrice": "{{price}} {{unit}}",
+    "updating": "Updating prices…",
+    "quoteChanged": "Some items are no longer available, so the quote was updated. Please review it and accept again.",
+    "lastItem": "Keep at least one product in your bundle.",
+    "showMore": "Show {{count}} more add-ons",
+    "showLess": "Show fewer add-ons"
+  },
+  "totals": {
+    "monthly": "Monthly",
+    "oneTime": "One-time setup",
+    "contract_one": "{{count}} month",
+    "contract_other": "{{count}} months",
+    "activation": "Estimated activation by {{date}}",
+    "priceNote": "Prices as per Accel Business catalogue",
+    "accept": "Accept & continue to KYC",
+    "placing": "Placing your order…"
+  },
+  "kyc": {
+    "title": "Order created",
+    "orderRef": "Order reference",
+    "monthly": "Monthly total",
+    "comingNext": "KYC comes next",
+    "body": "Next you'll upload your GSTIN / Udyam documents to verify your business. This step is coming in the next update.",
+    "notFound": "We couldn't find this order."
+  },
+  "track": {
+    "title": "Track my order",
+    "body": "Order tracking is coming next."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "The page you're looking for doesn't exist.",
+    "home": "Go to home"
+  },
+  "errorBoundary": {
+    "title": "Something went wrong",
+    "body": "Please reload the page. Your chat is saved.",
+    "reload": "Reload"
+  }
+}
