@@ -182,22 +182,6 @@ I run a kirana store in Ludhiana, 3 staff, one shop, no GST
 
 **Tracker demo controls.** With `demo-mode: true`, open `/track/<orderId>?demo=1` to move an order forward or put it on hold. No field system is connected, so this is the only way an order moves past install scheduling.
 
-## Optional settings
-
-| Setting | Default | Purpose |
-|---|---|---|
-| `DB_URL`, `DB_USERNAME`, `DB_PASSWORD` | none | Use these instead of `application-local.yml` |
-| `INTERNAL_TOKEN` | none | Shared secret between Spring and the AI service |
-| `AI_SERVICE_URL` | `http://localhost:8000` | Where Spring finds the AI service |
-| `BACKOFFICE_KEY` | none | Back-office passcode. With none set, nobody gets in |
-| `BACKOFFICE_SESSION_IDLE_MINUTES` | 30 | When a chat counts as unclosed. Use 0 for a demo |
-| `BACKOFFICE_ORDER_STUCK_HOURS` | 24 | When an order counts as stuck. Use 0 for a demo |
-| `APP_DEMO_MODE` | false | Enables the tracker demo controls |
-| `KYC_FIXTURE_CACHE` | false | Dev only: answers exact specimen images from saved results, with no Gemini call |
-| `GEMINI_MODEL`, `GEMINI_EXTRACT_MODEL` | see Tech stack | Set in `ai-service/.env` |
-
-The free Gemini tier has a small quota. Each advisor turn takes 2-4 model calls, so limit long rehearsals on one day.
-
 ## Tests
 
 | Suite | Command | Run from | Passing |
@@ -223,27 +207,3 @@ Same seed, same metrics. On 5-fold cross-validation the AUC is 0.699, and the to
 - **Masking:** GSTIN, Udyam and ID numbers are masked in API responses and logs. Logs carry no chat text or extracted values.
 - **Secrets:** kept in git-ignored files. Spring and the AI service authenticate with a shared token, and only the AI service holds the Gemini key.
 - **External AI:** chat text, the business profile and document images go to the Google Gemini API.
-
-## Current status and limits
-
-This is a hackathon prototype.
-
-**Not yet proven live**
-- Only 3 of the 15 advisor scenarios in `ai-service/evals/` have run on real Gemini; all 3 passed. The rest are waiting on API quota.
-- The KYC checks match the answer key on all 12 applicants, using hand-transcribed document fields. Gemini reading the specimen images end to end has not been run.
-
-**Not built**
-- WhatsApp or voice front end
-- DigiLocker and e-sign
-- Regional languages in the UI, which is English and Hindi only
-- Deployment; it runs locally
-- Phone number capture, so back-office staff can see who to call but not how to reach them
-
-**Prototype shortcuts**
-- The back-office gate is one shared passcode, not real authentication.
-- `/api/admin/**` read endpoints have no auth, and order pages are protected only by their link.
-- No retention job yet: the consent notice states a retention period, but nothing deletes data automatically.
-- The consent notice doesn't yet name Google Gemini as the processor.
-- GSTIN and Udyam lookups are mocks backed by the provided CSVs.
-
-Detailed build notes and known issues are in [docs/HANDOFF.md](docs/HANDOFF.md).
