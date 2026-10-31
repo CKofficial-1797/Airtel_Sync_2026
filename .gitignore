@@ -12,3 +12,12 @@ application-local.yml
 node_modules/
 __pycache__/
 .venv/
+
+# Demo video: build output and recorded AI responses
+demo/raw/
+demo/out/
+demo/cassettes/
+demo/.pydeps/
+
+# Local Claude app settings
+.claude/
